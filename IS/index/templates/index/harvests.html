@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zbery - Zelný trh</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="button"><a href="{% url 'index:offers' %}">Ponuka</a></li>
+                <li class="button"><a href="{% url 'index:farmers' %}">Farmari</a></li>
+                <!-- le comment<li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>-->
+            </ul>
+        </nav>
+        <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+        <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+    </header>
+    <main>
+        <div class="showcase" id="all_harvests">
+            <span>Najblizsie zbery:</span>
+            {% if harvests %}
+                    <ul>
+                        {% for harvest in harvests %}
+                            <li><a href="{% url 'index:harvest_detail' harvest.id %}">
+                                <div>
+                                    A CROP
+                                </div>
+                            </a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div>Nothing to show for now</div>
+                {% endif %}
+        </div>
+        <div class="showcase" id="all_harvests">
+            <span>Moje zbery:</span>
+            {% if my_harvests %}
+                <ul>
+                    {% for harvest in my_harvests %}
+                        <li><a href="{% url 'index:harvest_detail' harvest.id %}">
+                            <div>
+                                A CROP
+                            </div>
+                        </a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div>Nothing to show for now</div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

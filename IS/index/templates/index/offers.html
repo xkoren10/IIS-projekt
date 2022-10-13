@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ponuka - Zelný trh</title>
+</head>
+<body>
+    <header>
+            <nav>
+                <ul>
+                    <!--<li class="button"><a href="{% url 'index:offers' %}">Ponuka</a></li>-->
+                    <li class="button"><a href="{% url 'index:farmers' %}">Farmari</a></li>
+                    <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
+                </ul>
+            </nav>
+        <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+        <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+    </header>
+    <main>
+        <div id="filter">
+            <form>
+                <input type="button" value="filter">
+                <input type="button" value="clear">
+                {% if categories %}
+                    {% for category in categories %}
+                        <input type="checkbox" value="{{ category.name }}">
+                    {% endfor %}
+                {% else %}
+                    <label>Nothing to show for now</label>
+                {% endif %}
+            </form>
+        </div>
+        <div id="grid_show">
+            {% if crops %}
+                <ul>
+                {% for crop in crops %}
+                    <li><a href="{% url 'index:product_detail' crop.id %}">
+                                <div>
+                                    A CROP
+                                </div>
+                            </a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <div>Nothing to show</div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>
