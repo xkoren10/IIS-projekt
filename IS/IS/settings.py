@@ -26,7 +26,13 @@ SECRET_KEY = 'django-insecure-2dt6tj(bw=lx5rz3fk6o4opqcos!ygsstg_1%yafg23m4zim)e
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "zelnytrh.azurewebsites.net"
+    "zelnytrh.azurewebsites.net",
+    '.localhost', '127.0.0.1', '[::1]'  # for testing
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://zelnytrh.azurewebsites.net',
+    'https://*.127.0.0.1'
 ]
 
 
