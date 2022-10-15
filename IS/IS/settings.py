@@ -76,6 +76,7 @@ MIDDLEWARE = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 ROOT_URLCONF = 'IS.urls'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'IS.settings'
 
 TEMPLATES = [
     {
