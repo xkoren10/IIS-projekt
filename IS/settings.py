@@ -40,12 +40,6 @@ if not IS_HEROKU:
     DEBUG = True
 
 
-
-ALLOWED_HOSTS = [
-    "zelnytrh.azurewebsites.net",
-    '.localhost', '127.0.0.1', '[::1]'  # for testing
-]
-
 CSRF_TRUSTED_ORIGINS = [
     'https://zelnytrh.azurewebsites.net',
     'https://*.127.0.0.1'
