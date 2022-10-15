@@ -27,6 +27,20 @@ SECRET_KEY = 'django-insecure-2dt6tj(bw=lx5rz3fk6o4opqcos!ygsstg_1%yafg23m4zim)e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+IS_HEROKU = "DYNO" in os.environ
+
+# Generally avoid wildcards(*). However since Heroku router provides hostname validation it is ok
+if IS_HEROKU:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = []
+
+# SECURITY WARNING: don't run with debug turned on in production!
+if not IS_HEROKU:
+    DEBUG = True
+
+
+
 ALLOWED_HOSTS = [
     "zelnytrh.azurewebsites.net",
     '.localhost', '127.0.0.1', '[::1]'  # for testing
@@ -60,6 +74,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 ROOT_URLCONF = 'IS.urls'
 
 TEMPLATES = [
