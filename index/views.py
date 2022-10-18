@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from . import db_logic as db
 
 
 def index(request):
     # plus context = dict with data supposed
+    print(db.get_user_by_id(1))
     return render(request, "index/index.html")
 
 
