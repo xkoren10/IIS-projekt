@@ -9,13 +9,13 @@
         <div id="LOGO"><a href="{% url 'index:index' %}">Zelny trh</a></div>
     </header>
     <main>
+        {% if error %}
+            <div>{{ error }}</div>
+        {% endif %}
         <div>
-            <form>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username">
-                <br>
-                <label for="password">Password:</label>
-                <input type="text" id="password" name="password">
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
                 <br>
                 <input type="submit" value="login">
                 <br>

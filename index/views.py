@@ -1,6 +1,12 @@
 from django.shortcuts import render
+from django import forms
 from django.http import HttpResponse
 from . import db_logic as db
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=80)
+    password = forms.CharField(label="Password", max_length=100)
 
 
 def index(request):
@@ -10,11 +16,30 @@ def index(request):
 
 
 def login(request):
-    return render(request, "index/login.html")
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            if db.password_check(form.cleaned_data["username"], form.cleaned_data["password"]):
+                # set session
+                return render(request, "index/index.html")
+            else:
+                error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
+                return render(request, "index/login.html", {"form": form, "error": error_msg})
+    else:
+        form = LoginForm()
+    return render(request, "index/login.html", {"form": form})
 
 
 def sign_up(request):
-    return render(request, "index/sign_up.html")
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            db.user_create(form.cleaned_data["username"], form.cleaned_data["password"])
+            # set session
+            return render(request, "index/index.html")
+    else:
+        form = LoginForm()
+    return render(request, "index/sign_up.html", {"form": form})
 
 
 def offers(request):

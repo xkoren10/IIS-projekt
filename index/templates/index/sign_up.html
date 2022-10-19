@@ -9,12 +9,9 @@
         <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
     </header>
     <main>
-        <form>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username">
-            <br>
-            <label for="password">Password:</label>
-            <input type="text" id="password" name="password">
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
             <br>
             <input type="submit" value="sign up">
         </form>
