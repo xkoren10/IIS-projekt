@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django import forms
 from django.http import HttpResponse
 from . import db_logic as db
@@ -11,21 +11,29 @@ class LoginForm(forms.Form):
 
 def index(request):
     # plus context = dict with data supposed
-    print(db.get_user_by_id(1))
-    return render(request, "index/index.html")
+    print("index")
+    try:
+        return render(request, "index/index.html", {"logged_in": request.session["user"]})
+    except KeyError:
+        return render(request, "index/index.html", {"logged_in": False})
 
 
 def login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            if db.password_check(form.cleaned_data["username"], form.cleaned_data["password"]):
+            db_check = db.password_check(form.cleaned_data["username"], form.cleaned_data["password"])
+            if db_check:
                 # set session
-                return render(request, "index/index.html")
+                request.session["user"] = True
+                request.session["user_id"] = db_check
+                request.session["username"] = form.cleaned_data["username"]
+                return redirect(request, "index/index.html", {"logged_in": request.session["user"]})
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
                 return render(request, "index/login.html", {"form": form, "error": error_msg})
     else:
+        request.session.clear()
         form = LoginForm()
     return render(request, "index/login.html", {"form": form})
 
@@ -34,9 +42,12 @@ def sign_up(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            db.user_create(form.cleaned_data["username"], form.cleaned_data["password"])
+            user_id = db.user_create(form.cleaned_data["username"], form.cleaned_data["password"])
             # set session
-            return render(request, "index/index.html")
+            request.session["user"] = True
+            request.session["user_id"] = user_id
+            request.session["username"] = form.cleaned_data["username"]
+            return render(request, "index/index.html", {"logged_in": request.session["user"]})
     else:
         form = LoginForm()
     return render(request, "index/sign_up.html", {"form": form})

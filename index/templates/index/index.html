@@ -14,7 +14,13 @@
             </ul>
         </nav>
         <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
-        <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+        {% if logged_in %}
+            <span class="button"><a href="{% url 'index:login' %}">Košík</a></span>
+            <span class="button"><a href="{% url 'index:login' %}">Profil</a></span>
+            <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+        {% else %}
+            <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+        {% endif %}
         <div id="intro">Zelny trh</div>
     </header>
     <main>

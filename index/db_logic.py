@@ -10,19 +10,30 @@ def user_get_by_id(user_id: int):
 
 
 def user_create(username: str, password: str, email=None):
+    # TODO check if user(name) already exists
     psw_hash = hasher.make_password(password)
     with connection.cursor() as cursor:
         if email:
             cursor.execute("INSERT INTO users VALUES (DEFAULT, '%s', '%s', '%s')" % (str(username), str(email), str(psw_hash)))
         else:
             cursor.execute("INSERT INTO users VALUES (DEFAULT, '%s', NULL, '%s')" % (str(username), str(psw_hash)))
-    return True
+
+        cursor.execute("SELECT id FROM users WHERE user_name='%s'" % str(username))
+        row = cursor.fetchone()
+    return row
 
 
 def password_check(username: str, password: str):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT password FROM users WHERE user_name='%s'" % username)
+        cursor.execute("SELECT id, password FROM users WHERE user_name='%s'" % username)
         row = cursor.fetchone()
+        # check if any user was found
         if not row:
             return False
-    return hasher.check_password(password, row[0])
+
+    # check hashed password
+    check = hasher.check_password(password, row[1])
+    if check:
+        return row[0]
+    else:
+        return False

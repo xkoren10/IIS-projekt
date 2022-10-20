@@ -142,6 +142,8 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher'
 ]
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
