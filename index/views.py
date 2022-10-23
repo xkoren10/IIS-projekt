@@ -11,7 +11,6 @@ class LoginForm(forms.Form):
 
 def index(request):
     # plus context = dict with data supposed
-    print("index")
     try:
         return render(request, "index/index.html", {"logged_in": request.session["user"]})
     except KeyError:
@@ -28,7 +27,7 @@ def login(request):
                 request.session["user"] = True
                 request.session["user_id"] = db_check
                 request.session["username"] = form.cleaned_data["username"]
-                return redirect(request, "index/index.html", {"logged_in": request.session["user"]})
+                return render(request, "index/index.html", {"logged_in": request.session["user"]})
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
                 return render(request, "index/login.html", {"form": form, "error": error_msg})
