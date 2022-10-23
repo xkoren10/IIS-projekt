@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+import whitenoise
 #import psycopg2
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
