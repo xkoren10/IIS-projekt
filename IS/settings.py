@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2dt6tj(bw=lx5rz3fk6o4opqcos!ygsstg_1%yafg23m4zim)e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 IS_HEROKU = "DYNO" in os.environ
 
@@ -33,15 +33,11 @@ IS_HEROKU = "DYNO" in os.environ
 if IS_HEROKU:
     ALLOWED_HOSTS = ["*"]
 else:
+    DEBUG = True
     ALLOWED_HOSTS = ["*"]
 
-# SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU:
-    DEBUG = False
-
-
 CSRF_TRUSTED_ORIGINS = [
-    'https://zelnytrh.azurewebsites.net',
+    'https://zelny-trh.herokuapp.com/',
     'https://127.0.0.1'
 ]
 
