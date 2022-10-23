@@ -18,8 +18,10 @@
     </header>
     <main>
         <p style="text-align:center; font-size:200%">404 - Stránka, ktorú sa pokúšate navštíviť, neexistuje.</p>
-        {% load static %}
-        <p><img src="{% static '/index/images/sad.png' %}" alt="smutny_smajlik" class="center"></p>
+        <p>
+            {% load static %}
+            <img src="{% static 'index/images/sad.png' %}" alt="smutny_smajlik" class="center">
+        </p>
     </main>
 </body>
 </html>

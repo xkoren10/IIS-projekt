@@ -25,6 +25,10 @@
     </header>
     <main>
         <div>
+            {% load static %}
+            <img src="{% static 'index/images/sad.png' %}" alt="Sad face" width="100" height="100">
+        </div>
+        <div>
             <div class="showcase">
                 {% if top_crops %}
                     <ul>
