@@ -37,3 +37,12 @@ def password_check(username: str, password: str):
         return row[0]
     else:
         return False
+
+
+def get_top_crops():
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT crops.id, crop_name, description, category, price, stars FROM crops JOIN reviews on crops.id = reviews.reviewed_crop order by stars desc limit 5;")
+        row = cursor.fetchall()
+        if not row:
+            return False
+    return row

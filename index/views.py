@@ -11,8 +11,9 @@ class LoginForm(forms.Form):
 
 def index(request):
     # plus context = dict with data supposed
+    top_crops = db.get_top_crops()
     try:
-        return render(request, "index/index.html", {"logged_in": request.session["user"]})
+        return render(request, "index/index.html", {"logged_in": request.session["user"], "top_crops": top_crops})
     except KeyError:
         return render(request, "index/index.html", {"logged_in": False})
 
