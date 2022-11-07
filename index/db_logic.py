@@ -46,3 +46,11 @@ def get_top_crops():
         if not row:
             return False
     return row
+
+def get_new_crops():
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT crops.id, crop_name, description, category, price, crop_year FROM crops order by crop_year desc limit 5;")
+        row = cursor.fetchall()
+        if not row:
+            return False
+    return row

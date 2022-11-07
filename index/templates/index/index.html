@@ -35,6 +35,8 @@
                         {% for crop in top_crops %}
                             <li><a href="{% url 'index:product_detail' crop.0 %}">
                                 <div class="crop">
+                                    {% load static %}
+                                    <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
                                         {{ crop.1 }}
                                     </span>
@@ -58,6 +60,8 @@
                         {% for crop in new_crops %}
                             <li><a href="{% url 'index:product_detail' crop.0 %}">
                                 <div class="crop">
+                                    {% load static %}
+                                    <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
                                         {{ crop.1 }}
                                     </span>
