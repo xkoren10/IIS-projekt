@@ -36,6 +36,8 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                         {% for crop in top_crops %}
                             <li><a href="{% url 'index:product_detail' crop.0 %}">
                                 <div class="crop">
+                                    {% load static %}
+                                    <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
                                         {{ crop.1 }}
                                     </span>
@@ -59,6 +61,8 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                         {% for crop in new_crops %}
                             <li><a href="{% url 'index:product_detail' crop.0 %}">
                                 <div class="crop">
+                                    {% load static %}
+                                    <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
                                         {{ crop.1 }}
                                     </span>
