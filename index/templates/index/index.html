@@ -33,9 +33,17 @@
                 {% if top_crops %}
                     <ul>
                         {% for crop in top_crops %}
-                            <li><a href="{% url 'index:product_detail' crop.id %}">
-                                <div>
-                                    A CROP
+                            <li><a href="{% url 'index:product_detail' crop.0 %}">
+                                <div class="crop">
+                                    <span class="crop_name">
+                                        {{ crop.1 }}
+                                    </span>
+                                    <span class="crop_price">
+                                        {{ crop.4 }}
+                                    </span>
+                                    <span class="crop_price_type">
+                                        {{ crop.5 }}
+                                    </span>
                                 </div>
                             </a></li>
                         {% endfor %}
@@ -48,9 +56,17 @@
                 {% if new_crops %}
                     <ul>
                         {% for crop in new_crops %}
-                            <li><a href="{% url 'index:product_detail' crop.id %}">
-                                <div>
-                                    A CROP
+                            <li><a href="{% url 'index:product_detail' crop.0 %}">
+                                <div class="crop">
+                                    <span class="crop_name">
+                                        {{ crop.1 }}
+                                    </span>
+                                    <span class="crop_price">
+                                        {{ crop.4 }}
+                                    </span>
+                                    <span class="crop_price_type">
+                                        {{ crop.5 }}
+                                    </span>
                                 </div>
                             </a></li>
                         {% endfor %}

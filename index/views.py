@@ -15,7 +15,7 @@ def index(request):
     try:
         return render(request, "index/index.html", {"logged_in": request.session["user"], "top_crops": top_crops})
     except KeyError:
-        return render(request, "index/index.html", {"logged_in": False})
+        return render(request, "index/index.html", {"logged_in": False, "top_crops": top_crops})
 
 
 def login(request):
@@ -28,7 +28,7 @@ def login(request):
                 request.session["user"] = True
                 request.session["user_id"] = db_check
                 request.session["username"] = form.cleaned_data["username"]
-                return render(request, "index/index.html", {"logged_in": request.session["user"]})
+                return redirect("/")
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
                 return render(request, "index/login.html", {"form": form, "error": error_msg})
