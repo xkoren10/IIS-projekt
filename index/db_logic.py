@@ -9,6 +9,8 @@ BY USING *(ASTERISK) ON ROW/LIST YOU WILL PUT DATA INTO OBJECT IN ORDER AS IT IS
 THAT MAY CAUSE A LOT OF PROBLEMS SO MAKE SURE ORDER OF INIT FUNCTION IN MODEL IS SAME AS THE ONE IN YOUR QUERY
 
 Also check what required arguments you need in object`s init function
+
+punishment is death
 """
 
 
