@@ -33,19 +33,16 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
             <div class="showcase">
                 {% if top_crops %}
                     <ul>
-                        {% for crop in top_crops %}
-                            <li><a href="{% url 'index:product_detail' crop.0 %}">
+                        {% for top_crop in top_crops %}
+                            <li><a href="{% url 'index:product_detail' top_crop.crop_id %}">
                                 <div class="crop">
                                     {% load static %}
                                     <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
-                                        {{ crop.1 }}
+                                        {{ top_crop.crop_name }}
                                     </span>
                                     <span class="crop_price">
-                                        {{ crop.4 }}
-                                    </span>
-                                    <span class="crop_price_type">
-                                        {{ crop.5 }}
+                                        {{ top_crop.price }}
                                     </span>
                                 </div>
                             </a></li>
@@ -58,19 +55,16 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
             <div class="showcase">
                 {% if new_crops %}
                     <ul>
-                        {% for crop in new_crops %}
-                            <li><a href="{% url 'index:product_detail' crop.0 %}">
+                        {% for new_crop in new_crops %}
+                            <li><a href="{% url 'index:product_detail' new_crop.crop_id %}">
                                 <div class="crop">
                                     {% load static %}
                                     <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
-                                        {{ crop.1 }}
+                                        {{ new_crop.crop_name }}
                                     </span>
                                     <span class="crop_price">
-                                        {{ crop.4 }}
-                                    </span>
-                                    <span class="crop_price_type">
-                                        {{ crop.5 }}
+                                        {{ new_crop.price }}
                                     </span>
                                 </div>
                             </a></li>

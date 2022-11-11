@@ -14,17 +14,19 @@ class Crop(object):
     """
     CROP SAMOZREJME NEMA LINK NA FARMARA/USERA
     """
-    def __init__(self, crop_id, crop_name, weight, pieces, description, origin, crop_year, category_id, price_type):
+    def __init__(self, crop_id, crop_name, category_id, price, weight=0, pieces=0, origin=None, crop_year=0, price_type=None, description=None):
         self.crop_id = crop_id
         self.crop_name = crop_name
+        self.description = description
+        self.price = price
         self.weight = weight
         self.pieces = pieces
-        self.description = description
         self.origin = origin
         self.crop_year = crop_year
         self.category = category_id        # get_category_by_id
         self.price_type = price_type
         # self.farmer = db.user_get_by_id(farmer_id)
+        # should also go to optional args and will need checks
 
 
 class Order(object):

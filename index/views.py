@@ -5,31 +5,36 @@ from . import db_logic as db
 
 
 class LoginForm(forms.Form):
+    """
+    Login form used in login and sign_up views
+    """
     username = forms.CharField(label="Username", max_length=80)
     password = forms.CharField(label="Password", max_length=100)
 
 
 def index(request):
-    # plus context = dict with data supposed
     top_crops = db.get_top_crops()
     new_crops = db.get_new_crops()
+
+    # todo rework call of page rendering
     try:
-        return render(request, "index/index.html", {"logged_in": request.session["user"], "top_crops": top_crops,
+        return render(request, "index/index.html", {"logged_in": request.session["user"],
+                                                    "top_crops": top_crops,
                                                     "new_crops": new_crops})
     except KeyError:
-        return render(request, "index/index.html", {"logged_in": False, "top_crops": top_crops})
+        return render(request, "index/index.html", {"logged_in": False,
+                                                    "top_crops": top_crops,
+                                                    "new_crops": new_crops})
 
 
 def login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            db_check = db.password_check(form.cleaned_data["username"], form.cleaned_data["password"])
-            if db_check:
-                # set session
-                request.session["user"] = True
-                request.session["user_id"] = db_check
-                request.session["username"] = form.cleaned_data["username"]
+            user = db.password_check(form.cleaned_data["username"], form.cleaned_data["password"])
+            if user:
+                # set session and go back to index page
+                request.session["user"] = user
                 return redirect("/")
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
@@ -41,15 +46,14 @@ def login(request):
 
 
 def sign_up(request):
+    # todo properly test and check incoming data
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            user_id = db.user_create(form.cleaned_data["username"], form.cleaned_data["password"])
-            # set session
-            request.session["user"] = True
-            request.session["user_id"] = user_id
-            request.session["username"] = form.cleaned_data["username"]
-            return render(request, "index/index.html", {"logged_in": request.session["user"]})
+            user = db.user_create(form.cleaned_data["username"], form.cleaned_data["password"])
+            # set session and go back to index page
+            request.session["user"] = user
+            return redirect("/")
     else:
         form = LoginForm()
     return render(request, "index/sign_up.html", {"form": form})
