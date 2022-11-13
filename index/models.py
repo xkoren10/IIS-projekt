@@ -1,66 +1,69 @@
 # This file contains objects for database
 from . import db_logic as db
+from django.db import models
 
 
-class User(object):
-    def __init__(self, user_id, user_name, email, mod=False):
-        self.id = user_id
-        self.user_name = user_name
-        self.email = email
-        self.mod = mod
+class User(models.Model):
+
+    user_name = models.CharField(max_length=80)
+    email = models.CharField(max_length=80)
+    password = models.CharField(max_length=80)
+    mod = models.BooleanField
 
 
-class Crop(object):
-    """
-    CROP SAMOZREJME NEMA LINK NA FARMARA/USERA
-    """
-    def __init__(self, crop_id, crop_name, category_id, price, weight=0, pieces=0, origin=None, crop_year=0, price_type=None, description=None):
-        self.crop_id = crop_id
-        self.crop_name = crop_name
-        self.description = description
-        self.price = price
-        self.weight = weight
-        self.pieces = pieces
-        self.origin = origin
-        self.crop_year = crop_year
-        self.category = category_id        # get_category_by_id
-        self.price_type = price_type
-        # self.farmer = db.user_get_by_id(farmer_id)
-        # should also go to optional args and will need checks
+class Categories(models.Model):
+
+    category_name = models.CharField(max_length=90)
+    category_of_id = models.ForeignKey('self', on_delete=models.CASCADE)
 
 
-class Order(object):
-    def __int__(self, order_id, ordered_by_user_id, farmer_id, total_price, amount, crop_id):
-        self.order_id = order_id
-        self.ordered_by = db.user_get_by_id(ordered_by_user_id)
-        self.farmer = db.user_get_by_id(farmer_id)
-        self.total_price = total_price
-        self.amount = amount
-        self.crop = crop_id         # db.get_crop_by_id(crop_id)
+class Crop(models.Model):
+
+    crop_name = models.CharField(max_length=80)
+    description = models.CharField(max_length=80)
+    price = models.FloatField()
+    weight = models.FloatField()
+    pieces = models.IntegerField()
+    origin = models.CharField(max_length=80)
+    crop_year = models.IntegerField()
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE)
+    price_type = models.CharField(max_length=5,
+                                  choices=[
+                                      ("perpc", "per piece"),
+                                      ("perkg", "per kilogram")
+                                  ],
+                                  default="perkg"
+                                  )
+    farmer = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-class Harvest(object):
-    def __init__(self, harvest_id, date, place, description, crop_id, farmer_id):
-        self.harvest_id = harvest_id
-        self.date = date
-        self.place = place
-        self.description = description
-        self.drop = crop_id         # db.get_crop_by_id(crop_id)
-        self.farmer = db.user_get_by_id(farmer_id)
+class Order(models.Model):
+
+    ordered_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ordered_by')
+    farmer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='farmer')
+    total_price = models.FloatField()
+    amount = models.IntegerField()
+    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
 
 
-class Review(object):
-    def __init__(self, review_id, short_desc, long_desc, stars, crop_id, user_id):
-        self.review_id = review_id
-        self.short_desc = short_desc
-        self.long_desc = long_desc
-        self.stars = stars
-        self.crop = crop_id         # db.get_crop_by_id(crop_id)
-        self.reviewed_by = db.user_get_by_id(user_id)
+class Harvest(models.Model):
+
+    date = models.DateField()
+    place = models.CharField(max_length=80)
+    description = models.CharField(max_length=80)
+    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+    farmer = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-class Categories(object):
-    def __init__(self, category_id, category_name, category_of_id):
-        self.category_id = category_id
-        self.category_name = category_name
-        self.category_of_id = category_of_id    # not from db, would be unwanted recursion with lots of objects linked together
+class Review(models.Model):
+
+    short_desc = models.CharField(max_length=80)
+    long_desc = models.CharField(max_length=200)
+    stars = models.IntegerField()
+    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+
+
+
