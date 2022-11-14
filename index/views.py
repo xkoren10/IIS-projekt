@@ -34,7 +34,7 @@ def login(request):
             user = db.password_check(form.cleaned_data["username"], form.cleaned_data["password"])
             if user:
                 # set session and go back to index page
-                request.session["user"] = user
+                request.session["user"] = user.id
                 return redirect("/")
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
@@ -52,7 +52,11 @@ def sign_up(request):
         if form.is_valid():
             user = db.user_create(form.cleaned_data["username"], form.cleaned_data["password"])
             # set session and go back to index page
-            request.session["user"] = user
+            if not user:
+                error_msg = "Uživateľ už existuje."
+                return render(request, "index/sign_up.html", {"form": form, "error": error_msg})
+
+            request.session["user"] = user.id
             return redirect("/")
     else:
         form = LoginForm()

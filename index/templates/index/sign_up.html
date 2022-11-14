@@ -9,6 +9,9 @@
         <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
     </header>
     <main>
+        {% if error %}
+            <div>{{ error }}</div>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             {{ form }}

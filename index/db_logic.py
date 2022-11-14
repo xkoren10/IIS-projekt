@@ -1,6 +1,7 @@
 from django.db import connection
 import django.contrib.auth.hashers as hasher
 from . import models
+import django.core.exceptions as exceptions
 
 
 """
@@ -26,73 +27,50 @@ def user_get_by_id(user_id: int):
     return user
 
 
-def user_create(username: str, password: str, email=None):
+def user_create(username: str, password: str, email=''):
     # TODO check if user(name) already exists
+    user_exists = models.User.objects.get(user_name=username)
+
+    if user_exists:
+        return False
+
     psw_hash = hasher.make_password(password)
-    with connection.cursor() as cursor:
-        # create user in db with or without email
-        if email:
-            cursor.execute("INSERT INTO users VALUES (DEFAULT, '%s', '%s', '%s')" % (str(username), str(email), str(psw_hash)))
-        else:
-            cursor.execute("INSERT INTO users VALUES (DEFAULT, '%s', NULL, '%s')" % (str(username), str(psw_hash)))
 
-        # get created user from db
-        cursor.execute("SELECT id, user_name, email, is_mod FROM users WHERE user_name='%s'" % str(username))
-        row = cursor.fetchone()
+    user = models.User.objects.create(user_name=username, email=email, password=psw_hash, mod=False)
 
-    if not row:
+    if not user:
         # now this would be bad
         return False
 
-    return models.User(*row)
+    return user
 
 
 def password_check(username: str, password: str):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, password FROM users WHERE user_name='%s'" % username)
-        row = cursor.fetchone()
-
     # check if any user was found
-    if not row:
+    try:
+        user = models.User.objects.get(user_name=username)
+
+    except exceptions.ObjectDoesNotExist:
         return False
 
     # check hashed password
-    check = hasher.check_password(password, row[1])
+    check = hasher.check_password(password, user.password)
 
     if check:
         # if ok, get user
-        return user_get_by_id(row[0])
+        return user
     else:
         return False
 
 
 def get_top_crops():
-    with connection.cursor() as cursor:
-        # note: deleted stars from SELECT
-        cursor.execute("SELECT crops.id, crop_name, category, price FROM crops JOIN reviews on crops.id = reviews.reviewed_crop order by stars desc limit 5;")
-        rows = cursor.fetchall()
 
-    if not rows:
-        return False
+    return False
 
-    crops = []
-    for row in rows:
-        crops.append(models.Crop(*row))
-
-    return crops
 
 
 def get_new_crops():
-    with connection.cursor() as cursor:
-        # note: deleted date from SELECT
-        cursor.execute("SELECT crops.id, crop_name, category, price FROM crops order by crop_year desc limit 5;")
-        rows = cursor.fetchall()
 
-    if not rows:
-        return False
+    return False
 
-    crops = []
-    for row in rows:
-        crops.append(models.Crop(*row))
 
-    return crops
