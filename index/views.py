@@ -64,7 +64,10 @@ def sign_up(request):
 
 
 def offers(request):
-    return render(request, "index/offers.html")
+    all_crops = db.get_all_crops()
+    all_categories = db.get_all_categories()
+
+    return render(request, "index/offers.html",{"crops": all_crops, "categories": all_categories})
 
 
 def farmers(request):

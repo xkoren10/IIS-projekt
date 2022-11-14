@@ -1,6 +1,7 @@
 # This file contains objects for database
 from . import db_logic as db
 from django.db import models
+from itertools import chain
 
 
 class User(models.Model):
@@ -14,7 +15,7 @@ class User(models.Model):
 class Categories(models.Model):
 
     category_name = models.CharField(max_length=90)
-    category_of_id = models.ForeignKey('self', on_delete=models.CASCADE)
+    category_of_id = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
 
 class Crop(models.Model):

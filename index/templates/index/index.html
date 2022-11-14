@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs" style="height: 100%">
+<html lang="cs" style="height: auto">
 <head>
     <meta charset="UTF-8">
     <title>Zelný trh</title>
@@ -27,22 +27,25 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
     <main>
         <div>
             {% load static %}
-            <img src="{% static 'index/images/sad.png' %}" alt="Sad face" width="100" height="100">
         </div>
         <div>
             <div class="showcase">
                 {% if top_crops %}
+                    <h2>Najlepšie hodnotené plodiny:</h2>
                     <ul>
                         {% for top_crop in top_crops %}
-                            <li><a href="{% url 'index:product_detail' top_crop.crop_id %}">
+                            <li><a href="{% url 'index:product_detail' top_crop.id %}">
                                 <div class="crop">
                                     {% load static %}
                                     <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
-                                        {{ top_crop.crop_name }}
+                                        {{ top_crop.crop_name }},
+                                    </span>
+                                    <span class="crop_description">
+                                        Popis: {{ top_crop.description }},
                                     </span>
                                     <span class="crop_price">
-                                        {{ top_crop.price }}
+                                        Cena: {{ top_crop.price }}
                                     </span>
                                 </div>
                             </a></li>
@@ -54,17 +57,21 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
             </div>
             <div class="showcase">
                 {% if new_crops %}
+                    <h2>Najnovšie plodiny:</h2>
                     <ul>
                         {% for new_crop in new_crops %}
-                            <li><a href="{% url 'index:product_detail' new_crop.crop_id %}">
+                            <li><a href="{% url 'index:product_detail' new_crop.id %}">
                                 <div class="crop">
                                     {% load static %}
                                     <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
                                     <span class="crop_name">
-                                        {{ new_crop.crop_name }}
+                                        {{ new_crop.crop_name }},
+                                    </span>
+                                    <span class="crop_description">
+                                        Popis: {{ new_crop.description }},
                                     </span>
                                     <span class="crop_price">
-                                        {{ new_crop.price }}
+                                        Cena: {{ new_crop.price }}
                                     </span>
                                 </div>
                             </a></li>
