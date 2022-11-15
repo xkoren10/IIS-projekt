@@ -77,20 +77,12 @@ def offers(request):
     return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories})
 
 
-def farmers(request):
-    return render(request, "index/farmers.html")
-
-
 def harvests(request):
     return render(request, "index/harvests.html")
 
 
 def product_detail(request, product_id):
     return render(request, "index/product_detail.html")
-
-
-def farmer_detail(request, user_id):
-    return render(request, "index/farmer_detail.html")
 
 
 def harvest_detail(request, harvest_id):

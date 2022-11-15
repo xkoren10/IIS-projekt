@@ -8,10 +8,8 @@ urlpatterns = [
     path("login/", views.login, name="login"),
     path("sign_up/", views.sign_up, name="sign_up"),
     path("offers/", views.offers, name="offers"),
-    path("farmers/", views.farmers, name="farmers"),
     path("harvests/", views.harvests, name="harvests"),
     path("product_detail/<int:product_id>/", views.product_detail, name="product_detail"),
-    path("farmer_detail/<int:user_id>/", views.farmer_detail, name="farmer_detail"),
     path("harvest_detail/<int:harvest_id>/", views.harvest_detail, name="harvest_detail")
 ]
 # path(URL, VIEW, NAME)
