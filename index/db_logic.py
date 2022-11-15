@@ -49,9 +49,9 @@ def user_delete(user_id: int):
     return True
 
 
-def user_update(user_id: int, user_name: str, email: str, mod: bool):
+def user_update(user_id: int, user_name: str, email: str, password: str, mod: bool):
     try:
-        models.User.objects.filter(id=user_id).update(user_name=user_name, email=email, mod=mod)
+        models.User.objects.filter(id=user_id).update(user_name=user_name, password=hasher.make_password(password), email=email, mod=mod)
     except exceptions.ObjectDoesNotExist:
         return False
 
@@ -74,6 +74,18 @@ def password_check(username: str, password: str):
         return user
     else:
         return False
+
+
+def get_crops_from_farmer(farmer_id: int):
+    farmers_crops = []
+    farmers_crops_models = models.Crop.objects.filter(farmer_id=farmer_id)
+    if not farmers_crops_models:
+        return False
+    for crop in farmers_crops_models:
+        farmers_crops_dict = to_dict(crop)
+        farmers_crops.append(farmers_crops_dict)
+
+    return farmers_crops
 
 
 def get_top_crops():

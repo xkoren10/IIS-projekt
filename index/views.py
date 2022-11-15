@@ -9,15 +9,16 @@ class LoginForm(forms.Form):
     Login form used in login and sign_up views
     """
     username = forms.CharField(label="Username", max_length=80)
-    password = forms.CharField(label="Password", max_length=100)
+    password = forms.CharField(label="Password", max_length=100, widget=forms.PasswordInput)
 
 
 class ProfileForm(forms.Form):
     """
     Profile form used in profile view
     """
-    username = forms.CharField(max_length=80, initial='')
-    email = forms.CharField(max_length=100, initial='')
+    username = forms.CharField(label="Meno", max_length=80, initial='')
+    email = forms.CharField(label="Email", max_length=100, initial='')
+    password = forms.CharField(label="Password", max_length=100, initial='', widget=forms.PasswordInput)
 
 
 def index(request):
@@ -92,6 +93,8 @@ def harvests(request):
 def profile(request):
 
     user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
+    farmer_crops = db.get_crops_from_farmer(request.session['user'])
+
     if not user_profile:
         return False
 
@@ -99,11 +102,10 @@ def profile(request):
         if request.POST['form_type'] == 'save':         # zmena udajov
             form = ProfileForm(request.POST)
             if form.is_valid():
-                user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], user_profile['mod'])
+                user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
                 if user:
-                    user_profile = db.user_get_by_id(request.session['user'])
                     error_msg = " Údaje úspešne zmenené"
-                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg})
+                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg, "crops": farmer_crops})
                 else:
                     return False
             else:
@@ -114,15 +116,16 @@ def profile(request):
                 request.session.clear()
                 form = LoginForm()
                 error_msg = "Váš účet bol úspešne odstránený."
-                return render(request, "index/sign_up.html", {"form": form, "error": error_msg})
+                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops })
             else:
                 return False
     else:                       # prístup z indexu alebo cez redirect
         form = ProfileForm()
         form.fields['email'].initial = user_profile['email']
         form.fields['username'].initial = user_profile['user_name']
+        form.fields['password'].initial = user_profile['password']
 
-        return render(request, "index/profile.html", {"user": user_profile, "form": form})
+        return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops})
 
 
 def product_detail(request, product_id):
