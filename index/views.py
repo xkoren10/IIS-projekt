@@ -64,10 +64,17 @@ def sign_up(request):
 
 
 def offers(request):
-    all_crops = db.get_all_crops()
+    all_crops = []
     all_categories = db.get_all_categories()
 
-    return render(request, "index/offers.html",{"crops": all_crops, "categories": all_categories})
+    cat_filter = request.GET.keys()
+
+    if len(cat_filter) == 0:
+        all_crops = db.get_all_crops()
+    else:
+        all_crops = db.get_all_crops()
+
+    return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories})
 
 
 def farmers(request):

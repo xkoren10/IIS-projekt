@@ -20,12 +20,12 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
     <main>
         <div id="filter">
             <form>
-                <input type="button" value="filter">
-                <input type="button" value="clear"><br>
+                <input type="submit" value="filter">
+                <input type="submit" value="clear"><br>
                 {% if categories %}
                     {% for category in categories %}
-                        <input type="checkbox" value="{{ category.category_name }}" name="{{ category.category_name }}" >
-                        <label for="{{ category.category_name }}">{{ category.category_name }}</label>
+                        <input type="checkbox" name="{{ category.id }}" checked="checked">
+                        <label for="{{ category.id }}">{{ category.category_name }}</label>
                     {% endfor %}
                 {% else %}
                     <label>Nothing to show for now</label>

@@ -14,16 +14,6 @@ def to_dict(instance):
         data[f.name] = [i.id for i in f.value_from_object(instance)]
     return data
 
-"""
-WARNING:
-BY USING *(ASTERISK) ON ROW/LIST YOU WILL PUT DATA INTO OBJECT IN ORDER AS IT IS IN SQL QUERY
-THAT MAY CAUSE A LOT OF PROBLEMS SO MAKE SURE ORDER OF INIT FUNCTION IN MODEL IS SAME AS THE ONE IN YOUR QUERY
-
-Also check what required arguments you need in object`s init function
-
-punishment is death
-"""
-
 
 def user_get_by_id(user_id: int):
     with connection.cursor() as cursor:
@@ -79,9 +69,11 @@ def get_top_crops():
 
     for crop in top_crops_models:
         top_crops_dict = to_dict(crop)
+        print(top_crops_dict)
         top_crops.append(top_crops_dict)
 
     return top_crops
+
 
 def get_new_crops():
     new_crops = []
