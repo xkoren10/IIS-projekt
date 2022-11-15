@@ -12,6 +12,14 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Password", max_length=100)
 
 
+class ProfileForm(forms.Form):
+    """
+    Profile form used in profile view
+    """
+    username = forms.CharField(max_length=80, initial='')
+    email = forms.CharField(max_length=100, initial='')
+
+
 def index(request):
     top_crops = db.get_top_crops()
     new_crops = db.get_new_crops()
@@ -83,18 +91,38 @@ def harvests(request):
 
 def profile(request):
 
-    if request.method == "POST":
-        delete = db.user_delete(request.session['user'])
-        if delete:
-            request.session.clear()
-            form = LoginForm()
-            error_msg = "Váš účet bol úspešne odstránený."
-            return render(request, "index/sign_up.html", {"form": form, "error":error_msg})
-        else:
-            return False
-    else:
-        user_profile = db.user_get_by_id(request.session['user'])
-        return render(request, "index/profile.html", {"user": user_profile})
+    user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
+    if not user_profile:
+        return False
+
+    if request.method == "POST":                        # zmena
+        if request.POST['form_type'] == 'save':         # zmena udajov
+            form = ProfileForm(request.POST)
+            if form.is_valid():
+                user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], user_profile['mod'])
+                if user:
+                    user_profile = db.user_get_by_id(request.session['user'])
+                    error_msg = " Údaje úspešne zmenené"
+                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg})
+                else:
+                    return False
+            else:
+                return False
+        else:                                           # mazanie profilu
+            delete = db.user_delete(request.session['user'])
+            if delete:
+                request.session.clear()
+                form = LoginForm()
+                error_msg = "Váš účet bol úspešne odstránený."
+                return render(request, "index/sign_up.html", {"form": form, "error": error_msg})
+            else:
+                return False
+    else:                       # prístup z indexu alebo cez redirect
+        form = ProfileForm()
+        form.fields['email'].initial = user_profile['email']
+        form.fields['username'].initial = user_profile['user_name']
+
+        return render(request, "index/profile.html", {"user": user_profile, "form": form})
 
 
 def product_detail(request, product_id):

@@ -17,13 +17,12 @@ def to_dict(instance):
 
 def user_get_by_id(user_id: int):
     try:
-       user = models.User.objects.get(id=user_id)
-
+        user = models.User.objects.get(id=user_id)
     except exceptions.ObjectDoesNotExist:
         return False
 
     user_dict = to_dict(user)
-    return user
+    return user_dict
 
 
 def user_create(username: str, password: str, email=''):
@@ -44,6 +43,15 @@ def user_create(username: str, password: str, email=''):
 def user_delete(user_id: int):
     try:
         models.User.objects.filter(id=user_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
+
+
+def user_update(user_id: int, user_name: str, email: str, mod: bool):
+    try:
+        models.User.objects.filter(id=user_id).update(user_name=user_name, email=email, mod=mod)
     except exceptions.ObjectDoesNotExist:
         return False
 
