@@ -81,6 +81,22 @@ def harvests(request):
     return render(request, "index/harvests.html")
 
 
+def profile(request):
+
+    if request.method == "POST":
+        delete = db.user_delete(request.session['user'])
+        if delete:
+            request.session.clear()
+            form = LoginForm()
+            error_msg = "Váš účet bol úspešne odstránený."
+            return render(request, "index/sign_up.html", {"form": form, "error":error_msg})
+        else:
+            return False
+    else:
+        user_profile = db.user_get_by_id(request.session['user'])
+        return render(request, "index/profile.html", {"user": user_profile})
+
+
 def product_detail(request, product_id):
     return render(request, "index/product_detail.html")
 

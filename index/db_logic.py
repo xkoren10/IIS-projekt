@@ -16,14 +16,13 @@ def to_dict(instance):
 
 
 def user_get_by_id(user_id: int):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, user_name, email, is_mod FROM users WHERE id=%s" % str(user_id))
-        row = cursor.fetchone()
+    try:
+       user = models.User.objects.get(id=user_id)
 
-    if not row:
+    except exceptions.ObjectDoesNotExist:
         return False
 
-    user = models.User(*row)
+    user_dict = to_dict(user)
     return user
 
 
@@ -40,6 +39,15 @@ def user_create(username: str, password: str, email=''):
     if user_exists:
         # now this would be bad
         return False
+
+
+def user_delete(user_id: int):
+    try:
+        models.User.objects.filter(id=user_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
 
 
 def password_check(username: str, password: str):
@@ -62,14 +70,13 @@ def password_check(username: str, password: str):
 
 def get_top_crops():
     top_crops = []
-    top_crops_models = models.Crop.objects.filter(review__stars__gte=4)[:2]
+    top_crops_models = models.Crop.objects.filter(review__stars__gte=4).order_by('-review__stars')[:2]
     # nech to neni crowded
     if not top_crops_models:
         return False
 
     for crop in top_crops_models:
         top_crops_dict = to_dict(crop)
-        print(top_crops_dict)
         top_crops.append(top_crops_dict)
 
     return top_crops
