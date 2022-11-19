@@ -41,3 +41,13 @@ def get_all_users(filters=None):
         users.append(to_dict(user))
 
     return users
+
+
+def toggle_mod(user_id, promote=True):
+    try:
+        if promote:
+            models.User.objects.filter(id=user_id).update(mod=True)
+        else:
+            models.User.objects.filter(id=user_id).update(mod=False)
+    except exceptions.ObjectDoesNotExist:
+        return False

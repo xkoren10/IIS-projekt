@@ -12,32 +12,31 @@
     </div>
     {% if users %}
         <div>
-            <table>
-            <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>E-mail</th>
-                <th>User is mod</th>
-                <th>Toggle moderation</th>
-                <th>Delete user</th>
-            </tr>
-                {% for user in users %}
-                    <tr>
-                        <form>
-                            <td>{{ user.id }}</td>
-                        <td>{{ user.user_name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.mod }}</td>
-                        {% if user.mod %}
-                            <td><button type="submit" name="unmake_mod" formaction="{% url 'admin:users' %}">Unmake mod</button></td>
-                        {% else %}
-                            <td><button type="submit" name="make_mod" formaction="{% url 'admin:users' %}">Make mod</button></td>
-                        {% endif %}
-                        <td><button type="submit" name="delete" formaction="{% url 'admin:users' %}">Delete this user</button></td>
+
+                    <div>
+                        <label>User ID</label>
+                        <label>Username</label>
+                        <label>E-mail</label>
+                        <label>User is mod</label>
+                        <label>Toggle moderation</label>
+                        <label>Delete user</label>
+                    </div>
+                    {% for user in users %}
+                        <form method="post" action="{% url "admin:users" %}">
+                        {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <label>{{ user.id }}</label>
+                            <label>{{ user.user_name }}</label>
+                            <label>{{ user.email }}</label>
+                            <label>{{ user.mod }}</label>
+                            {% if user.mod %}
+                                <label><input type="submit" name="unmake_mod" value="Unmake mod"></label>
+                            {% else %}
+                                <label><input type="submit" name="make_mod" value="Make mod"></label>
+                            {% endif %}
+                            <label><input type="submit" name="delete" value="Delete this user"></label>
                         </form>
-                    </tr>
-                {% endfor %}
-            </table>
+                    {% endfor %}
         </div>
     {% else %}
         <div>

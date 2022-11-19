@@ -34,6 +34,14 @@ def admin_login(request):
 def admin_users_view(request):
     try:
         if request.session["admin"]:
+            if request.method == "POST":
+                operation = request.POST.keys()
+                if "delete" in operation:
+                    db.user_delete(request.POST["user_id"])
+                elif "make_mod" in operation:
+                    admin_db.toggle_mod(request.POST["user_id"])
+                elif "unmake_mod" in operation:
+                    admin_db.toggle_mod(request.POST["user_id"], False)
             users = admin_db.get_all_users()
             return render(request, "admin/admin_users_view.html", {"users": users})
     except KeyError:
