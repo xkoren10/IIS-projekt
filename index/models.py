@@ -65,6 +65,6 @@ class Review(models.Model):
     reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-
-
-
+class Admin(models.Model):
+    login = models.CharField(max_length=80)
+    password = models.CharField(max_length=80)

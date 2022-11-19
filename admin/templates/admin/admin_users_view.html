@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IS Zelny trh - admin - users</title>
+</head>
+<body>
+    <div>
+        <label>IS Zelný trh - administrácia - užívatelia</label>
+        <br>
+        <label><a href="{% url "admin:index" %}"></a></label>
+    </div>
+    {% if users %}
+        <div>
+            <table>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>E-mail</th>
+                <th>User is mod</th>
+                <th>Toggle moderation</th>
+                <th>Delete user</th>
+            </tr>
+                {% for user in users %}
+                    <tr>
+                        <form>
+                            <td>{{ user.id }}</td>
+                        <td>{{ user.user_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.mod }}</td>
+                        {% if user.mod %}
+                            <td><button type="submit" name="unmake_mod" formaction="{% url 'admin:users' %}">Unmake mod</button></td>
+                        {% else %}
+                            <td><button type="submit" name="make_mod" formaction="{% url 'admin:users' %}">Make mod</button></td>
+                        {% endif %}
+                        <td><button type="submit" name="delete" formaction="{% url 'admin:users' %}">Delete this user</button></td>
+                        </form>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div>
+            <label>Nothing to show for now</label>
+        </div>
+    {% endif %}
+</body>
+</html>

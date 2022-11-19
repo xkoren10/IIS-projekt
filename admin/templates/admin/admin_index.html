@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>IS Zelny trh - admin</title>
+</head>
+<body>
+    <header>
+        <div>
+            <label>IS Zelný trh - administrácia</label>
+        </div>
+        {% if admin %}
+            <div>
+                <label>
+                    <a href="{% url 'admin:login' %}">Logout</a>
+                </label>
+            </div>
+        {% endif %}
+    </header>
+    <main>
+        <ul>
+            <li>
+                <label>
+                    <a href="{% url 'admin:users' %}">Users</a>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <a href="{% url 'admin:crops' %}">Crops</a>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <a href="{% url 'admin:orders' %}">Orders</a>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <a href="{% url 'admin:harvests' %}">Harvests</a>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <a href="{% url 'admin:categories' %}">Categories</a>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <a href="{% url 'admin:reviews' %}">Reviews</a>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <a href="{% url 'admin:admins' %}">Admins</a>
+                </label>
+            </li>
+        </ul>
+    </main>
+</body>
+</html>

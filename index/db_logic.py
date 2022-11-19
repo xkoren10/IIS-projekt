@@ -28,7 +28,6 @@ def user_get_by_id(user_id: int):
 
 
 def user_create(username: str, password: str, email=''):
-    # TODO check if user(name) already exists
     try:
         user_exists = models.User.objects.get(user_name=username)
     except exceptions.ObjectDoesNotExist:
@@ -69,7 +68,6 @@ def get_top_crops():
 
     for crop in top_crops_models:
         top_crops_dict = to_dict(crop)
-        print(top_crops_dict)
         top_crops.append(top_crops_dict)
 
     return top_crops

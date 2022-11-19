@@ -46,7 +46,6 @@ def login(request):
 
 
 def sign_up(request):
-    # todo properly test and check incoming data
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
