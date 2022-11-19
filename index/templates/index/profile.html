@@ -3,6 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Môj profil - Zelny Trh</title>
+    <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+
+    {% if error %}
+            <div>{{ error }}</div>
+    {% endif %}
+
+    {% if user %}
+        <div class="user">
+            {% load static %}
+               <img src="{% static 'index/images/sad.png' %}" alt="Crop" width="100" height="100">
+                    <form method="post" >
+                        {% csrf_token %}
+                            {{ form }}
+                            <button type="submit" value="save" name="form_type">
+                                    Uložiť zmeny
+                            </button>
+                    </form>
+                        <br>
+                    <form method="post" action="{% url 'index:profile' %}">
+                        {% csrf_token %}
+                           <button type="submit" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
+                                    Zmazať účet
+                           </button>
+                    </form>
+
+            </div>
+                    <h2>Moje plodiny:</h2>
+                        {% if crops %}
+                                <!-- farmar123, smrtfrankom-->
+                            <ul>
+                                {% for crop in crops %}
+                                    <li><a href="{% url 'index:product_detail' crop.id %}">
+                                        <div class="crop">
+                                            {% load static %}
+                                                <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
+                                        <span class="crop_name">
+                                            {{ crop.crop_name }},
+                                        </span>
+                                        <span class="crop_description">
+                                            Popis: {{ crop.description }},
+                                        </span>
+                                        <span class="crop_price">
+                                            Cena: {{ crop.price }}
+                                        </span>
+                                        </div>
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div> Zatiaľ neponúkate žiadne plodiny.</div>
+                        {% endif %}
+            </div>
+    {% else %}
+        Sme piči už ozaj
+    {% endif %}
 </head>
 <body>
 

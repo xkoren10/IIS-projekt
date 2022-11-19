@@ -16,15 +16,13 @@ def to_dict(instance):
 
 
 def user_get_by_id(user_id: int):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, user_name, email, is_mod FROM users WHERE id=%s" % str(user_id))
-        row = cursor.fetchone()
-
-    if not row:
+    try:
+        user = models.User.objects.get(id=user_id)
+    except exceptions.ObjectDoesNotExist:
         return False
 
-    user = models.User(*row)
-    return user
+    user_dict = to_dict(user)
+    return user_dict
 
 
 def user_create(username: str, password: str, email=''):
@@ -39,6 +37,24 @@ def user_create(username: str, password: str, email=''):
     if user_exists:
         # now this would be bad
         return False
+
+
+def user_delete(user_id: int):
+    try:
+        models.User.objects.filter(id=user_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
+
+
+def user_update(user_id: int, user_name: str, email: str, password: str, mod: bool):
+    try:
+        models.User.objects.filter(id=user_id).update(user_name=user_name, password=hasher.make_password(password), email=email, mod=mod)
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
 
 
 def password_check(username: str, password: str):
@@ -59,9 +75,21 @@ def password_check(username: str, password: str):
         return False
 
 
+def get_crops_from_farmer(farmer_id: int):
+    farmers_crops = []
+    farmers_crops_models = models.Crop.objects.filter(farmer_id=farmer_id)
+    if not farmers_crops_models:
+        return False
+    for crop in farmers_crops_models:
+        farmers_crops_dict = to_dict(crop)
+        farmers_crops.append(farmers_crops_dict)
+
+    return farmers_crops
+
+
 def get_top_crops():
     top_crops = []
-    top_crops_models = models.Crop.objects.filter(review__stars__gte=4)[:2]
+    top_crops_models = models.Crop.objects.filter(review__stars__gte=4).order_by('-review__stars')[:2]
     # nech to neni crowded
     if not top_crops_models:
         return False
