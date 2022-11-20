@@ -153,15 +153,43 @@ def crop_get_by_id(crop_id: int):
     return crop_dict
 
 
-def crop_get_by_category(crop_category: int): # tu potrebujeme tree hierarchy z mptt, nvm ako
-
+def get_subcategories(crop_category: int):
+    open_list = []
     try:
-        childs = models.Categories.objects.filter(category_of_id_id=crop_category) | models.Categories.objects.filter(id=crop_category)
+        childs = models.Categories.objects.filter(category_of_id_id=crop_category)
+        for child in childs.values():
+            open_list.append(child['id'])
+        return open_list
+
     except exceptions.ObjectDoesNotExist:
-        return childs
+        return open_list
 
-    for child in childs:
-        childs = crop_get_by_category(child['id'])
 
-    crop_dict = to_dict(childs)
-    return crop_dict
+def crop_get_by_category(crop_category: int):
+    crops_list = []
+    new_list = [crop_category]
+    i = 0
+
+    open_list = get_subcategories(crop_category)
+
+    while len(open_list) > 0:
+        new_list.append(open_list[i])
+        open_list.extend(get_subcategories(open_list[i]))
+        open_list.reverse()
+        open_list.pop()
+        i+1
+
+    while [] in new_list:
+        new_list.remove([])
+
+    for crops_category in new_list:
+        try:
+            children = models.Crop.objects.filter(category_id=crops_category)
+        except exceptions.ObjectDoesNotExist:
+            return
+
+        for crop in children.values():
+            if crop is not []:
+                crops_list.append(crop)
+
+    return crops_list

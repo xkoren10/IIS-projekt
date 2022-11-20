@@ -81,8 +81,8 @@ def offers(request):
         all_crops = db.get_all_crops()
     else:
         for category in cat_filter:
-            filtered_crops = db.crop_get_by_category(category)
-            all_crops.append(filtered_crops)
+            filtered_crops = db.crop_get_by_category(int(category))
+            all_crops.extend(filtered_crops)
 
     return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories})
 
