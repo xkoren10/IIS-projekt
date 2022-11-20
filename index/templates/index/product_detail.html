@@ -17,11 +17,38 @@
         <div id="intro">Zelny trh</div>
     </header>
     <main>
-        <div>Obrazok?</div>
-        <div>Ujo farmar</div>
-        <div>Popis</div>
-        <div>Objednaj - popup</div>
-        <!-- alebo nahradit farmara formularom pre objednanie? -->
+        {% if crop %}
+            <div class="crop">
+                {% load static %}
+                <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">   <br>
+                <span class="crop_name">
+                    {{ crop.crop_name }},   <br>
+                </span>
+                <span class="crop_description">
+                    Popis: {{ crop.description }},   <br>
+                </span>
+                <span class="crop_price">
+                    Cena: {{ crop.price }}   <br>
+                </span>
+                <span class="crop_weight">
+                    Váha: {{ crop.weight }}   <br>
+                </span>
+                <span class="crop_pieces">
+                    Kusov: {{ crop.pieces }}   <br>
+                </span>
+                <span class="crop_origin">
+                    Zem pôvodu: {{ crop.origin }}   <br>
+                </span>
+                <span class="crop_price_type">
+                    Typ predaju: {{ crop.price_type }}   <br>
+                </span>
+            </div>
+
+            <div>Objednaj - popup</div>
+            <!-- alebo nahradit farmara formularom pre objednanie? -->
+        {% else %}
+             Sme piči už ozaj
+        {% endif %}
     </main>
 </body>
 </html>

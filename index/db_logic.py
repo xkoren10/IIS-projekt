@@ -141,3 +141,27 @@ def get_all_categories():
         all_categories.append(all_categories_dict)
 
     return all_categories
+
+
+def crop_get_by_id(crop_id: int):
+    try:
+        crop = models.Crop.objects.get(id=crop_id)
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    crop_dict = to_dict(crop)
+    return crop_dict
+
+
+def crop_get_by_category(crop_category: int): # tu potrebujeme tree hierarchy z mptt, nvm ako
+
+    try:
+        childs = models.Categories.objects.filter(category_of_id_id=crop_category) | models.Categories.objects.filter(id=crop_category)
+    except exceptions.ObjectDoesNotExist:
+        return childs
+
+    for child in childs:
+        childs = crop_get_by_category(child['id'])
+
+    crop_dict = to_dict(childs)
+    return crop_dict

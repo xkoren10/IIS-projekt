@@ -2,6 +2,7 @@
 from . import db_logic as db
 from django.db import models
 from itertools import chain
+# from mptt.models import MPTTModel, TreeForeignKey
 
 
 class User(models.Model):

@@ -80,7 +80,9 @@ def offers(request):
     if len(cat_filter) == 0:
         all_crops = db.get_all_crops()
     else:
-        all_crops = db.get_all_crops()
+        for category in cat_filter:
+            filtered_crops = db.crop_get_by_category(category)
+            all_crops.append(filtered_crops)
 
     return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories})
 
@@ -128,7 +130,8 @@ def profile(request):
 
 
 def product_detail(request, product_id):
-    return render(request, "index/product_detail.html")
+    crop_to_show = db.crop_get_by_id(product_id)
+    return render(request, "index/product_detail.html", {"crop": crop_to_show})
 
 
 def harvest_detail(request, harvest_id):
