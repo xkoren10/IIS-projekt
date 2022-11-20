@@ -5,38 +5,37 @@
     <title>IS Zelny trh - admin - users</title>
 </head>
 <body>
-    <div>
+    <header>
         <label>IS Zelný trh - administrácia - užívatelia</label>
         <br>
-        <label><a href="{% url "admin:index" %}"></a></label>
-    </div>
+        <label><a href="{% url "admin:index" %}">IS Zelný trh - administrácia</a></label>
+    </header>
     {% if users %}
         <div>
-
-                    <div>
-                        <label>User ID</label>
-                        <label>Username</label>
-                        <label>E-mail</label>
-                        <label>User is mod</label>
-                        <label>Toggle moderation</label>
-                        <label>Delete user</label>
-                    </div>
-                    {% for user in users %}
-                        <form method="post" action="{% url "admin:users" %}">
-                        {% csrf_token %}
-                            <input type="hidden" name="user_id" value="{{ user.id }}">
-                            <label>{{ user.id }}</label>
-                            <label>{{ user.user_name }}</label>
-                            <label>{{ user.email }}</label>
-                            <label>{{ user.mod }}</label>
-                            {% if user.mod %}
-                                <label><input type="submit" name="unmake_mod" value="Unmake mod"></label>
-                            {% else %}
-                                <label><input type="submit" name="make_mod" value="Make mod"></label>
-                            {% endif %}
-                            <label><input type="submit" name="delete" value="Delete this user"></label>
-                        </form>
-                    {% endfor %}
+            <div class="table_header">
+                <label>User ID</label>
+                <label>Username</label>
+                <label>E-mail</label>
+                <label>User is mod</label>
+                <label>Toggle moderation</label>
+                <label>Delete user</label>
+            </div>
+            {% for user in users %}
+                <form method="post" action="{% url "admin:users" %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <label>{{ user.id }}</label>
+                    <label>{{ user.user_name }}</label>
+                    <label>{{ user.email }}</label>
+                    <label>{{ user.mod }}</label>
+                    {% if user.mod %}
+                        <label><input type="submit" name="unmake_mod" value="Unmake mod"></label>
+                    {% else %}
+                        <label><input type="submit" name="make_mod" value="Make mod"></label>
+                    {% endif %}
+                    <label><input type="submit" name="delete" value="Delete this user"></label>
+                </form>
+            {% endfor %}
         </div>
     {% else %}
         <div>

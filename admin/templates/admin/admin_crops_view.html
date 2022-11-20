@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>IS Zelny trh - admin - crops</title>
 </head>
 <body>
-
+    <header>
+        <label>IS Zelný trh - administrácia - crops</label>
+        <br>
+        <label><a href="{% url "admin:index" %}">IS Zelný trh - administrácia</a></label>
+    </header>
+    {% if crops %}
+        <div class="table_header">
+            <label>Crop ID</label>
+            <label>Name</label>
+            <label>Farmer ID</label>
+            <label>Category</label>
+            <label>Price</label>
+            <label>Weight/Pieces</label>
+            <label>Place of origin</label>
+            <label>Crop year</label>
+        </div>
+        {% for crop in crops %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="crop_id" value="{{ crop.id }}">
+                <label>{{ crop.id }}</label>
+                <label>{{ crop.crop_name }}</label>
+                <label>{{ crop.farmer_id }}</label>
+                <label>{{ crop.category_id }}</label>
+                <label>{{ crop.price }} €</label>
+                {% if crop.weight %}
+                    <label>{{ crop.weight }} kg</label>
+                {% else %}
+                    <label>{{ crop.pieces }} pc</label>
+                {% endif %}
+                <label>Place of origin</label>
+                <label>Crop year</label>
+            </form>
+        {% endfor %}
+    {% else %}
+        <label>Nothing to show</label>
+    {% endif %}
 </body>
 </html>

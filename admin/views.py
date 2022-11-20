@@ -53,7 +53,8 @@ def admin_users_view(request):
 def admin_crops_view(request):
     try:
         if request.session["admin"]:
-            return render(request, "admin/admin_crops_view.html")
+            crops = admin_db.get_all_crops()
+            return render(request, "admin/admin_crops_view.html", {"crops": crops})
     except KeyError:
         pass
 

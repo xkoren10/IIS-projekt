@@ -32,7 +32,7 @@ def admin_create(login: str, password: str):
 
 def get_all_users(filters=None):
     try:
-        db_users = models.User.objects.all()
+        db_users = models.User.objects.all().order_by("id")
     except exceptions.ObjectDoesNotExist:
         return False
 
@@ -51,3 +51,16 @@ def toggle_mod(user_id, promote=True):
             models.User.objects.filter(id=user_id).update(mod=False)
     except exceptions.ObjectDoesNotExist:
         return False
+
+
+def get_all_crops(filters=None):
+    try:
+        db_crops = models.Crop.objects.all().order_by("id")
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    crops = []
+    for crop in db_crops:
+        crops.append(to_dict(crop))
+
+    return crops
