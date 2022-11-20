@@ -23,7 +23,7 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                 <input type="submit" value="clear"><br>
                 {% if categories %}
                     {% for category in categories %}
-                        <input type="checkbox" name="{{ category.id }}" checked="checked">
+                        <input type="checkbox" name="{{ category.id }}">
                         <label for="{{ category.id }}">{{ category.category_name }}</label>
                     {% endfor %}
                 {% else %}
@@ -53,7 +53,8 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                 {% endfor %}
                 </ul>
             {% else %}
-                <div>Nothing to show</div>
+                <br>
+                <h1>Filtru nevyhovujú žiaadne produkty.</h1>
             {% endif %}
         </div>
     </main>
