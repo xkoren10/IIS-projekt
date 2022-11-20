@@ -23,9 +23,8 @@ class Crop(models.Model):
 
     crop_name = models.CharField(max_length=80)
     description = models.CharField(max_length=80)
-    price = models.FloatField()
-    weight = models.FloatField()
-    pieces = models.IntegerField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    amount = models.IntegerField()
     origin = models.CharField(max_length=80)
     crop_year = models.IntegerField()
     category = models.ForeignKey(Categories, on_delete=models.CASCADE)
