@@ -77,7 +77,7 @@ def offers(request):
 
     cat_filter = request.GET.keys()
 
-    if len(cat_filter) == 0:
+    if (len(cat_filter) == 0) or ('1' in cat_filter):
         all_crops = db.get_all_crops()
     else:
         for category in cat_filter:
