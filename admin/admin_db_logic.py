@@ -64,3 +64,16 @@ def get_all_crops(filters=None):
         crops.append(to_dict(crop))
 
     return crops
+
+
+def get_all_orders(filter=None):
+    try:
+        db_orders = models.Order.objects.all().order_by("id")
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    orders = []
+    for order in db_orders:
+        orders.append(to_dict(order))
+
+    return orders

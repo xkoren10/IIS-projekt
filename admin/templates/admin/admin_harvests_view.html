@@ -2,9 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>IS Zelný Trh - admin - harvests</title>
 </head>
 <body>
-
+    <header>
+        <label>IS Zelný trh - administrácia - harvests</label>
+        <br>
+        <label><a href="{% url "admin:index" %}">IS Zelný trh - administrácia</a></label>
+    </header>
+    {% if harvests %}
+        <div class="table_header">
+            <label>Harvest ID</label>
+            <label>Farmer ID</label>
+            <label>Crop ID</label>
+            <label>Date</label>
+            <label>Place</label>
+        </div>
+        {% for harvest in harvests %}
+            <form>
+                <input type="hidden" value="{{ harvest.id }}">
+                <label>{{ harvest.id }}</label>
+                <label>{{ harvest.farmer_id }}</label>
+                <label>{{ harvest.crop_id }}</label>
+                <label>{{ harvest.date }}</label>
+                <label>{{ hravest.place }}</label>
+            </form>
+        {% endfor %}
+    {% else %}
+        <label>Nothing to show for now</label>
+    {% endif %}
 </body>
 </html>

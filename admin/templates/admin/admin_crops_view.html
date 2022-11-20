@@ -2,9 +2,10 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>IS Zelny trh - admin - crops</title>
+    <title>IS Zelný trh - admin - crops</title>
 </head>
 <body>
+    {% load db_plug %}
     <header>
         <label>IS Zelný trh - administrácia - crops</label>
         <br>
@@ -27,16 +28,17 @@
                 <input type="hidden" name="crop_id" value="{{ crop.id }}">
                 <label>{{ crop.id }}</label>
                 <label>{{ crop.crop_name }}</label>
-                <label>{{ crop.farmer_id }}</label>
+                <label>{{ crop.farmer_id|get_user_name }}</label>
                 <label>{{ crop.category_id }}</label>
                 <label>{{ crop.price }} €</label>
-                {% if crop.weight %}
-                    <label>{{ crop.weight }} kg</label>
+                {% if crop.price_type == "perkg" %}
+                    <label>{{ crop.amount }} kg</label>
                 {% else %}
-                    <label>{{ crop.pieces }} pc</label>
+                    <label>{{ crop.amount }} pc</label>
                 {% endif %}
-                <label>Place of origin</label>
-                <label>Crop year</label>
+                <label>{{ crop.origin }}</label>
+                <label>{{ crop.crop_year}}</label>
+                <input type="submit" name="delete" value="Delete">
             </form>
         {% endfor %}
     {% else %}

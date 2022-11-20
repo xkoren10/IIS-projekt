@@ -53,8 +53,24 @@ def admin_users_view(request):
 def admin_crops_view(request):
     try:
         if request.session["admin"]:
+            if request.method == "POST":
+                operation = request.POST.keys()
+                if "delete" in operation:
+                    pass
+                    # db.crop_delete(request.POST["crop_id"])
             crops = admin_db.get_all_crops()
             return render(request, "admin/admin_crops_view.html", {"crops": crops})
+    except KeyError:
+        pass
+
+    return redirect("/admin/login")
+
+
+def admin_orders_view(request):
+    try:
+        if request.session["admin"]:
+            orders = admin_db.get_all_orders()
+            return render(request, "admin/admin_orders_view.html", {"orders": orders})
     except KeyError:
         pass
 
@@ -64,7 +80,9 @@ def admin_crops_view(request):
 def admin_harvests_view(request):
     try:
         if request.session["admin"]:
-            return render(request, "admin/admin_harvests_view.html")
+            harvests = []
+            # harvests = db.get_all_harvests()
+            return render(request, "admin/admin_harvests_view.html", {"harvests": harvests})
     except KeyError:
         pass
 
@@ -85,16 +103,6 @@ def admin_reviews_view(request):
     try:
         if request.session["admin"]:
             return render(request, "admin/admin_reviews_view.html")
-    except KeyError:
-        pass
-
-    return redirect("/admin/login")
-
-
-def admin_orders_view(request):
-    try:
-        if request.session["admin"]:
-            return render(request, "admin/admin_orders_view.html")
     except KeyError:
         pass
 
