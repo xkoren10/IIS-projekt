@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Môj profil - Zelny Trh</title>
     <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
-
+</head>
+<body>
     {% if error %}
             <div>{{ error }}</div>
     {% endif %}
@@ -30,6 +31,10 @@
 
             </div>
                     <h2>Moje plodiny:</h2>
+                            <a href="{% url 'index:new_crop'%}">
+                                <button>Pridať plodinu</button>
+                            </a>
+
                         {% if crops %}
                                 <!-- farmar123, smrtfrankom-->
                             <ul>
@@ -58,8 +63,5 @@
     {% else %}
         Sme piči už ozaj
     {% endif %}
-</head>
-<body>
-
 </body>
 </html>

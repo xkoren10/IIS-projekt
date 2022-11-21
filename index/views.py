@@ -21,6 +21,20 @@ class ProfileForm(forms.Form):
     password = forms.CharField(label="Password", max_length=100, initial='', widget=forms.PasswordInput)
 
 
+class CropForm(forms.Form):
+    """
+    Crop form used in new_crop view
+    """
+    crop_name = forms.CharField(label="Názov", max_length=80, initial='')
+    description = forms.CharField(label="Popis", max_length=100, initial='')
+    price = forms.FloatField(label="Cena")
+    amount = forms.IntegerField(label="Počet")
+    origin = forms.CharField(label="Pôvod", max_length=80, initial='')
+    crop_year = forms.IntegerField(label="Rok")
+    price_type = forms.CharField(label="Typ predaju", max_length=80, initial='')
+    category_id = forms.IntegerField(label="Kategória")
+
+
 def index(request):
     top_crops = db.get_top_crops()
     new_crops = db.get_new_crops()
@@ -77,7 +91,7 @@ def offers(request):
 
     cat_filter = request.GET.keys()
 
-    if len(cat_filter) == 0:
+    if (len(cat_filter) == 0) or ('1' in cat_filter):
         all_crops = db.get_all_crops()
     else:
         for category in cat_filter:
@@ -89,6 +103,26 @@ def offers(request):
 
 def harvests(request):
     return render(request, "index/harvests.html")
+
+
+def new_crop(request):
+    if request.method == "POST":
+        form = CropForm(request.POST)
+        if form.is_valid():
+            crop = db.crop_create(form.cleaned_data["crop_name"], form.cleaned_data["description"],
+                                  form.cleaned_data["price"], form.cleaned_data["amount"],
+                                  form.cleaned_data["origin"], form.cleaned_data["crop_year"],
+                                  form.cleaned_data["price_type"], form.cleaned_data["category_id"],
+                                  request.session["user"])
+            if not crop:
+                error_msg = "Plodina nebola vytvorená"
+                return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+            else:
+                error_msg = "Plodina bola vytvorená"
+                return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+    else:
+        form = CropForm()
+        return render(request, "index/new_crop.html", {"form": form})
 
 
 def profile(request):
