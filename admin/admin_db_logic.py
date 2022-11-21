@@ -66,7 +66,7 @@ def get_all_crops(filters=None):
     return crops
 
 
-def get_all_orders(filter=None):
+def get_all_orders(filters=None):
     try:
         db_orders = models.Order.objects.all().order_by("id")
     except exceptions.ObjectDoesNotExist:

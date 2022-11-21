@@ -5,6 +5,7 @@
     <title>IS Zelný Trh - admin - harvests</title>
 </head>
 <body>
+    {% load db_plug %}
     <header>
         <label>IS Zelný trh - administrácia - harvests</label>
         <br>
@@ -22,8 +23,8 @@
             <form>
                 <input type="hidden" value="{{ harvest.id }}">
                 <label>{{ harvest.id }}</label>
-                <label>{{ harvest.farmer_id }}</label>
-                <label>{{ harvest.crop_id }}</label>
+                <label>{% get_user_name harvest.farmer %}</label>
+                <label>{% get_crop_name harvest.crop %}</label>
                 <label>{{ harvest.date }}</label>
                 <label>{{ hravest.place }}</label>
             </form>

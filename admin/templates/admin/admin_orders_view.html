@@ -23,10 +23,10 @@
         {% for order in orders %}
             <form>
                 <label>{{ order.id }}</label>
-                <label>{{ order.crop_id }}</label>
-                <label>{{ order.farmer_id }}</label>
-                <label>{{ order.ordered_by }}</label>
-                <label>{{ order.total_price }} €</label>
+                <label>{% get_crop_name order.crop %}</label>
+                <label>{% get_user_name order.farmer %}</label>
+                <label>{% get_user_name order.ordered_by %}</label>
+                <label>{{ order.total_price }}€</label>
                 <label>{{ order.amount }}</label>
             </form>
         {% endfor %}

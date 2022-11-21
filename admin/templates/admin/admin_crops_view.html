@@ -28,13 +28,13 @@
                 <input type="hidden" name="crop_id" value="{{ crop.id }}">
                 <label>{{ crop.id }}</label>
                 <label>{{ crop.crop_name }}</label>
-                <label>{{ crop.farmer_id|get_user_name }}</label>
-                <label>{{ crop.category_id }}</label>
-                <label>{{ crop.price }} €</label>
+                <label>{% get_user_name crop.farmer %}</label>
+                <label>{% get_category_name crop.category %}</label>
+                <label>{{ crop.price }}€</label>
                 {% if crop.price_type == "perkg" %}
-                    <label>{{ crop.amount }} kg</label>
+                    <label>{{ crop.amount }}kg</label>
                 {% else %}
-                    <label>{{ crop.amount }} pc</label>
+                    <label>{{ crop.amount }}pc</label>
                 {% endif %}
                 <label>{{ crop.origin }}</label>
                 <label>{{ crop.crop_year}}</label>
