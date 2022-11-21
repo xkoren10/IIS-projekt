@@ -46,6 +46,9 @@ class Order(models.Model):
     total_price = models.FloatField()
     amount = models.IntegerField()
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+    state = models.CharField(max_length=10,
+                             choices=[("pen", "pending"), ("rej", "rejected"), ("con", "confirmed")],
+                             default="pending")
 
 
 class Harvest(models.Model):
