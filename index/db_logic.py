@@ -164,6 +164,15 @@ def crop_get_by_id(crop_id: int):
     return crop_dict
 
 
+def category_get_by_id(category_id):
+    try:
+        cat = models.Categories.objects.get(id=category_id)
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return to_dict(cat)
+
+
 def get_subcategories(crop_category: int):
     open_list = []
     try:
@@ -204,3 +213,24 @@ def crop_get_by_category(crop_category: int):
                 crops_list.append(crop)
 
     return crops_list
+
+
+def harvest_get_by_id(harvest_id: int):
+    try:
+        harvest = models.Harvest.objects.get(id=harvest_id)
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return to_dict(harvest)
+
+
+def harvest_get_all():
+    db_harvests = models.Harvest.objects.all()
+    if not db_harvests:
+        return False
+
+    harvests = []
+    for harvest in db_harvests:
+        harvests.append(to_dict(harvest))
+
+    return harvests
