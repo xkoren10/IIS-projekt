@@ -303,3 +303,20 @@ def harvest_delete(harvest_id):
         return False
 
     return True
+
+
+def get_order_by_person_id(person_id: int):
+    order_list = []
+    try:
+        order_models = models.Order.objects.all().filter(farmer_id=person_id) or models.Order.objects.all().filter(ordered_by=person_id)
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    for order_model in order_models:
+        order_dict = to_dict(order_model)
+        order_dict["ordered_by"] = user_get_by_id(order_dict["ordered_by"])["user_name"]
+        order_dict["crop"] = crop_get_by_id(order_dict["crop"])["crop_name"]
+        order_list.append(order_dict)
+
+    return order_list
+

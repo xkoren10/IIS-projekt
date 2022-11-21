@@ -159,7 +159,7 @@ def profile(request):
 
     user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(request.session['user'])
-
+    orders = db.get_order_by_person_id(request.session['user'])
     if not user_profile:
         return False
 
@@ -170,7 +170,7 @@ def profile(request):
                 user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
                 if user:
                     error_msg = " Údaje úspešne zmenené"
-                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg, "crops": farmer_crops})
+                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg, "crops": farmer_crops, "orders": orders})
                 else:
                     return False
             else:
@@ -181,7 +181,7 @@ def profile(request):
                 request.session.clear()
                 form = LoginForm()
                 error_msg = "Váš účet bol úspešne odstránený."
-                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops })
+                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops, "orders":orders})
             else:
                 return False
     else:                       # prístup z indexu alebo cez redirect
@@ -190,7 +190,7 @@ def profile(request):
         form.fields['username'].initial = user_profile['user_name']
         form.fields['password'].initial = user_profile['password']
 
-        return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops})
+        return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders})
 
 
 def product_detail(request, product_id):
@@ -211,4 +211,5 @@ def product_detail(request, product_id):
 
 def harvest_detail(request, harvest_id):
     return render(request, "index/harvest_detail.html")
+
 

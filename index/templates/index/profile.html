@@ -59,6 +59,37 @@
                         {% else %}
                             <div> Zatiaľ neponúkate žiadne plodiny.</div>
                         {% endif %}
+
+                        <h2>Moje Objednávky:</h2>
+
+                                <button>Pridať obejdnávku</button>
+
+                           {% if orders %}
+                            <ul>
+                                {% for order in orders %}
+                                    <li>
+                                        <div class="order">
+                                        <span class="order_crop">
+                                            Položka: {{ order.crop }}
+                                        </span>
+                                        <span class="order_price">
+                                            Cena: {{ order.total_price }},
+                                        </span>
+                                        <span class="order_amount">
+                                            Množstvo: {{ order.amount }},
+                                        </span>
+                                        <span class="order_by">
+                                            Od: {{ order.ordered_by }}
+                                        </span>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div> Zatiaľ nemáte žiadne objednávky.</div>
+                        {% endif %}
+
+
             </div>
     {% else %}
         Sme piči už ozaj
