@@ -154,6 +154,17 @@ def get_all_categories():
     return all_categories
 
 
+def get_list_of_categories():
+    list_of_categories = []
+    categories_models = get_all_categories()
+
+    for category_model in categories_models:
+        record = category_model['id'], category_model['category_name']
+        list_of_categories.append(record)
+
+    return list_of_categories
+
+
 def crop_get_by_id(crop_id: int):
     try:
         crop = models.Crop.objects.get(id=crop_id)
