@@ -17,6 +17,7 @@ class Categories(models.Model):
 
     category_name = models.CharField(max_length=90)
     category_of_id = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    approved = models.BooleanField(default=False)
 
 
 class Crop(models.Model):
