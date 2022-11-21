@@ -86,6 +86,17 @@ def crop_create(name: str, desc: str, price: float, amount: int, origin: str,
         return crop
 
 
+def crop_update(crop_id: int, name: str, desc: str, price: float, amount: int, origin: str,
+                year: int, p_type: str, category: int, farmer: int):
+    crop = models.Crop.objects.filter(id=crop_id).update(crop_name=name, description=desc, price=price,
+                                        amount=amount, origin=origin, crop_year=year,
+                                        price_type=p_type, category_id=category, farmer_id=farmer)
+    if not crop:
+        return False
+    else:
+        return crop
+
+
 def get_crops_from_farmer(farmer_id: int):
     farmers_crops = []
     farmers_crops_models = models.Crop.objects.filter(farmer_id=farmer_id)
@@ -165,7 +176,7 @@ def get_all_categories():
 
 def get_list_of_categories():
     list_of_categories = []
-    categories_models = get_all_categories()
+    categories_models = category_get_all_approved()
 
     for category_model in categories_models:
         record = category_model['id'], category_model['category_name']

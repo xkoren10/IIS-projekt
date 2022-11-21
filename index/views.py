@@ -105,23 +105,53 @@ def harvests(request):
     return render(request, "index/harvests.html")
 
 
-def new_crop(request):
+def new_crop(request, crop_id: int):
     if request.method == "POST":
         form = CropForm(request.POST)
         if form.is_valid():
-            crop = db.crop_create(form.cleaned_data["crop_name"], form.cleaned_data["description"],
+            if request.POST['form_type'] == 'save':
+                crop = db.crop_create(form.cleaned_data["crop_name"], form.cleaned_data["description"],
                                   form.cleaned_data["price"], form.cleaned_data["amount"],
                                   form.cleaned_data["origin"], form.cleaned_data["crop_year"],
                                   form.cleaned_data["price_type"], form.cleaned_data["category_id"],
                                   request.session["user"])
-            if not crop:
-                error_msg = "Plodina nebola vytvorená"
-                return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
-            else:
-                error_msg = "Plodina bola vytvorená"
-                return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
-    else:
+                if not crop:
+                    error_msg = "Plodina nebola vytvorená"
+                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                else:
+                    error_msg = "Plodina bola vytvorená"
+                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+
+            elif request.POST['form_type'] == 'update':
+                crop = db.crop_update(crop_id, form.cleaned_data["crop_name"], form.cleaned_data["description"],
+                                      form.cleaned_data["price"], form.cleaned_data["amount"],
+                                      form.cleaned_data["origin"], form.cleaned_data["crop_year"],
+                                      form.cleaned_data["price_type"], form.cleaned_data["category_id"],
+                                      request.session["user"])
+                if not crop:
+                    error_msg = "Plodina nebola upravená"
+                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                else:
+                    error_msg = "Plodina bola upravená"
+                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+
+    elif crop_id == 0:
         form = CropForm()
+        return render(request, "index/new_crop.html", {"form": form})
+
+    else:
+        crop_to_update = db.crop_get_by_id(crop_id)
+        # initial hodnoty z práve prehľadávanej plodiny
+        form = CropForm()
+        form.fields["crop_name"].initial = crop_to_update["crop_name"]
+        form.fields["description"].initial = crop_to_update["description"]
+        form.fields["price"].initial = crop_to_update["price"]
+        form.fields["amount"].initial = crop_to_update["amount"]
+        form.fields["origin"].initial = crop_to_update["origin"]
+        form.fields["crop_year"].initial = crop_to_update["crop_year"]
+        form.fields["price_type"].initial = crop_to_update["price_type"]
+        form.fields["category_id"].initial = crop_to_update["category"]
+
         return render(request, "index/new_crop.html", {"form": form})
 
 
@@ -165,7 +195,18 @@ def profile(request):
 
 def product_detail(request, product_id):
     crop_to_show = db.crop_get_by_id(product_id)
-    return render(request, "index/product_detail.html", {"crop": crop_to_show})
+
+    try:
+        if request.session['user'] == crop_to_show["farmer"]:
+            return render(request, "index/product_detail.html",
+                          {"crop": crop_to_show, "user": request.session['user'], "farmer": True})
+        else:
+            return render(request, "index/product_detail.html",
+                          {"crop": crop_to_show, "user": request.session['user'], "farmer": False})
+
+    except KeyError:
+        return render(request, "index/product_detail.html",
+                      {"crop": crop_to_show, "user": False, "farmer": False})
 
 
 def harvest_detail(request, harvest_id):

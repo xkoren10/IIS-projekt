@@ -43,8 +43,13 @@
                     Typ predaju: {{ crop.price_type }}   <br>
                 </span>
             </div>
+                {% if user and not farmer %}
+                    <span class="button"><a href="{% url 'index:product_detail' crop.id %}">Objednať</a></span>
+                {% endif %}
 
-            <div>Objednaj - popup</div>
+                {% if user and farmer %}
+                    <span class="button"><a href="{% url 'index:new_crop' crop.id %}">Upraviť</a></span>
+                {% endif %}
             <!-- alebo nahradit farmara formularom pre objednanie? -->
         {% else %}
              Sme piči už ozaj

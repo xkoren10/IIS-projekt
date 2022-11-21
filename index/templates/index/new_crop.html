@@ -12,9 +12,15 @@
     <form method="post" >
         {% csrf_token %}
         {{ form }}
-        <button type="submit" value="save" name="form_type">
-            Uložiť zmeny
-        </button>
+            {% if form.crop_name ==  ''%}
+                <button type="submit" value="save" name="form_type">
+                     Uložiť zmeny
+                </button>
+            {% else %}
+                <button type="submit" value="update" name="form_type">
+                     Uložiť zmeny
+                </button>
+            {% endif %}
     </form>
 
 </body>
