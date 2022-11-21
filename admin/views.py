@@ -57,7 +57,7 @@ def admin_crops_view(request):
                 operation = request.POST.keys()
                 if "delete" in operation:
                     pass
-                    # db.crop_delete(request.POST["crop_id"])
+                    db.crop_delete(request.POST["crop_id"])
             crops = admin_db.get_all_crops()
             return render(request, "admin/admin_crops_view.html", {"crops": crops})
     except KeyError:
@@ -80,8 +80,11 @@ def admin_orders_view(request):
 def admin_harvests_view(request):
     try:
         if request.session["admin"]:
-            harvests = []
-            # harvests = db.get_all_harvests()
+            if request.method == "POST":
+                operation = request.POST.keys()
+                if "delete" in operation:
+                    db.harvest_delete(request.POST["harvest_id"])
+            harvests = db.harvest_get_all()
             return render(request, "admin/admin_harvests_view.html", {"harvests": harvests})
     except KeyError:
         pass
@@ -92,7 +95,16 @@ def admin_harvests_view(request):
 def admin_categories_view(request):
     try:
         if request.session["admin"]:
-            return render(request, "admin/admin_categories_view.html")
+            if request.method == "POST":
+                operation = request.POST.keys()
+                if "delete" in operation:
+                    db.category_delete(request.POST["user_id"])
+                elif "approve" in operation:
+                    db.category_approve(request.POST["cat_id"])
+                elif "disallow" in operation:
+                    db.category_approve(request.POST["cat_id"], False)
+            categories = db.get_all_categories()
+            return render(request, "admin/admin_categories_view.html", {"categories": categories})
     except KeyError:
         pass
 

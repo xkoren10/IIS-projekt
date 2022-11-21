@@ -18,15 +18,17 @@
             <label>Crop ID</label>
             <label>Date</label>
             <label>Place</label>
+            <label>Delete harvest</label>
         </div>
         {% for harvest in harvests %}
-            <form>
-                <input type="hidden" value="{{ harvest.id }}">
+            <form method="post">
+                <input type="hidden" name="harvest_id" value="{{ harvest.id }}">
                 <label>{{ harvest.id }}</label>
                 <label>{% get_user_name harvest.farmer %}</label>
                 <label>{% get_crop_name harvest.crop %}</label>
                 <label>{{ harvest.date }}</label>
                 <label>{{ hravest.place }}</label>
+                <input type="submit" name="delete" value="Delete">
             </form>
         {% endfor %}
     {% else %}

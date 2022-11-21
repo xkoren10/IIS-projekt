@@ -140,9 +140,18 @@ def get_all_crops():
     return all_crops
 
 
+def crop_delete(crop_id: int):
+    try:
+        models.Crop.objects.filter(id=crop_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
+
+
 def get_all_categories():
     all_categories = []
-    all_categories_models = models.Categories.objects.all()
+    all_categories_models = models.Categories.objects.all().order_by("id")
 
     if not all_categories_models:
         return False
@@ -175,13 +184,44 @@ def crop_get_by_id(crop_id: int):
     return crop_dict
 
 
-def category_get_by_id(category_id):
+def category_get_by_id(category_id: int):
     try:
         cat = models.Categories.objects.get(id=category_id)
     except exceptions.ObjectDoesNotExist:
         return False
 
     return to_dict(cat)
+
+
+def category_approve(category_id: int, approve=True):
+    try:
+        if approve:
+            models.Categories.objects.filter(id=category_id).update(approved=True)
+        else:
+            models.Categories.objects.filter(id=category_id).update(approved=False)
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+
+def category_get_all_approved():
+    approved_db = models.Categories.objects.filter(approved=True)
+    if not approved_db:
+        return False
+
+    approved_cats = []
+    for approved in approved_db:
+        approved_cats.append(to_dict(approved))
+
+    return approved_cats
+
+
+def category_delete(cat_id: int):
+    try:
+        models.Categories.objects.filter(id=cat_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
 
 
 def get_subcategories(crop_category: int):
@@ -199,16 +239,14 @@ def get_subcategories(crop_category: int):
 def crop_get_by_category(crop_category: int):
     crops_list = []
     new_list = [crop_category]
-    i = 0
 
     open_list = get_subcategories(crop_category)
 
     while len(open_list) > 0:
-        new_list.append(open_list[i])
-        open_list.extend(get_subcategories(open_list[i]))
+        new_list.append(open_list[0])
+        open_list.extend(get_subcategories(open_list[0]))
         open_list.reverse()
         open_list.pop()
-        i+1
 
     while [] in new_list:
         new_list.remove([])
@@ -245,3 +283,12 @@ def harvest_get_all():
         harvests.append(to_dict(harvest))
 
     return harvests
+
+
+def harvest_delete(harvest_id):
+    try:
+        models.Harvest.objects.filter(id=harvest_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
