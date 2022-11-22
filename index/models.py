@@ -57,7 +57,10 @@ class Harvest(models.Model):
     place = models.CharField(max_length=80)
     description = models.CharField(max_length=80)
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
-    farmer = models.ForeignKey(User, on_delete=models.CASCADE)
+    max_occupancy = models.IntegerField(default=0)
+    current_occupancy = models.IntegerField(default=0)
+    farmer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='harest_farmer')
+    attendees = models.ManyToManyField(User)
 
 
 class Review(models.Model):
