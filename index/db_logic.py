@@ -97,6 +97,15 @@ def crop_update(crop_id: int, name: str, desc: str, price: float, amount: int, o
         return crop
 
 
+def crop_delete(crop_id: int):
+    try:
+        models.Crop.objects.filter(id=crop_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    return True
+
+
 def get_crops_from_farmer(farmer_id: int):
     farmers_crops = []
     farmers_crops_models = models.Crop.objects.filter(farmer_id=farmer_id)
@@ -178,6 +187,9 @@ def get_list_of_categories():
     list_of_categories = []
     categories_models = category_get_all_approved()
 
+    if not categories_models:
+        return False
+
     for category_model in categories_models:
         record = category_model['id'], category_model['category_name']
         list_of_categories.append(record)
@@ -204,7 +216,7 @@ def category_get_by_id(category_id: int):
     return to_dict(cat)
 
 
-def category_approve(category_id: int, approve=True):
+def category_approved(category_id: int, approve=True):
     try:
         if approve:
             models.Categories.objects.filter(id=category_id).update(approved=True)

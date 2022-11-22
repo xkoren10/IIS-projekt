@@ -49,6 +49,12 @@
 
                 {% if user and farmer %}
                     <span class="button"><a href="{% url 'index:new_crop' crop.id %}">Upraviť</a></span>
+                    <form method="post" action="{% url 'index:product_detail' crop.id %}">
+                        {% csrf_token %}
+                           <button type="submit" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
+                                    Zmazať plodinu
+                           </button>
+                    </form>
                 {% endif %}
             <!-- alebo nahradit farmara formularom pre objednanie? -->
         {% else %}

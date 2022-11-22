@@ -110,32 +110,33 @@ def new_crop(request, crop_id: int):
         form = CropForm(request.POST)
         if form.is_valid():
             if request.POST['form_type'] == 'save':
-                crop = db.crop_create(form.cleaned_data["crop_name"], form.cleaned_data["description"],
+                if crop_id == 0:        # nová plodina bude mať vždy id 0
+                    crop = db.crop_create(form.cleaned_data["crop_name"], form.cleaned_data["description"],
                                   form.cleaned_data["price"], form.cleaned_data["amount"],
                                   form.cleaned_data["origin"], form.cleaned_data["crop_year"],
                                   form.cleaned_data["price_type"], form.cleaned_data["category_id"],
                                   request.session["user"])
-                if not crop:
-                    error_msg = "Plodina nebola vytvorená"
-                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
-                else:
-                    error_msg = "Plodina bola vytvorená"
-                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                    if not crop:
+                        error_msg = "Plodina nebola vytvorená"
+                        return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                    else:
+                        error_msg = "Plodina bola vytvorená"
+                        return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
 
-            elif request.POST['form_type'] == 'update':
-                crop = db.crop_update(crop_id, form.cleaned_data["crop_name"], form.cleaned_data["description"],
+                else:
+                    crop = db.crop_update(crop_id, form.cleaned_data["crop_name"], form.cleaned_data["description"],
                                       form.cleaned_data["price"], form.cleaned_data["amount"],
                                       form.cleaned_data["origin"], form.cleaned_data["crop_year"],
                                       form.cleaned_data["price_type"], form.cleaned_data["category_id"],
                                       request.session["user"])
-                if not crop:
-                    error_msg = "Plodina nebola upravená"
-                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
-                else:
-                    error_msg = "Plodina bola upravená"
-                    return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                    if not crop:
+                        error_msg = "Plodina nebola upravená"
+                        return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                    else:
+                        error_msg = "Plodina bola upravená"
+                        return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
 
-    elif crop_id == 0:
+    elif request.method == "GET" and crop_id == 0:
         form = CropForm()
         return render(request, "index/new_crop.html", {"form": form})
 
@@ -155,7 +156,7 @@ def new_crop(request, crop_id: int):
         return render(request, "index/new_crop.html", {"form": form})
 
 
-def profile(request):
+def profile(request, err=''):
 
     user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(request.session['user'])
@@ -190,12 +191,17 @@ def profile(request):
         form.fields['username'].initial = user_profile['user_name']
         form.fields['password'].initial = user_profile['password']
 
-        return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders})
+        return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders, "error": err})
 
 
 def product_detail(request, product_id):
     crop_to_show = db.crop_get_by_id(product_id)
-
+    if request.method == "POST":  # mazanie
+        delete = db.crop_delete(product_id)
+        if delete:
+            err_msg = "Plodina zmazaná."
+            request.method = "GET"
+            return profile(request,err_msg)
     try:
         if request.session['user'] == crop_to_show["farmer"]:
             return render(request, "index/product_detail.html",
