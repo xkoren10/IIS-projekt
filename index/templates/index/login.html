@@ -1,25 +1,27 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" style="height: 110%">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Zelný trh</title>
+    <title>Zelný trh - Login</title>
+    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+    <br><br>
 </head>
 <body>
-    <header>
-        <div id="LOGO"><a href="{% url 'index:index' %}">Zelny trh</a></div>
-    </header>
+
     <main>
         {% if error %}
             <div>{{ error }}</div>
         {% endif %}
-        <div>
+        <div >
             <form method="post">
                 {% csrf_token %}
                 {{ form }}
                 <br>
-                <input type="submit" value="login">
+                <input type="submit" value="login" class="button">
                 <br>
-                <a href="{% url 'index:sign_up' %}">sign up</a>
+                <a class="button" href="{% url 'index:sign_up' %}">sign up</a>
             </form>
         </div>
     </main>

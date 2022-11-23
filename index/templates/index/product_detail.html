@@ -1,8 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs" style="height: 110%">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <meta charset="UTF-8">
-    <title>Detail produktu - Zelný trh</title>
+    <title>Zelný trh - Detail produktu</title>
+    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+    <br><br>
 </head>
 <body>
     <header>
@@ -12,9 +16,9 @@
                 <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
             </ul>
         </nav>
-        <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+
         <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
-        <div id="intro">Zelny trh</div>
+
     </header>
     <main>
         {% if crop %}
@@ -25,13 +29,13 @@
                     {{ crop.crop_name }},   <br>
                 </span>
                 <span class="crop_description">
-                    Popis: {{ crop.description }},   <br>
+                    Popis: {{ crop.description }}   <br>
                 </span>
                 <span class="crop_price">
-                    Cena: {{ crop.price }}   <br>
+                    Cena: {{ crop.price }} eur  <br>
                 </span>
                 <span class="crop_weight">
-                    Váha: {{ crop.weight }}   <br>
+                    Váha: {{ crop.weight }} kg  <br>
                 </span>
                 <span class="crop_pieces">
                     Kusov: {{ crop.pieces }}   <br>
@@ -51,7 +55,7 @@
                     <span class="button"><a href="{% url 'index:new_crop' crop.id %}">Upraviť</a></span>
                     <form method="post" action="{% url 'index:product_detail' crop.id %}">
                         {% csrf_token %}
-                           <button type="submit" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
+                           <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
                                     Zmazať plodinu
                            </button>
                     </form>

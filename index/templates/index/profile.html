@@ -1,11 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" style="height: 100vh">
+<html lang="cs" style="height: 110%">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <meta charset="UTF-8">
-    <title>Môj profil - Zelny Trh</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Zelný trh - Profil</title>
+    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+    <br><br>
 </head>
 <body>
     {% if error %}
@@ -19,14 +20,14 @@
                     <form method="post" >
                         {% csrf_token %}
                             {{ form }}
-                            <button type="submit" value="save" name="form_type">
+                            <button type="submit" value="save" name="form_type" class="button">
                                     Uložiť zmeny
                             </button>
                     </form>
                         <br>
                     <form method="post" action="{% url 'index:profile' %}">
                         {% csrf_token %}
-                           <button type="submit" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
+                           <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
                                     Zmazať účet
                            </button>
                     </form>
@@ -34,7 +35,7 @@
             </div>
                     <h2>Moje plodiny:</h2>
                             <a href="{% url 'index:new_crop' 0 %}">
-                                <button>Pridať plodinu</button>
+                                <button class="button">Pridať plodinu</button>
                             </a>
 
                         {% if crops %}
@@ -66,7 +67,7 @@
 
                         <h2>Moje Objednávky:</h2>
 
-                                <button>Pridať obejdnávku</button>
+                                <button class="button">Pridať obejdnávku</button>
 
                            {% if orders %}
                             <ul>
@@ -77,10 +78,10 @@
                                             Položka: {{ order.crop }}
                                         </span>
                                         <span class="order_price">
-                                            Cena: {{ order.total_price }},
+                                            Cena: {{ order.total_price }} eur
                                         </span>
                                         <span class="order_amount">
-                                            Množstvo: {{ order.amount }},
+                                            Množstvo: {{ order.amount }}
                                         </span>
                                         <span class="order_by">
                                             Od: {{ order.ordered_by }}

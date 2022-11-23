@@ -4,8 +4,7 @@ body {
   padding: 15px;
 }
 .LOGO{
-  margin-left: 50px ;
-  font-size: large;
+  font-size: xx-large;
 }
 
 .crop{
@@ -13,6 +12,7 @@ body {
   text-align: center;
   border: 2px solid black;
   margin: 5px;
+  background: #79a641
 }
 
 .crop_name, .crop_price, .crop_description{
@@ -32,13 +32,11 @@ ul
   list-style:none;
   width: auto;
   text-align: center;
-
-
 }
 
 ul li{
   display: list-item;
-  padding: 5px 5px;
+  padding: 5px;
   margin: 0 3px;
   background: #79a641;
   text-align: center;
@@ -57,4 +55,20 @@ a:link,a:hover, a:visited,a:active{
 
 h2 {
     color: #1b1b1b;
+}
+
+.button{
+     background-color: #79a641;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  color: black;
+  border: 2px solid black;
+
+}
+
+.button:hover{
+   background: #bee883;
 }

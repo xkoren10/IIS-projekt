@@ -1,5 +1,7 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  style="height: 100vh">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <style>
 .center {
@@ -15,6 +17,7 @@
 <body>
     <header>
         <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+
     </header>
     <main>
         <p style="text-align:center; font-size:200%">404 - Stránka, ktorú sa pokúšate navštíviť, neexistuje.</p>
