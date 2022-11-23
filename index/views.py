@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect
 from django import forms
 from django.http import HttpResponse
@@ -33,6 +35,18 @@ class CropForm(forms.Form):
     crop_year = forms.IntegerField(label="Rok")
     price_type = forms.CharField(label="Typ predaju", max_length=80, initial='')
     category_id = forms.IntegerField(label="Kategória", widget=forms.Select(choices=db.get_list_of_categories()))
+
+
+class HarvestForm(forms.Form):
+    """
+    Harvest form used in new_harvest view
+    """
+    date = forms.DateField(label="Dátum", initial=datetime.date.today())
+    place = forms.CharField(label="Miesto", max_length=80, initial='')
+    description = forms.CharField(label="Popis", max_length=80, initial='')
+    max_occupancy = forms.IntegerField(label="Kapacita")
+    current_occupation = forms.IntegerField(label="Obsadenosť")
+    crop_id = forms.IntegerField(label="Plodina", widget=forms.Select())    # db.get_list_of_farmer_crops(famer id)
 
 
 def index(request):

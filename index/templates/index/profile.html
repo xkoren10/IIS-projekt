@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100vh">
 <head>
     <meta charset="UTF-8">
     <title>Môj profil - Zelny Trh</title>
-    <span id="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNY TRH</a></span>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     {% if error %}
@@ -41,16 +43,18 @@
                                 {% for crop in crops %}
                                     <li><a href="{% url 'index:product_detail' crop.id %}">
                                         <div class="crop">
+                                        <span class="crop_image">
                                             {% load static %}
                                                 <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
+                                        </span>
                                         <span class="crop_name">
-                                            {{ crop.crop_name }},
+                                            {{ crop.crop_name }}
                                         </span>
                                         <span class="crop_description">
-                                            Popis: {{ crop.description }},
+                                            Popis: {{ crop.description }}
                                         </span>
                                         <span class="crop_price">
-                                            Cena: {{ crop.price }}
+                                            Cena: {{ crop.price }} eur
                                         </span>
                                         </div>
                                     </a></li>

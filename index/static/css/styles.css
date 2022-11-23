@@ -1,0 +1,60 @@
+body {
+  font-family: verdana;
+  background: rgb(4,36,0) linear-gradient(176deg, rgba(4, 36, 0, 1) 0%, rgba(45, 121, 9, 1) 40%, rgba(159, 255, 0, 1) 100%);
+  padding: 15px;
+}
+.LOGO{
+  margin-left: 50px ;
+  font-size: large;
+}
+
+.crop{
+  padding:0 5px;
+  text-align: center;
+  border: 2px solid black;
+  margin: 5px;
+}
+
+.crop_name, .crop_price, .crop_description{
+  font-size: 20px;
+  white-space: pre-line;
+
+}
+
+.crop_image{
+
+}
+
+
+ul
+{
+  display:flex;
+  list-style:none;
+  width: auto;
+  text-align: center;
+
+
+}
+
+ul li{
+  display: list-item;
+  padding: 5px 5px;
+  margin: 0 3px;
+  background: #79a641;
+  text-align: center;
+}
+
+a:link,a:hover, a:visited,a:active{
+  text-decoration: None;
+  text-align: center;
+  color: black;
+}
+
+ li:hover{
+   text-decoration: None;
+   background: #bee883;
+ }
+
+h2 {
+    color: #1b1b1b;
+}

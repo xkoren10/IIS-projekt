@@ -197,6 +197,19 @@ def get_list_of_categories():
     return list_of_categories
 
 
+def get_list_of_farmers_crops(farmer_id: int):
+    list_of_crops = []
+    crops_dict = get_crops_from_farmer(farmer_id)
+
+    if not crops_dict:
+        return False
+    for crop in crops_dict:
+        record = crop['id'], crop['crop_name']
+        list_of_crops.append(record)
+
+    return  list_of_crops
+
+
 def crop_get_by_id(crop_id: int):
     try:
         crop = models.Crop.objects.get(id=crop_id)
