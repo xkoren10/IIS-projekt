@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IS Zelný trh - Nákupný košík</title>
+</head>
+<body>
+    <header>
+            <span class="button"><a href="{% url 'index:offers' %}">Ponuka</a></span>
+            <span class="button"><a href="{% url 'index:harvests' %}">Zbery</a></span>
+        {% if logged_in %}
+            <span class="button"><a href="{% url 'index:cart' %}">Košík</a></span>
+            <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
+            <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+        {% else %}
+            <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+        {% endif %}
+    </header>
+    <main>
+        {% if orders %}
+            <ul class="order_list">
+                {% for order in orders %}
+                    <form method="post">
+                        <input type="hidden" name="crop_id" value="{{ order.id }}">
+                        <label>{{ order.name }}</label>
+                        <label>{{ order.amount }}</label>
+                        <label>{{ order.price }}</label>
+                        <input type="submit" name="delete_one" value="Delete from order">
+                    </form>
+                {% endfor %}
+            </ul>
+            <form method="post">
+                <input type="submit" name="order" value="Objednaj všetky"><br>
+                <input type="submit" name="delete_order" value="Vymaž celú objednávku">
+            </form>
+        {% else %}
+            <div>
+                <label>
+                    Zatiaľ nemáš žiadne objednávky.
+                </label>
+                <label>
+                    Plodiny si môžeš prezerať v <a href="{% url 'index:offers' %}">momentálnej ponuke</a>
+                </label>
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>

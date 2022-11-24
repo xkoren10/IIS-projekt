@@ -11,8 +11,10 @@ urlpatterns = [
     path("harvests/", views.harvests, name="harvests"),
     path("new_crop/<int:crop_id>/", views.new_crop, name="new_crop"),
     path("profile/", views.profile, name="profile"),
+    path("cart/", views.cart_detail, name="cart"),
     path("product_detail/<int:product_id>/", views.product_detail, name="product_detail"),
-    path("harvest_detail/<int:harvest_id>/", views.harvest_detail, name="harvest_detail")
+    path("harvest_detail/<int:harvest_id>/", views.harvest_detail, name="harvest_detail"),
+    path("blue_lobster/", views.blue_lobster, name="lobster")
 ]
 # path(URL, VIEW, NAME)
 # URL is string with URL address AND '/' on its end

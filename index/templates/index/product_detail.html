@@ -15,54 +15,59 @@
                 <li class="button"><a href="{% url 'index:offers' %}">Ponuka</a></li>
                 <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
             </ul>
+            {% if user %}
+                <span class="button"><a href="{% url 'index:login' %}">Košík</a></span>
+                <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
+                <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+            {% else %}
+                <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+            {% endif %}
         </nav>
-
-        <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
-
     </header>
     <main>
         {% if crop %}
             <div class="crop">
-                {% load static %}
                 <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">   <br>
-                <span class="crop_name">
+                <label class="crop_name">
                     {{ crop.crop_name }},   <br>
-                </span>
-                <span class="crop_description">
-                    Popis: {{ crop.description }}   <br>
-                </span>
-                <span class="crop_price">
-                    Cena: {{ crop.price }} eur  <br>
-                </span>
-                <span class="crop_weight">
-                    Váha: {{ crop.weight }} kg  <br>
-                </span>
-                <span class="crop_pieces">
-                    Kusov: {{ crop.pieces }}   <br>
-                </span>
-                <span class="crop_origin">
-                    Zem pôvodu: {{ crop.origin }}   <br>
-                </span>
-                <span class="crop_price_type">
-                    Typ predaju: {{ crop.price_type }}   <br>
-                </span>
+                </label>
+                <label class="crop_description">
+                    Popis: {{ crop.description }}<br>
+                </label>
+                <label class="crop_price">
+                    Cena: {{ crop.price }}€<br>
+                </label>
+                {% if crop.price_type == "perkg" %}
+                    <label class="crop_weight">
+                        Váha: {{ crop.amount }}kg<br>
+                    </label>
+                {% else %}
+                    <label class="crop_pieces">
+                        Kusov: {{ crop.amount }}pc<br>
+                    </label>
+                {% endif %}
+                <label class="crop_origin">
+                    Zem pôvodu: {{ crop.origin }}<br>
+                </label>
             </div>
-                {% if user and not farmer %}
-                    <span class="button"><a href="{% url 'index:product_detail' crop.id %}">Objednať</a></span>
-                {% endif %}
+            {% if user and not farmer %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="number" name="amount" value="0">
+                    <input class="button" type="submit" name="add_to_cart" value="Add to cart">
+                </form>
+            {% endif %}
 
-                {% if user and farmer %}
-                    <span class="button"><a href="{% url 'index:new_crop' crop.id %}">Upraviť</a></span>
-                    <form method="post" action="{% url 'index:product_detail' crop.id %}">
-                        {% csrf_token %}
-                           <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
-                                    Zmazať plodinu
-                           </button>
-                    </form>
-                {% endif %}
+            {% if user and farmer %}
+                <span class="button"><a href="{% url 'index:new_crop' crop.id %}">Upraviť</a></span>
+                <form method="post" action="{% url 'index:product_detail' crop.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
+                        Zmazať plodinu
+                    </button>
+                </form>
+            {% endif %}
             <!-- alebo nahradit farmara formularom pre objednanie? -->
-        {% else %}
-             Sme piči už ozaj
         {% endif %}
     </main>
 </body>

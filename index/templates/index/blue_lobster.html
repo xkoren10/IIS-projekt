@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BLUE LOBSTER</title>
+</head>
+<body onclick="document.getElementById('vid').style.visibility='visible'; document.getElementById('vid').play(); ">
+    <div>
+        <video width="640" height="360" autoplay controls id="vid" style="visibility: hidden">
+            <source src="{% static "video/blue_lobster.mp4" %}" type="video/mp4">
+        </video>
+    </div>
+</body>
+</html>

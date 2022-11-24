@@ -210,12 +210,22 @@ def profile(request, err=''):
 
 def product_detail(request, product_id):
     crop_to_show = db.crop_get_by_id(product_id)
-    if request.method == "POST":  # mazanie
-        delete = db.crop_delete(product_id)
-        if delete:
-            err_msg = "Plodina zmazaná."
-            request.method = "GET"
-            return profile(request,err_msg)
+    if request.method == "POST":
+        operation = request.POST.keys()
+        if "delete" in operation:
+            delete = db.crop_delete(product_id)
+            if delete:
+                err_msg = "Plodina zmazaná."
+                request.method = "GET"
+                return profile(request, err_msg)
+        elif "add_to_cart" in operation:
+            try:
+                request.session["cart"][product_id] = request.POST["amount"]
+            except KeyError:
+                request.session["cart"] = {}
+                request.session["cart"][product_id] = request.POST["amount"]
+            return render(request, "index/product_detail.html",
+                          {"crop": crop_to_show, "user": request.session['user'], "farmer": False})
     try:
         if request.session['user'] == crop_to_show["farmer"]:
             return render(request, "index/product_detail.html",
@@ -229,7 +239,19 @@ def product_detail(request, product_id):
                       {"crop": crop_to_show, "user": False, "farmer": False})
 
 
+def cart_detail(request):
+    # TODO check if user is logged in, would be better to do function for that
+    try:
+        user_orders = request.session["cart"]
+    except KeyError:
+        request.session["cart"] = {}
+        user_orders = {}
+    return render(request, "index/cart_detail.html")
+
+
 def harvest_detail(request, harvest_id):
     return render(request, "index/harvest_detail.html")
 
 
+def blue_lobster(request):
+    return render(request, "index/blue_lobster.html")
