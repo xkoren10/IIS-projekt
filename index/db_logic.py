@@ -134,7 +134,7 @@ def get_top_crops():
 
 def get_new_crops():
     new_crops = []
-    new_crops_models = models.Crop.objects.order_by('crop_year')[:2]
+    new_crops_models = models.Crop.objects.order_by('-crop_year', '-id')[:2]
     # nech to neni crowded
     if not new_crops_models:
         return False
@@ -207,7 +207,7 @@ def get_list_of_farmers_crops(farmer_id: int):
         record = crop['id'], crop['crop_name']
         list_of_crops.append(record)
 
-    return  list_of_crops
+    return list_of_crops
 
 
 def crop_get_by_id(crop_id: int):
@@ -300,6 +300,14 @@ def crop_get_by_category(crop_category: int):
     return crops_list
 
 
+def harvests_attended(attendee_id: int):
+    user_harvests = []
+    all_harvests = models.Harvest.objects.filter(attendees__in=[attendee_id])
+    for harvest in all_harvests:
+        user_harvests.append(to_dict(harvest))
+    return user_harvests
+
+
 def harvest_get_by_id(harvest_id: int):
     try:
         harvest = models.Harvest.objects.get(id=harvest_id)
@@ -316,7 +324,10 @@ def harvest_get_all():
 
     harvests = []
     for harvest in db_harvests:
-        harvests.append(to_dict(harvest))
+        harvest_dict = to_dict(harvest)
+        harvest_dict["crop"] = crop_get_by_id(harvest_dict["crop"])["crop_name"]
+        harvest_dict["farmer"] = user_get_by_id(harvest_dict["farmer"])["user_name"]
+        harvests.append(harvest_dict)
 
     return harvests
 
