@@ -16,7 +16,7 @@ body {
 }
 
 .crop_name, .crop_price, .crop_description{
-  font-size: 200px;
+  font-size: 20px;
   white-space: pre-line;
 
 }
