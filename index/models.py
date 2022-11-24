@@ -59,7 +59,7 @@ class Harvest(models.Model):
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
     max_occupancy = models.IntegerField(default=0)
     current_occupancy = models.IntegerField(default=0)
-    farmer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='harest_farmer')
+    farmer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='harvest_farmer')
     attendees = models.ManyToManyField(User)
 
 

@@ -116,7 +116,12 @@ def offers(request):
 
 
 def harvests(request):
-    return render(request, "index/harvests.html")
+    harvests_models = db.harvest_get_all()
+    try:
+        my_harvests = db.harvests_attended(request.session['user'])
+    except KeyError:
+        my_harvests =[]
+    return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests})
 
 
 def new_crop(request, crop_id: int):

@@ -7,7 +7,7 @@ body {
   font-size: xx-large;
 }
 
-.crop{
+.crop, .harvest{
   padding:0 5px;
   text-align: center;
   border: 2px solid black;
@@ -16,8 +16,16 @@ body {
 }
 
 .crop_name, .crop_price, .crop_description{
+  font-size: 200px;
+  white-space: pre-line;
+
+}
+
+.harvest_date, .harvest_place, .harvest_description,
+.harvest_max, .harvest_current, .harvest_crop, .harvest_farmer{
   font-size: 20px;
   white-space: pre-line;
+
 
 }
 
