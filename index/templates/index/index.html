@@ -5,7 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Zelný trh</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+    <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+    {% if logged_in %}
+        <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+    {% else %}
+        <span class="button" ><a href="{% url 'index:login' %}">Login</a></span>
+    {% endif %}
+    </div>
     <br><br>
 </head>
 <body>
@@ -15,7 +21,7 @@
         {% if logged_in %}
             <span class="button"><a href="{% url 'index:cart' %}">Košík</a></span>
             <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
-            <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+
         {% else %}
             <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
         {% endif %}

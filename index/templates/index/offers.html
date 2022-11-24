@@ -5,7 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Zelný trh - Ponuka</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+   <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+    {% if logged_in %}
+        <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+    {% else %}
+        <span class="button" ><a href="{% url 'index:login' %}">Login</a></span>
+    {% endif %}
+    </div>
     <br><br>
 </head>
 <body style="background: rgb(4,36,0);
@@ -17,8 +23,6 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                     <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
                 </ul>
             </nav>
-
-        <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
 
     </header>
     <main>
@@ -59,7 +63,7 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                 </ul>
             {% else %}
                 <br>
-                <h1>Filtru nevyhovujú žiaadne produkty.</h1>
+                <h1>Filtru nevyhovujú žiadne produkty.</h1>
             {% endif %}
         </div>
     </main>

@@ -111,8 +111,12 @@ def offers(request):
         for category in cat_filter:
             filtered_crops = db.crop_get_by_category(int(category))
             all_crops.extend(filtered_crops)
-
-    return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories})
+    try:
+        return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
+                                                     "logged_in": request.session["user"]})
+    except KeyError:
+        return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
+                                                     "logged_in": False})
 
 
 def harvests(request):
@@ -120,8 +124,13 @@ def harvests(request):
     try:
         my_harvests = db.harvests_attended(request.session['user'])
     except KeyError:
-        my_harvests =[]
-    return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests})
+        my_harvests = []
+    try:
+        return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
+                                                            "logged_in": request.session["user"]})
+    except KeyError:
+        return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
+                                                       "logged_in": False})
 
 
 def new_crop(request, crop_id: int):
