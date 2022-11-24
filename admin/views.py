@@ -124,7 +124,19 @@ def admin_reviews_view(request):
 def admin_admins_view(request):
     try:
         if request.session["admin"]:
-            return render(request, "admin/admin_admins_view.html")
+            if request.method == "POST":
+                form = LoginForm(request.POST)
+                if form.is_valid():
+                    user = admin_db.admin_create(form.cleaned_data["username"], form.cleaned_data["password"])
+                    # set session and go back to index page
+                    if not user:
+                        error_msg = "Uživateľ už existuje."
+                        return render(request, "admin/admin_admins_view.html", {"form": form, "error": error_msg})
+
+                    return redirect("/admin/")
+            else:
+                form = LoginForm()
+            return render(request, "admin/admin_admins_view.html", {"form": form})
     except KeyError:
         pass
 

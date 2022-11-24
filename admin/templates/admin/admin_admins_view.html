@@ -5,6 +5,18 @@
     <title>IS Zelny trh - admin - admins</title>
 </head>
 <body>
-
+    <header>
+        <label>IS Zelný trh - administrácia - admins</label>
+        <br>
+        <label><a href="{% url "admin:index" %}">IS Zelný trh - admins</a></label>
+    </header>
+    <div>
+        <label>Create a new admin:</label><br>
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" name="create_admin" value="Create admin">
+        </form>
+    </div>
 </body>
 </html>
