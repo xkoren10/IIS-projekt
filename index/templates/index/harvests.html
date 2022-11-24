@@ -5,7 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Zelný trh - Zbery</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+    <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+    {% if logged_in %}
+        <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+    {% else %}
+        <span class="button" ><a href="{% url 'index:login' %}">Login</a></span>
+    {% endif %}
+    </div>
     <br><br>
 </head>
 <body>
@@ -16,7 +22,7 @@
                 <!-- le comment<li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>-->
             </ul>
         </nav>
-        <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+
 
     </header>
     <main>
@@ -63,6 +69,7 @@
                     {% for harvest in my_harvests %}
                         <li class="harvests">
                                     <a href="{% url 'index:harvest_detail' harvest.id %}">
+                             <div class = "harvest">
                                     <label class="harvest_date">
                                        Dátum: {{ harvest.date }}
                                     </label>
@@ -72,6 +79,7 @@
                                     <label  class="harvest_description">
                                         Popis: {{ harvest.description }}
                                     </label>
+                             </div>
                         </a></li>
                     {% endfor %}
                 </ul>
