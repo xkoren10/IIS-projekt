@@ -207,37 +207,52 @@ def profile(request, err=''):
     user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(request.session['user'])
     orders = db.get_order_by_person_id(request.session['user'])
+
+    if user_profile['id'] == orders[0]['farmer']:   # ak sa zhoduje prvá, zhodujú sa všetky
+        farmer = True
+    else:
+        farmer = False
+
     if not user_profile:
         return False
 
     if request.method == "POST":                        # zmena
-        if request.POST['form_type'] == 'save':         # zmena udajov
+        operation = request.POST.keys()
+        if 'save' in operation:         # zmena udajov
             form = ProfileForm(request.POST)
             if form.is_valid():
                 user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
                 if user:
                     error_msg = " Údaje úspešne zmenené"
-                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg, "crops": farmer_crops, "orders": orders})
+                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg, "crops": farmer_crops, "orders": orders, "farmer": farmer})
                 else:
                     return False
             else:
                 return False
-        else:                                           # mazanie profilu
+        elif 'delete' in operation:                                          # mazanie profilu
             delete = db.user_delete(request.session['user'])
             if delete:
                 request.session.clear()
                 form = LoginForm()
                 error_msg = "Váš účet bol úspešne odstránený."
-                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops, "orders":orders})
+                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops, "orders":orders, "farmer": farmer})
             else:
                 return False
-    else:                       # prístup z indexu alebo cez redirect
-        form = ProfileForm()
-        form.fields['email'].initial = user_profile['email']
-        form.fields['username'].initial = user_profile['user_name']
-        form.fields['password'].initial = user_profile['password']
 
-        return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders, "error": err})
+        elif 'confirm' in operation:
+            db.change_order_state('confirmed', int(request.POST["order_id"]))
+            orders = db.get_order_by_person_id(request.session['user'])
+        elif 'refuse' in operation:
+            db.change_order_state('rejected', request.POST["order_id"])
+            orders = db.get_order_by_person_id(request.session['user'])
+
+    # prístup z indexu alebo cez redirect + zmena stavu
+    form = ProfileForm()
+    form.fields['email'].initial = user_profile['email']
+    form.fields['username'].initial = user_profile['user_name']
+    form.fields['password'].initial = user_profile['password']
+
+    return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders, "error": err, "farmer": farmer})
 
 
 def product_detail(request, product_id):
@@ -275,6 +290,7 @@ def product_detail(request, product_id):
 
 
 def cart_detail(request):
+    total = 0
     user = user_logged_in(request)
     if user:
         orders = []
@@ -295,7 +311,11 @@ def cart_detail(request):
         orders = []
         if cart != "":
             orders = cookie.get_cart(request, cart)
-        response = render(request, "index/cart_detail.html", {"user": user, "orders": orders})
+            if orders:
+                for order in orders:
+                    total = total + order["price"]
+
+        response = render(request, "index/cart_detail.html", {"user": user, "orders": orders, "total": total})
         response.set_cookie("cart", cart)
         return response
 

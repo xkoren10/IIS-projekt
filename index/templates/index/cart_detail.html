@@ -26,17 +26,18 @@
                     <form method="post">
                         {% csrf_token %}
                         <input type="hidden" name="crop_id" value="{{ order.id }}">
-                        <label>{{ order.name }}</label>
-                        <label>{{ order.amount }}</label>
-                        <label>{{ order.price }}</label>
-                        <input type="submit" name="delete_one" value="Delete from order">
+                        <label>{{ order.name }}</label>,
+                        <label>{{ order.amount }}</label> ks
+                        <label>{{ order.price }}</label> eur
+                        <input type="submit" name="delete_one" value="Delete from order" class="button">
                     </form>
                 {% endfor %}
             </ul>
+            <label> Celková suma: {{ total }} eur </label>
             <form method="post">
                 {% csrf_token %}
-                <input type="submit" name="order" value="Objednaj všetky"><br>
-                <input type="submit" name="delete_order" value="Vymaž celú objednávku">
+                <input type="submit" name="order" value="Objednaj všetky" class="button"><br>
+                <input type="submit" name="delete_order" value="Vymaž celú objednávku" class="button">
             </form>
         {% else %}
             <div>

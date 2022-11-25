@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
+<html lang="cs" >
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <meta charset="UTF-8">
@@ -30,7 +30,7 @@
                         <br>
                     <form method="post" action="{% url 'index:profile' %}">
                         {% csrf_token %}
-                           <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
+                           <button type="submit" value="delete" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
                                     Zmazať účet
                            </button>
                     </form>
@@ -70,32 +70,40 @@
 
                         <h2>Moje Objednávky:</h2>
 
-                                <button class="button">Pridať obejdnávku</button>
-
                            {% if orders %}
-                            <ul>
+
                                 {% for order in orders %}
-                                    <li>
-                                        <div class="order">
+
+                                    <div class="order" id="order" >
                                         <span class="order_crop">
-                                            Položka: {{ order.crop }}
+                                            Položka: {{ order.crop }},
                                         </span>
                                         <span class="order_price">
                                             Cena: {{ order.total_price }} eur
                                         </span>
                                         <span class="order_amount">
-                                            Množstvo: {{ order.amount }}
+                                            Množstvo: {{ order.amount }} ks,
                                         </span>
                                         <span class="order_by">
-                                            Od: {{ order.ordered_by }}
+                                            Od: {{ order.ordered_by }},
                                         </span>
                                         <span class="crop_state">
                                             Stav: {{ order.state }}
                                         </span>
-                                        </div>
-                                    </li>
+                                        {% if order.state == 'pending' and farmer %}   <!--  Hloži nebi ma pls -->
+                                        <form method="post" action="{% url 'index:profile'%}" class="order" >
+                                            {% csrf_token %}
+
+                                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                                <input type="submit" name="confirm" value="Prijať" class="button">
+                                                <input type="submit" name="refuse" value="Zrušiť" class="button">
+
+                                        </form>
+                                        {% endif %}
+                                    </div>
+
                                 {% endfor %}
-                            </ul>
+
                         {% else %}
                             <div> Zatiaľ nemáte žiadne objednávky.</div>
                         {% endif %}

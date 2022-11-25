@@ -2,6 +2,7 @@ body {
   font-family: verdana;
   background: rgb(4,36,0) linear-gradient(176deg, rgba(4, 36, 0, 1) 0%, rgba(45, 121, 9, 1) 40%, rgba(159, 255, 0, 1) 100%);
   padding: 15px;
+    background-size: contain;
 }
 .LOGO{
   font-size: xx-large;
@@ -46,7 +47,7 @@ body {
     padding: 50px 35px;
 }
 
-#login input{
+#login .input{
     display: block;
     height: 50px;
     width: 380px;
@@ -90,7 +91,7 @@ h2 {
     color: #1b1b1b;
 }
 
-.button, .signup{
+.button, .signup, .confirm, .refuse{
   background-color: #79a641;
   padding: 15px 32px;
   text-align: center;
@@ -99,7 +100,29 @@ h2 {
   font-size: 16px;
   color: black;
   border: 2px solid black;
+  margin: 5px;
 
+}
+
+
+#form .order{
+    background-color: #79a641;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  color: black;
+  border: 2px solid black;
+    margin-bottom: 5px;
+
+}
+.confirm:hover{
+    background-color: green;
+}
+
+.refuse:hover{
+    background-color: red;
 }
 
 .button:hover{
@@ -113,3 +136,4 @@ h2 {
 .signup:hover {
    background: #bee883;
 }
+

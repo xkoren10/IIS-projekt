@@ -53,7 +53,6 @@ def get_cart(request, cart=None):
         crop_name = crop["crop_name"]
         amount = int(item[1])
         price = crop["price"] * amount
-
         orders.append({"id": crop_id, "name": crop_name,
                        "amount": amount, "price": price})
 

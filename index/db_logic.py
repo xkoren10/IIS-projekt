@@ -368,3 +368,10 @@ def create_new_orders(user_id: int, crops):
         order = models.Order.objects.create(crop_id=crop_id, farmer_id=farmer_id, ordered_by_id=user_id,
                                             amount=amount, total_price=total_price, state=state)
 
+
+def change_order_state(state: str, order_id: int):
+    order = models.Order.objects.filter(id=order_id).update(state=state)
+    if order:
+        return
+    else:
+        return False

@@ -12,29 +12,25 @@
         <span class="button" ><a href="{% url 'index:login' %}">Login</a></span>
     {% endif %}
     </div>
-    <br><br>
+    <br>
 </head>
 <body style="background: rgb(4,36,0);
 background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgba(159,255,0,1) 100%);">
     <header>
-            <nav>
-                <ul>
-                    <!--<li class="button"><a href="{% url 'index:offers' %}">Ponuka</a></li>-->
-                    <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
-                </ul>
-            </nav>
-
+           <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
+        <br><br>
     </header>
     <main>
         <div id="filter">
             <form>
-                <input type="submit" value="filter" class="button">
-                <input type="submit" value="clear" class="button"><br>
+                <input type="submit" value="Filtrovať" class="button">
+                <input type="submit" value="Vyčistiť" class="button"><br>
                 {% if categories %}
                     {% for category in categories %}
                         <input type="checkbox" name="{{ category.id }}">
                         <label for="{{ category.id }}">{{ category.category_name }}</label>
                     {% endfor %}
+
                 {% else %}
                     <label>Nothing to show for now</label>
                 {% endif %}
