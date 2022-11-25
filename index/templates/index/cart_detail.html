@@ -25,6 +25,7 @@
             <ul class="order_list">
                 {% for order in orders %}
                     <form method="post">
+                        {% csrf_token %}
                         <input type="hidden" name="crop_id" value="{{ order.id }}">
                         <label>{{ order.name }}</label>
                         <label>{{ order.amount }}</label>
@@ -34,6 +35,7 @@
                 {% endfor %}
             </ul>
             <form method="post">
+                {% csrf_token %}
                 <input type="submit" name="order" value="Objednaj všetky"><br>
                 <input type="submit" name="delete_order" value="Vymaž celú objednávku">
             </form>
