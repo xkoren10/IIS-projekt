@@ -250,6 +250,8 @@ def product_detail(request, product_id):
                 err_msg = "Plodina zmazaná."
                 request.method = "GET"
                 return profile(request, err_msg)
+
+        # add crop to cart cookie
         elif "add_to_cart" in operation:
             cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
             response = render(request, "index/product_detail.html",
@@ -275,17 +277,24 @@ def product_detail(request, product_id):
 def cart_detail(request):
     user = user_logged_in(request)
     if user:
+        orders = []
         cart = cookie.try_cookie(request, "cart")
+        if cart != "":
+            orders = cookie.get_cart(request, cart)
+
         if request.method == "POST":
             operation = request.POST.keys()
             if "delete_one" in operation:
                 cart = cookie.delete_from_cart(request, request.POST["crop_id"])
             elif "delete_order" in operation:
-                cart = None
+                cart = ""
             elif "order" in operation:
-                pass
+                db.create_new_orders(user, orders)
+                cart = ""
 
-        orders = cookie.get_cart(request)
+        orders = []
+        if cart != "":
+            orders = cookie.get_cart(request, cart)
         response = render(request, "index/cart_detail.html", {"user": user, "orders": orders})
         response.set_cookie("cart", cart)
         return response

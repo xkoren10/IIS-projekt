@@ -12,8 +12,7 @@
     <header>
             <span class="button"><a href="{% url 'index:offers' %}">Ponuka</a></span>
             <span class="button"><a href="{% url 'index:harvests' %}">Zbery</a></span>
-        {% if logged_in %}
-            <span class="button"><a href="{% url 'index:cart' %}">Košík</a></span>
+        {% if user %}
             <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
             <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
         {% else %}

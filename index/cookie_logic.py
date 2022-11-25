@@ -10,8 +10,7 @@ def try_cookie(request, cookie):
     try:
         return request.COOKIES[cookie]
     except KeyError:
-        request.COOKIES[cookie] = None
-    return None
+        return None
 
 
 def add_to_cart(request, crop_id, amount):
@@ -19,9 +18,9 @@ def add_to_cart(request, crop_id, amount):
     if cart is None:
         cart = f"{crop_id}:{amount};"
     else:
-        if crop_id in cart:
+        if str(crop_id) in cart:
             pattern = f"{crop_id}:\d+;"
-            cart = re.sub(pattern, f"{crop_id}:amount;", cart)
+            cart = re.sub(pattern, f"{crop_id}:{amount};", cart)
         else:
             cart += f"{crop_id}:{amount};"
     return cart
@@ -32,16 +31,20 @@ def delete_from_cart(request, crop_id):
     if cart is None:
         return
     pattern = f"{crop_id}:\d+;"
-    cart = re.sub(pattern, ";", cart)
+    cart = re.sub(pattern, "", cart)
     return cart
 
 
-def get_cart(request):
-    cart = try_cookie(request, "cart")
+def get_cart(request, cart=None):
     if cart is None:
-        return False
+        cart = try_cookie(request, "cart")
+        if cart is None:
+            return False
 
     orders = []
+    if cart == "":
+        return orders
+
     items = cart.split(";")[:-1]
     for item in items:
         item = item.split(":")

@@ -356,3 +356,15 @@ def get_order_by_person_id(person_id: int):
 
     return order_list
 
+
+def create_new_orders(user_id: int, crops):
+    for crop in crops:
+        crop_id = crop["id"]
+        db_crop = crop_get_by_id(crop_id)
+        farmer_id = user_get_by_id(db_crop["farmer"])["id"]
+        amount = crop["amount"]
+        total_price = float(crop["price"])
+        state = "pending"
+        order = models.Order.objects.create(crop_id=crop_id, farmer_id=farmer_id, ordered_by_id=user_id,
+                                            amount=amount, total_price=total_price, state=state)
+

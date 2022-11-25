@@ -20,7 +20,7 @@
                 <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
             </ul>
             {% if user %}
-                <span class="button"><a href="{% url 'index:login' %}">Košík</a></span>
+                <span class="button"><a href="{% url 'index:cart' %}">Košík</a></span>
                 <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
                 <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
             {% else %}
