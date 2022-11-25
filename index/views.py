@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.http import HttpResponse
 from . import db_logic as db
+from . import cookie_logic as cookie
 
 
 class LoginForm(forms.Form):
@@ -49,19 +50,34 @@ class HarvestForm(forms.Form):
     crop_id = forms.IntegerField(label="Plodina", widget=forms.Select())    # db.get_list_of_farmer_crops(famer id)
 
 
+def user_logged_in(request):
+    # first check if session_user was init
+    try:
+        user = request.session["user"]
+    except KeyError:
+        # set
+        request.session["user"] = False
+        return False
+
+    # then check if is set to logged
+    if user:
+        return user
+    return False
+
+
 def index(request):
     top_crops = db.get_top_crops()
     new_crops = db.get_new_crops()
 
-    # todo rework call of page rendering
-    try:
+    user = user_logged_in(request)
+    if user:
         return render(request, "index/index.html", {"logged_in": request.session["user"],
                                                     "top_crops": top_crops,
                                                     "new_crops": new_crops})
-    except KeyError:
-        return render(request, "index/index.html", {"logged_in": False,
-                                                    "top_crops": top_crops,
-                                                    "new_crops": new_crops})
+    # else
+    return render(request, "index/index.html", {"logged_in": False,
+                                                "top_crops": top_crops,
+                                                "new_crops": new_crops})
 
 
 def login(request):
@@ -101,6 +117,7 @@ def sign_up(request):
 
 def offers(request):
     all_crops = []
+    user = user_logged_in(request)
     all_categories = db.get_all_categories()
 
     cat_filter = request.GET.keys()
@@ -111,26 +128,27 @@ def offers(request):
         for category in cat_filter:
             filtered_crops = db.crop_get_by_category(int(category))
             all_crops.extend(filtered_crops)
-    try:
+
+    if user:
         return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
-                                                     "logged_in": request.session["user"]})
-    except KeyError:
-        return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
+                                                     "logged_in": user})
+    # else
+    return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
                                                      "logged_in": False})
 
 
 def harvests(request):
     harvests_models = db.harvest_get_all()
-    try:
-        my_harvests = db.harvests_attended(request.session['user'])
-    except KeyError:
-        my_harvests = []
-    try:
+    user_id = user_logged_in(request)
+
+    my_harvests = []
+    if user_id:
+        my_harvests = db.harvests_attended(user_id)
         return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                            "logged_in": request.session["user"]})
-    except KeyError:
-        return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                       "logged_in": False})
+                                                        "logged_in": user_id})
+    # else
+    return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
+                                                    "logged_in": False})
 
 
 def new_crop(request, crop_id: int):
@@ -233,34 +251,46 @@ def product_detail(request, product_id):
                 request.method = "GET"
                 return profile(request, err_msg)
         elif "add_to_cart" in operation:
-            try:
-                request.session["cart"][product_id] = request.POST["amount"]
-            except KeyError:
-                request.session["cart"] = {}
-                request.session["cart"][product_id] = request.POST["amount"]
+            cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
+            response = render(request, "index/product_detail.html",
+                              {"crop": crop_to_show, "user": request.session['user'], "farmer": False})
+            response.set_cookie("cart", cart)
+            return response
+
+    # else
+    user = user_logged_in(request)
+    if user:
+        if user == crop_to_show["farmer"]:
             return render(request, "index/product_detail.html",
-                          {"crop": crop_to_show, "user": request.session['user'], "farmer": False})
-    try:
-        if request.session['user'] == crop_to_show["farmer"]:
-            return render(request, "index/product_detail.html",
-                          {"crop": crop_to_show, "user": request.session['user'], "farmer": True})
+                          {"crop": crop_to_show, "user": user, "farmer": True})
         else:
             return render(request, "index/product_detail.html",
-                          {"crop": crop_to_show, "user": request.session['user'], "farmer": False})
+                          {"crop": crop_to_show, "user": user, "farmer": False})
 
-    except KeyError:
-        return render(request, "index/product_detail.html",
-                      {"crop": crop_to_show, "user": False, "farmer": False})
+    # else
+    return render(request, "index/product_detail.html",
+                  {"crop": crop_to_show, "user": False, "farmer": False})
 
 
 def cart_detail(request):
-    # TODO check if user is logged in, would be better to do function for that
-    try:
-        user_orders = request.session["cart"]
-    except KeyError:
-        request.session["cart"] = {}
-        user_orders = {}
-    return render(request, "index/cart_detail.html")
+    user = user_logged_in(request)
+    if user:
+        cart = cookie.try_cookie(request, "cart")
+        if request.method == "POST":
+            operation = request.POST.keys()
+            if "delete_one" in operation:
+                cart = cookie.delete_from_cart(request, request.POST["crop_id"])
+            elif "delete_order" in operation:
+                cart = None
+            elif "order" in operation:
+                pass
+
+        orders = cookie.get_cart(request)
+        response = render(request, "index/cart_detail.html", {"user": user, "orders": orders})
+        response.set_cookie("cart", cart)
+        return response
+
+    return redirect("/")
 
 
 def harvest_detail(request, harvest_id):
