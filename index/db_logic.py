@@ -210,6 +210,14 @@ def get_list_of_farmers_crops(farmer_id: int):
     return list_of_crops
 
 
+def get_crop_price_types():
+    try:
+        choices = models.Crop.price_type  # not quite
+    except exceptions.ObjectDoesNotExist:
+        return False
+    return choices
+
+
 def crop_get_by_id(crop_id: int):
     try:
         crop = models.Crop.objects.get(id=crop_id)

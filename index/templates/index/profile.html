@@ -27,14 +27,14 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form }}
-                <button type="submit" value="save" name="form_type" class="button">
+                <button type="submit" value="save" name="save" class="button">
                     Uložiť zmeny
                 </button>
             </form>
             <br>
             <form method="post" action="{% url 'index:profile' %}">
                 {% csrf_token %}
-                <button type="submit" value="delete" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
+                <button type="submit" value="delete" class="button" name="delete" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
                     Zmazať účet
                 </button>
             </form>

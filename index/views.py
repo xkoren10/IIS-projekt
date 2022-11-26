@@ -35,6 +35,7 @@ class CropForm(forms.Form):
     origin = forms.CharField(label="Pôvod", max_length=80, initial='')
     crop_year = forms.IntegerField(label="Rok")
     price_type = forms.CharField(label="Typ predaju", max_length=80, initial='')
+                                 # widget=forms.Select(choices=db.get_crop_price_types())) not bueno
     category_id = forms.IntegerField(label="Kategória", widget=forms.Select(choices=db.get_list_of_categories()))
 
 
