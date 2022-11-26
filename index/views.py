@@ -123,10 +123,15 @@ def sign_up(request):
             return redirect("/")
     else:
         form = LoginForm()
-    return render(request, "index/sign_up.html", {"form": form})
+    return redirect("index/sign_up.html", {"form": form})
 
 
 def offers(request):
+    # access restricted
+    if not user_logged_in(request):
+        form = LoginForm()
+        return render(request, "index/login.html", {"form": form})
+
     all_crops = db.get_all_crops()
     user = user_logged_in(request)
     all_categories = db.category_get_all_approved()
@@ -170,6 +175,11 @@ def harvests(request):
 
 
 def new_crop(request, crop_id: int):
+    # access restricted
+    if not user_logged_in(request):
+        form = LoginForm()
+        return render(request, "index/login.html", {"form": form})
+
     if request.method == "POST":
         form = CropForm(request.POST)
         if form.is_valid():
@@ -221,6 +231,11 @@ def new_crop(request, crop_id: int):
 
 
 def profile(request, err=''):
+    # access restricted
+    if not user_logged_in(request):
+        form = LoginForm()
+        return render(request, "index/login.html", {"form": form})
+
 
     user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(request.session['user'])
@@ -300,14 +315,17 @@ def profile(request, err=''):
 
 
 def moderation(request):
+    # access restricted
     user = user_logged_in(request)
     if user:
         categories = db.get_all_categories()
         return render(request, "index/category_moderation.html", {"user": user, "categories": categories})
-    return redirect("/")
+    form = LoginForm()
+    return render(request, "index/login.html", {"form": form})
 
 
 def new_category(request):
+    # access restricted
     user = user_logged_in(request)
     if user:
         if request.method == "POST":
@@ -317,7 +335,9 @@ def new_category(request):
                 return profile(request, err="Kategória sa odoslala na schválenie")
         form = NewCategoryForm()
         return render(request, "index/new_category.html", {"user": user, "form": form})
-    return redirect("/")
+
+    form = LoginForm()
+    return render(request, "index/login.html", {"form": form})
 
 
 def product_detail(request, product_id):
@@ -370,6 +390,7 @@ def product_detail(request, product_id):
 
 
 def new_review(request, crop_id):
+    # access restricted
     user = user_logged_in(request)
     if user:
         if request.method == "POST":
@@ -379,10 +400,12 @@ def new_review(request, crop_id):
                 return product_detail(request, product_id=crop_id)
         form = NewReview()
         return render(request, "index/new_review.html", {"user": user, "form": form})
-    return redirect("/")
+    form = LoginForm()
+    return render(request, "index/login.html", {"form": form})
 
 
 def cart_detail(request):
+    # access restricted
     total = 0
     user = user_logged_in(request)
     if user:
@@ -415,7 +438,8 @@ def cart_detail(request):
             response.delete_cookie("cart")
         return response
 
-    return redirect("/")
+    form = LoginForm()
+    return render(request, "index/login.html", {"form": form})
 
 
 def harvest_detail(request, harvest_id):
