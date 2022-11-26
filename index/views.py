@@ -126,7 +126,7 @@ def sign_up(request):
             return redirect("/")
     else:
         form = LoginForm()
-    return redirect("index/sign_up.html", {"form": form})
+    return render(request, "index/sign_up.html", {"form": form})
 
 
 def offers(request):

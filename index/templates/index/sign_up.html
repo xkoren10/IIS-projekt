@@ -15,12 +15,12 @@
         {% if error %}
             <div>{{ error }}</div>
         {% endif %}
-        <div class="login" id="Login">
+        <div class="more" id="more">
             <form method="post">
                 {% csrf_token %}
                 {{ form }}
              <br>
-                <input type="submit" value="Sign Up" class="button">
+                <input type="submit" value="Sign Up" class="signup" id="signup">
             </form>
         </div>
     </main>
