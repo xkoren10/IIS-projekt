@@ -321,6 +321,12 @@ def moderation(request):
     # access restricted
     user = user_logged_in(request)
     if user:
+        if request.method == "POST":
+            operation = request.POST.keys()
+            if "approve" in operation:
+                db.category_approve(request.POST["cat_id"])
+            elif "disallow" in operation:
+                db.category_approve(request.POST["cat_id"], False)
         categories = db.get_all_categories()
         return render(request, "index/category_moderation.html", {"user": user, "categories": categories})
     form = LoginForm()
