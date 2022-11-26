@@ -10,7 +10,7 @@
 <body>
     <header>
         <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
-        {% if logged_in %}
+        {% if user %}
             <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
         {% else %}
             <a href="{% url 'index:login' %}"><span class="button" >Login</span></a>
@@ -19,7 +19,7 @@
         <nav>
             <a href="{% url 'index:offers' %}"><span class="button">Ponuka</span></a>
             <a href="{% url 'index:harvests' %}"><span class="button">Zbery</span></a>
-            {% if logged_in %}
+            {% if user %}
                 <a href="{% url 'index:cart' %}"><span class="button">Košík</span></a>
                 <a href="{% url 'index:profile' %}"><span class="button">Profil</span></a>
             {% endif %}

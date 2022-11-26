@@ -374,6 +374,23 @@ def create_new_orders(user_id: int, crops: list):
 
 
 def change_order_state(state: str, order_id: int):
+    # pending = just created
+    # confirmed = accepted by farmer
+    # rejected = order dismissed by farmer
+    try:
+        order = models.Order.objects.get(id=order_id)
+    except exceptions.ObjectDoesNotExist or IndexError:
+        return False
+
+    if state == "confirmed":
+        crop = crop_get_by_id(order.crop_id)
+        current_amount = crop["amount"]
+        if order.amount > current_amount:
+            return "amount"
+        crop_update(crop["id"], crop["crop_name"], crop["description"], crop["price"],
+                    crop["amount"]-order.amount, crop["origin"], crop["crop_year"], crop["price_type"],
+                    crop["category"], crop["farmer"])
+
     order = models.Order.objects.filter(id=order_id).update(state=state)
     if order:
         return
