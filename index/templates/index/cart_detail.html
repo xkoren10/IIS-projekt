@@ -5,20 +5,20 @@
 <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Zelný trh - Nákupný  košík</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
-    <br><br>
 </head>
 <body>
     <header>
-            <span class="button"><a href="{% url 'index:offers' %}">Ponuka</a></span>
-            <span class="button"><a href="{% url 'index:harvests' %}">Zbery</a></span>
-        {% if user %}
-            <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
-            <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
-        {% else %}
-            <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
-        {% endif %}
+        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+        </div>
+        <nav>
+            <a href="{% url 'index:offers' %}"><span class="button">Ponuka</span></a>
+            <a href="{% url 'index:harvests' %}"><span class="button">Zbery</span></a>
+            <a href="{% url 'index:profile' %}"><span class="button">Profil</span></a>
+        </nav>
     </header>
     <main>
         {% if orders %}

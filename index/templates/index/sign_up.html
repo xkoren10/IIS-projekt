@@ -6,10 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Zelný trh - Registrácia</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
-    <br><br>
 </head>
 <body>
+    <header>
+        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
+    </header>
     <main>
         {% if error %}
             <div>{{ error }}</div>

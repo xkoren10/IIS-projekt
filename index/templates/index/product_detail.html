@@ -1,31 +1,27 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="cs" style="height: 110%">
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
-<link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Zelný trh - Detail produktu</title>
-    <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
-        {% if user %}
-            <span class="button" ><a href="{% url 'index:login' %}">Login</a></span>
-        {% endif %}
-    </div>
-    <br><br>
 </head>
 <body>
     <header>
+        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+        {% if logged_in %}
+            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+        {% else %}
+            <a href="{% url 'index:login' %}"><span class="button" >Login</span></a>
+        {% endif %}
+        </div>
         <nav>
-            <ul>
-                <li class="button"><a href="{% url 'index:offers' %}">Ponuka</a></li>
-                <li class="button"><a href="{% url 'index:harvests' %}">Zbery</a></li>
-            </ul>
-            {% if user %}
-                <span class="button"><a href="{% url 'index:cart' %}">Košík</a></span>
-                <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
-                <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
-            {% else %}
-                <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+            <a href="{% url 'index:offers' %}"><span class="button">Ponuka</span></a>
+            <a href="{% url 'index:harvests' %}"><span class="button">Zbery</span></a>
+            {% if logged_in %}
+                <a href="{% url 'index:cart' %}"><span class="button">Košík</span></a>
+                <a href="{% url 'index:profile' %}"><span class="button">Profil</span></a>
             {% endif %}
         </nav>
     </header>
