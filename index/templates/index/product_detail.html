@@ -60,10 +60,11 @@
                     <input type="number" name="amount" value="0">
                     <input class="button" type="submit" name="add_to_cart" value="Add to cart">
                 </form>
+                <a href="{% url 'index:new_review' crop.id %}"><span class="button">Vytvoriť hodnotenie</span></a>
             {% endif %}
 
             {% if user and farmer %}
-                <span class="button"><a href="{% url 'index:new_crop' crop.id %}">Upraviť</a></span>
+                <a href="{% url 'index:new_crop' crop.id %}"><span class="button">Upraviť</span></a>
                 <form method="post" action="{% url 'index:product_detail' crop.id %}">
                     {% csrf_token %}
                     <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
@@ -72,6 +73,21 @@
                 </form>
             {% endif %}
             <!-- alebo nahradit farmara formularom pre objednanie? -->
+            {% if reviews %}
+                <div id="crop_reviews">
+                    {% for review in reviews %}
+                        <div class="review">
+                            <span>{{ review.short_desc }}</span><br>
+                            <span>{{ review.long_desc }}</span><br>
+                            <span>{{ review.stars }}/5</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div>
+                    <label>Plodina zatiaľ nemá žiadne hodnotenia</label>
+                </div>
+            {% endif %}
         {% endif %}
     </main>
 </body>

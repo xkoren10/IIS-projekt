@@ -13,6 +13,7 @@ urlpatterns = [
     path("profile/", views.profile, name="profile"),
     path("category_moderation", views.moderation, name="moderation"),
     path("new_category", views.new_category, name="new_category"),
+    path("new_review/<int:crop_id>", views.new_review, name="new_review"),
     path("cart/", views.cart_detail, name="cart"),
     path("product_detail/<int:product_id>/", views.product_detail, name="product_detail"),
     path("harvest_detail/<int:harvest_id>/", views.harvest_detail, name="harvest_detail"),

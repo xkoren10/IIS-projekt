@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <title>IS Zelný trh - nová kategória</title>
+    <title>IS Zelný trh - nové hodnotenie</title>
 </head>
 <body>
     <header>
@@ -19,15 +19,11 @@
         </nav>
     </header>
     <main>
-        {% if error %}
-            <div class="message">{{ error }}</div>
-        {% endif %}
         <form method="post">
             {% csrf_token %}
             {{ form }}
-            <br>
-            <button type="submit" name="create" value="create" class="button">
-                Vytvoriť kategóriu
+            <button type="submit" name="create" class="button">
+                Vytvor hodnotenie
             </button>
         </form>
     </main>

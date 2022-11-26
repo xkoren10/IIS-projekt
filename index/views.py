@@ -55,6 +55,12 @@ class NewCategoryForm(forms.Form):
     cat_of = forms.IntegerField(label="Je podkategóriou", widget=forms.Select(choices=db.get_list_of_categories()))
 
 
+class NewReview(forms.Form):
+    title = forms.CharField(label="Titulok", max_length=80)
+    description = forms.CharField(label="Popis", max_length=200)
+    stars = forms.IntegerField(label="Počet hviezdičiek (1-5)", max_value=5)
+
+
 def user_logged_in(request):
     # first check if session_user was init
     try:
@@ -275,17 +281,19 @@ def moderation(request):
 def new_category(request):
     user = user_logged_in(request)
     if user:
-        form = NewCategoryForm(request.POST)
         if request.method == "POST":
+            form = NewCategoryForm(request.POST)
             if form.is_valid():
                 db.category_create_new(form.cleaned_data["cat_name"], form.cleaned_data["cat_of"])
                 return profile(request, err="Kategória sa odoslala na schválenie")
+        form = NewCategoryForm()
         return render(request, "index/new_category.html", {"user": user, "form": form})
     return redirect("/")
 
 
 def product_detail(request, product_id):
     crop_to_show = db.crop_get_by_id(product_id)
+    reviews = db.get_reviews_for_crop(product_id)
     if request.method == "POST":
         operation = request.POST.keys()
         if "delete" in operation:
@@ -299,7 +307,8 @@ def product_detail(request, product_id):
         elif "add_to_cart" in operation:
             cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
             response = render(request, "index/product_detail.html",
-                              {"crop": crop_to_show, "user": request.session['user'], "farmer": False})
+                              {"crop": crop_to_show, "reviews": reviews,
+                               "user": request.session['user'], "farmer": False})
             response.set_cookie("cart", cart)
             return response
 
@@ -308,14 +317,30 @@ def product_detail(request, product_id):
     if user:
         if user == crop_to_show["farmer"]:
             return render(request, "index/product_detail.html",
-                          {"crop": crop_to_show, "user": user, "farmer": True})
+                          {"crop": crop_to_show, "reviews": reviews,
+                           "user": user, "farmer": True})
         else:
             return render(request, "index/product_detail.html",
-                          {"crop": crop_to_show, "user": user, "farmer": False})
+                          {"crop": crop_to_show, "reviews": reviews,
+                           "user": user, "farmer": False})
 
     # else
     return render(request, "index/product_detail.html",
-                  {"crop": crop_to_show, "user": False, "farmer": False})
+                  {"crop": crop_to_show, "reviews": reviews,
+                   "user": False, "farmer": False})
+
+
+def new_review(request, crop_id):
+    user = user_logged_in(request)
+    if user:
+        if request.method == "POST":
+            form = NewReview(request.POST)
+            if form.is_valid():
+                db.review_create_new(user, crop_id, form.cleaned_data["title"], form.cleaned_data["description"], form.cleaned_data["stars"])
+                return product_detail(request, product_id=crop_id)
+        form = NewReview()
+        return render(request, "index/new_review.html", {"user": user, "form": form})
+    return redirect("/")
 
 
 def cart_detail(request):

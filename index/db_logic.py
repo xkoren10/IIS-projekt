@@ -361,7 +361,7 @@ def get_order_by_person_id(person_id: int):
     return order_list
 
 
-def create_new_orders(user_id: int, crops):
+def create_new_orders(user_id: int, crops: list):
     for crop in crops:
         crop_id = crop["id"]
         db_crop = crop_get_by_id(crop_id)
@@ -379,3 +379,29 @@ def change_order_state(state: str, order_id: int):
         return
     else:
         return False
+
+
+def review_create_new(user_id: int, crop_id: int, title: str, long_desc: str, stars: int):
+    try:
+        user = models.User.objects.get(id=user_id)
+    except exceptions.ObjectDoesNotExist:
+        return
+    review = models.Review.objects.create(reviewed_by=user, crop_id=crop_id, short_desc=title, long_desc=long_desc, stars=stars)
+
+
+def review_delete(review_id: int):
+
+    pass
+
+
+def get_reviews_for_crop(crop_id: int):
+    reviews = []
+    try:
+        db_reviews = models.Review.objects.filter(crop_id=crop_id)
+    except exceptions.ObjectDoesNotExist:
+        return reviews
+
+    for review in db_reviews:
+        reviews.append(to_dict(review))
+
+    return reviews
