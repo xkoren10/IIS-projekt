@@ -237,7 +237,7 @@ def category_get_by_id(category_id: int):
     return to_dict(cat)
 
 
-def category_approved(category_id: int, approve=True):
+def category_approve(category_id: int, approve=True):
     try:
         if approve:
             models.Categories.objects.filter(id=category_id).update(approved=True)
