@@ -129,7 +129,7 @@ def sign_up(request):
 def offers(request):
     all_crops = db.get_all_crops()
     user = user_logged_in(request)
-    all_categories = db.get_all_categories()
+    all_categories = db.category_get_all_approved()
 
     filters = request.GET
 
@@ -261,7 +261,9 @@ def profile(request, err=''):
                 return False
 
         elif 'confirm' in operation:
-            db.change_order_state('confirmed', int(request.POST["order_id"]))
+            res = db.change_order_state('confirmed', int(request.POST["order_id"]))
+            if res == "amount":
+                err = "Nemožno predať viac tejto plodiny než je zadaného množstva"
             orders = db.get_order_by_person_id(request.session['user'])
         elif 'refuse' in operation:
             db.change_order_state('rejected', request.POST["order_id"])
@@ -386,7 +388,10 @@ def cart_detail(request):
                     total = total + order["price"]
 
         response = render(request, "index/cart_detail.html", {"user": user, "orders": orders, "total": total})
-        response.set_cookie("cart", cart)
+        if cart != "":
+            response.set_cookie("cart", cart)
+        else:
+            response.delete_cookie("cart")
         return response
 
     return redirect("/")
