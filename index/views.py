@@ -131,20 +131,21 @@ def offers(request):
     user = user_logged_in(request)
     all_categories = db.category_get_all_approved()
 
-    filters = request.GET
+    filters = dict(request.GET)
 
     if 'filter' in filters:
         if filters['filter'] != 1:
             all_crops.clear()
+
             for category in filters['filter']:
                 filtered_crops = db.crop_get_by_category(int(category))
                 all_crops.extend(filtered_crops)
 
     if 'sort' in filters:
         if filters['sort'] == 'descend':
-            all_crops = sorted(all_crops, key=lambda d: d['price'])
-        elif filters['sort'] == 'ascend':
             all_crops = sorted(all_crops, key=lambda d: d['price'], reverse=True)
+        elif filters['sort'] == 'ascend':
+            all_crops = sorted(all_crops, key=lambda d: d['price'])
 
     if user:
         return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
