@@ -24,7 +24,7 @@
     {% endif %}
     {% if user %}
         <div class="user">
-            <form method="post">
+            <form method="post" class="haha" id="haha">
                 {% csrf_token %}
                 {{ form }}
                 <button type="submit" value="save" name="save" class="button">

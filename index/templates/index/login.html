@@ -20,7 +20,7 @@
                 {% csrf_token %}
                 {{ form }}
                 <br>
-                <input type="submit" value="Login" class="signup">
+                <input type="submit" value="Login" class="get_in" id="get_in">
                 <br>
                 <a class="signup" href="{% url 'index:sign_up' %}">Sign Up</a>
             </form>
