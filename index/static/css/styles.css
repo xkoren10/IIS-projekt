@@ -8,7 +8,7 @@ body {
   font-size: xx-large;
   display: flex;
   justify-content: space-between;
-  color: #4ac1f7;
+  color: black;
 }
 
 .crop, .harvest{
@@ -141,3 +141,47 @@ input[type="checkbox"] {
     appearance: none;
 }
 
+.table_header{
+    width: 200%;
+}
+
+.table_form label, .table_header label{
+    border: 3px dashed black;
+    height: 100%;
+    padding: 5px 40px;
+    min-width: 140px;
+    min-height: 20px;
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+
+}
+
+ .table_header label{
+     border: 3px  solid black;
+ }
+
+.table_form{
+    display: table;
+    width: 200%;
+}
+.toggle{  background-color: #79a641;
+  padding: 5px 40px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+    float: left;
+  font-size: 16px;
+  color: black;
+  border: 2px solid black;
+  margin: 0 25px ;
+
+    min-width: 180px;
+
+}
+
+.toggle:hover{
+   background: #bee883;
+}
