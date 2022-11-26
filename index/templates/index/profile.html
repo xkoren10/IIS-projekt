@@ -1,117 +1,116 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="cs" >
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Zelný trh - Profil</title>
-    <div class="LOGO" id="LOGO">
-        <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
-        <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
-    </div>
-    <br><br>
 </head>
 <body>
-    {% if error %}
-            <div>{{ error }}</div>
+    <header>
+        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+        </div>
+        <nav>
+            <a href="{% url 'index:offers' %}"><span class="button">Ponuka</span></a>
+            <a href="{% url 'index:harvests' %}"><span class="button">Zbery</span></a>
+            <a href="{% url 'index:cart' %}"><span class="button">Košík</span></a>
+        </nav>
+    </header>
+    <main>
+        {% if error %}
+        <div class="message">{{ error }}</div>
     {% endif %}
-
     {% if user %}
         <div class="user">
-            {% load static %}
-               <img src="{% static 'index/images/sad.png' %}" alt="Crop" width="100" height="100">
-                    <form method="post" >
-                        {% csrf_token %}
-                            {{ form }}
-                            <button type="submit" value="save" name="form_type" class="button">
-                                    Uložiť zmeny
-                            </button>
-                    </form>
-                        <br>
-                    <form method="post" action="{% url 'index:profile' %}">
-                        {% csrf_token %}
-                           <button type="submit" value="delete" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
-                                    Zmazať účet
-                           </button>
-                    </form>
-
-            </div>
-                    <h2>Moje plodiny:</h2>
-                            <a href="{% url 'index:new_crop' 0 %}">
-                                <button class="button">Pridať plodinu</button>
-                            </a>
-
-                        {% if crops %}
-                                <!-- farmar123, smrtfrankom-->
-                            <ul>
-                                {% for crop in crops %}
-                                    <li><a href="{% url 'index:product_detail' crop.id %}">
-                                        <div class="crop">
-                                        <span class="crop_image">
-                                            {% load static %}
-                                                <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
-                                        </span>
-                                        <span class="crop_name">
-                                            {{ crop.crop_name }}
-                                        </span>
-                                        <span class="crop_description">
-                                            Popis: {{ crop.description }}
-                                        </span>
-                                        <span class="crop_price">
-                                            Cena: {{ crop.price }} eur
-                                        </span>
-                                        </div>
-                                    </a></li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <div> Zatiaľ neponúkate žiadne plodiny.</div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" value="save" name="form_type" class="button">
+                    Uložiť zmeny
+                </button>
+            </form>
+            <br>
+            <form method="post" action="{% url 'index:profile' %}">
+                {% csrf_token %}
+                <button type="submit" value="delete" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť svoj účet?');">
+                    Zmazať účet
+                </button>
+            </form>
+        </div>
+        <div id="categories">
+            {% if user.mod == True %}
+                <a href="{% url 'index:moderation' %}"><span class="button">Moderácia kategórií</span></a><br>
+            {% endif %}
+            <a href="{% url 'index:new_category' %}"><span class="button">Pridať kategóriu</span></a>
+        </div>
+        <h2>Moje plodiny:</h2>
+        <div id="user_crops">
+            <a href="{% url 'index:new_crop' 0 %}">
+                <button class="button">Pridať plodinu</button>
+            </a>
+            {% if crops %}
+                <!-- farmar123, smrtfrankom-->
+                <ul>
+                    {% for crop in crops %}
+                        <li><a href="{% url 'index:product_detail' crop.id %}">
+                            <div class="crop">
+                                <span class="crop_image">
+                                    {% load static %}
+                                    <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">
+                                </span>
+                                <span class="crop_name">
+                                    {{ crop.crop_name }}
+                                </span>
+                                <span class="crop_description">
+                                    Popis: {{ crop.description }}
+                                </span>
+                                <span class="crop_price">
+                                    Cena: {{ crop.price }} eur
+                                </span>
+                            </div>
+                        </a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div> Zatiaľ neponúkate žiadne plodiny.</div>
+            {% endif %}
+        </div>
+        <h2>Moje Objednávky:</h2>
+        <div id="user_orders">
+            {% if orders %}
+                {% for order in orders %}
+                    <div class="order" id="order" >
+                        <span class="order_crop">
+                            Položka: {{ order.crop }},
+                        </span>
+                        <span class="order_price">
+                            Cena: {{ order.total_price }} eur
+                        </span>
+                        <span class="order_amount">
+                            Množstvo: {{ order.amount }} ks,
+                        </span>
+                        <span class="order_by">
+                            Od: {{ order.ordered_by }},
+                        </span>
+                        <span class="crop_state">
+                            Stav: {{ order.state }}
+                        </span>
+                        {% if order.state == 'pending' and farmer %}   <!--  Hloži nebi ma pls -->
+                            <form method="post" action="{% url 'index:profile'%}" class="order" >
+                                {% csrf_token %}
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                <input type="submit" name="confirm" value="Prijať" class="button">
+                                <input type="submit" name="refuse" value="Zrušiť" class="button">
+                            </form>
                         {% endif %}
-
-                        <h2>Moje Objednávky:</h2>
-
-                           {% if orders %}
-
-                                {% for order in orders %}
-
-                                    <div class="order" id="order" >
-                                        <span class="order_crop">
-                                            Položka: {{ order.crop }},
-                                        </span>
-                                        <span class="order_price">
-                                            Cena: {{ order.total_price }} eur
-                                        </span>
-                                        <span class="order_amount">
-                                            Množstvo: {{ order.amount }} ks,
-                                        </span>
-                                        <span class="order_by">
-                                            Od: {{ order.ordered_by }},
-                                        </span>
-                                        <span class="crop_state">
-                                            Stav: {{ order.state }}
-                                        </span>
-                                        {% if order.state == 'pending' and farmer %}   <!--  Hloži nebi ma pls -->
-                                        <form method="post" action="{% url 'index:profile'%}" class="order" >
-                                            {% csrf_token %}
-
-                                                <input type="hidden" name="order_id" value="{{ order.id }}">
-                                                <input type="submit" name="confirm" value="Prijať" class="button">
-                                                <input type="submit" name="refuse" value="Zrušiť" class="button">
-
-                                        </form>
-                                        {% endif %}
-                                    </div>
-
-                                {% endfor %}
-
-                        {% else %}
-                            <div> Zatiaľ nemáte žiadne objednávky.</div>
-                        {% endif %}
-
-
-            </div>
-    {% else %}
-        Sme piči už ozaj
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div> Zatiaľ nemáte žiadne objednávky.</div>
+            {% endif %}
+        </div>
     {% endif %}
+    </main>
 </body>
 </html>

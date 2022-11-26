@@ -260,6 +260,10 @@ def category_delete(cat_id: int):
     return True
 
 
+def category_create_new(name: str, category_of: int):
+    cat = models.Categories.objects.create(category_name=name, category_of_id_id=category_of)
+
+
 def get_subcategories(crop_category: int):
     open_list = []
     try:

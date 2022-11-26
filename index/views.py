@@ -50,6 +50,11 @@ class HarvestForm(forms.Form):
     crop_id = forms.IntegerField(label="Plodina", widget=forms.Select())    # db.get_list_of_farmer_crops(famer id)
 
 
+class NewCategoryForm(forms.Form):
+    cat_name = forms.CharField(label="Názov kategórie")
+    cat_of = forms.IntegerField(label="Je podkategóriou", widget=forms.Select(choices=db.get_list_of_categories()))
+
+
 def user_logged_in(request):
     # first check if session_user was init
     try:
@@ -208,8 +213,12 @@ def profile(request, err=''):
     farmer_crops = db.get_crops_from_farmer(request.session['user'])
     orders = db.get_order_by_person_id(request.session['user'])
 
-    if user_profile['id'] == orders[0]['farmer']:   # ak sa zhoduje prvá, zhodujú sa všetky
-        farmer = True
+    # bruh, index out of range moment
+    if len(orders) > 0:
+        if user_profile['id'] == orders[0]['farmer']:   # ak sa zhoduje prvá, zhodujú sa všetky
+            farmer = True
+        else:
+            farmer = False
     else:
         farmer = False
 
@@ -253,6 +262,26 @@ def profile(request, err=''):
     form.fields['password'].initial = user_profile['password']
 
     return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders, "error": err, "farmer": farmer})
+
+
+def moderation(request):
+    user = user_logged_in(request)
+    if user:
+        categories = db.get_all_categories()
+        return render(request, "index/category_moderation.html", {"user": user, "categories": categories})
+    return redirect("/")
+
+
+def new_category(request):
+    user = user_logged_in(request)
+    if user:
+        form = NewCategoryForm(request.POST)
+        if request.method == "POST":
+            if form.is_valid():
+                db.category_create_new(form.cleaned_data["cat_name"], form.cleaned_data["cat_of"])
+                return profile(request, err="Kategória sa odoslala na schválenie")
+        return render(request, "index/new_category.html", {"user": user, "form": form})
+    return redirect("/")
 
 
 def product_detail(request, product_id):

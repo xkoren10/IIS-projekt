@@ -1,10 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Zelný trh - Nová plodina</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Title</title>
 </head>
 <body>
     <header>
@@ -22,13 +22,13 @@
         {% if error %}
             <div class="message">{{ error }}</div>
         {% endif %}
-            <form method="post" >
-                {% csrf_token %}
-                {{ form }}
-                <button type="submit" value="save" class="button" name="form_type">
-                    Uložiť zmeny
-                </button>
-            </form>
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" name="create" value="create" class="button">
+                Vytvoriť kategóriu
+            </button>
+        </form>
     </main>
 </body>
 </html>

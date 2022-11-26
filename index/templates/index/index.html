@@ -1,30 +1,28 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="cs" style="height: 110%">
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Zelný trh</title>
-    <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
-    {% if logged_in %}
-        <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
-    {% else %}
-        <span class="button" ><a href="{% url 'index:login' %}">Login</a></span>
-    {% endif %}
-    </div>
-    <br><br>
 </head>
 <body>
     <header>
-            <span class="button"><a href="{% url 'index:offers' %}">Ponuka</a></span>
-            <span class="button"><a href="{% url 'index:harvests' %}">Zbery</a></span>
+        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
         {% if logged_in %}
-            <span class="button"><a href="{% url 'index:cart' %}">Košík</a></span>
-            <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
-
+            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
         {% else %}
-            <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+            <a href="{% url 'index:login' %}"><span class="button" >Login</span></a>
         {% endif %}
+        </div>
+        <nav>
+            <a href="{% url 'index:offers' %}"><span class="button">Ponuka</span></a>
+            <a href="{% url 'index:harvests' %}"><span class="button">Zbery</span></a>
+            {% if logged_in %}
+                <a href="{% url 'index:cart' %}"><span class="button">Košík</span></a>
+                <a href="{% url 'index:profile' %}"><span class="button">Profil</span></a>
+            {% endif %}
+        </nav>
     </header>
     <main>
         <div>
