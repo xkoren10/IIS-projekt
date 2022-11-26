@@ -116,25 +116,31 @@ def sign_up(request):
 
 
 def offers(request):
-    all_crops = []
+    all_crops = db.get_all_crops()
     user = user_logged_in(request)
     all_categories = db.get_all_categories()
 
-    cat_filter = request.GET.keys()
+    filters = request.GET
 
-    if (len(cat_filter) == 0) or ('1' in cat_filter):
-        all_crops = db.get_all_crops()
-    else:
-        for category in cat_filter:
-            filtered_crops = db.crop_get_by_category(int(category))
-            all_crops.extend(filtered_crops)
+    if 'filter' in filters:
+        if filters['filter'] != 1:
+            all_crops.clear()
+            for category in filters['filter']:
+                filtered_crops = db.crop_get_by_category(int(category))
+                all_crops.extend(filtered_crops)
+
+    if 'sort' in filters:
+        if filters['sort'] == 'descend':
+            all_crops = sorted(all_crops, key=lambda d: d['price'])
+        elif filters['sort'] == 'ascend':
+            all_crops = sorted(all_crops, key=lambda d: d['price'], reverse=True)
 
     if user:
         return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
                                                      "logged_in": user})
     # else
     return render(request, "index/offers.html", {"crops": all_crops, "categories": all_categories,
-                                                     "logged_in": False})
+                                                 "logged_in": False})
 
 
 def harvests(request):

@@ -21,16 +21,21 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
         <br><br>
     </header>
     <main>
-        <div id="filter">
+        <div id="filter" >
             <form>
                 <input type="submit" value="Filtrovať" class="button">
                 <input type="submit" value="Vyčistiť" class="button"><br>
                 {% if categories %}
                     {% for category in categories %}
-                        <input type="checkbox" name="{{ category.id }}">
-                        <label for="{{ category.id }}">{{ category.category_name }}</label>
+                        <label class="container">
+                        <input type="checkbox" value="{{ category.id }}" name="filter">
+                        <span class="checkmark">{{ category.category_name }}</span>
+                        </label>
                     {% endfor %}
-
+                <select id="sort" name="sort">
+                    <option value="ascend"> Podľa ceny - Vzostupne</option>
+                    <option value="descend"> Podľa ceny - Zostupne</option>
+                </select>
                 {% else %}
                     <label>Nothing to show for now</label>
                 {% endif %}
