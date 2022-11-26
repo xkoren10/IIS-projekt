@@ -298,8 +298,18 @@ def new_category(request):
 
 
 def product_detail(request, product_id):
+    user = user_logged_in(request)
     crop_to_show = db.crop_get_by_id(product_id)
     reviews = db.get_reviews_for_crop(product_id)
+
+    if user:
+        orders = db.get_order_by_person_id(user)
+        for order in orders:
+            if order['crop'] == crop_to_show['crop_name'] and order['state'] != 'pending':
+                reviewable = True
+            else:
+                reviewable = False
+
     if request.method == "POST":
         operation = request.POST.keys()
         if "delete" in operation:
@@ -314,26 +324,26 @@ def product_detail(request, product_id):
             cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
             response = render(request, "index/product_detail.html",
                               {"crop": crop_to_show, "reviews": reviews,
-                               "user": request.session['user'], "farmer": False})
+                               "user": request.session['user'], "farmer": False, "reviewable": reviewable})
             response.set_cookie("cart", cart)
             return response
 
     # else
-    user = user_logged_in(request)
+
     if user:
         if user == crop_to_show["farmer"]:
             return render(request, "index/product_detail.html",
                           {"crop": crop_to_show, "reviews": reviews,
-                           "user": user, "farmer": True})
+                           "user": user, "farmer": True, "reviewable": reviewable})
         else:
             return render(request, "index/product_detail.html",
                           {"crop": crop_to_show, "reviews": reviews,
-                           "user": user, "farmer": False})
+                           "user": user, "farmer": False, "reviewable": reviewable})
 
     # else
     return render(request, "index/product_detail.html",
                   {"crop": crop_to_show, "reviews": reviews,
-                   "user": False, "farmer": False})
+                   "user": False, "farmer": False, "reviewable": reviewable})
 
 
 def new_review(request, crop_id):
