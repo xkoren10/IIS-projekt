@@ -91,9 +91,15 @@
                         <span class="order_amount">
                             Množstvo: {{ order.amount }} ks,
                         </span>
-                        <span class="order_by">
-                            Od: {{ order.ordered_by }},
-                        </span>
+                        {% if farmer %}
+                            <span class="order_by">
+                                Od: {{ order.ordered_by }},
+                            </span>
+                        {% else %}
+                            <span class="order_farmer">
+                                Pre: {{ order.farmer }},
+                            </span>
+                        {% endif %}
                         <span class="crop_state">
                             Stav: {{ order.state }}
                         </span>

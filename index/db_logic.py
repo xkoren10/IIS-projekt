@@ -355,6 +355,7 @@ def get_order_by_person_id(person_id: int):
     for order_model in order_models:
         order_dict = to_dict(order_model)
         order_dict["ordered_by"] = user_get_by_id(order_dict["ordered_by"])["user_name"]
+        order_dict["farmer"] = user_get_by_id(order_dict["farmer"])["user_name"]
         order_dict["crop"] = crop_get_by_id(order_dict["crop"])["crop_name"]
         order_list.append(order_dict)
 
