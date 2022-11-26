@@ -10,7 +10,7 @@ def try_cookie(request, cookie):
     try:
         return request.COOKIES[cookie]
     except KeyError:
-        return None
+        return ""
 
 
 def add_to_cart(request, crop_id, amount):

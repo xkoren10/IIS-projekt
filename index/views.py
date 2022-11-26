@@ -104,10 +104,12 @@ def login(request):
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
                 return render(request, "index/login.html", {"form": form, "error": error_msg})
-    else:
-        request.session.clear()
-        form = LoginForm()
-    return render(request, "index/login.html", {"form": form})
+
+    request.session.clear()
+    form = LoginForm()
+    response = render(request, "index/login.html", {"form": form})
+    response.delete_cookie("cart")
+    return response
 
 
 def sign_up(request):
