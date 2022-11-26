@@ -344,6 +344,7 @@ def product_detail(request, product_id):
     user = user_logged_in(request)
     crop_to_show = db.crop_get_by_id(product_id)
     reviews = db.get_reviews_for_crop(product_id)
+    reviewable = False  # lebo  referencia
 
     if user:
         orders = db.get_order_by_person_id(user)
