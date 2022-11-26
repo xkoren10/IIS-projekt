@@ -31,8 +31,7 @@ body {
   white-space: pre-line;
 }
 
-
-.login {
+.login , .more{
     height: 520px;
     width: 400px;
     background-color: rgba(255,255,255,0.13);
@@ -47,7 +46,25 @@ body {
     padding: 50px 35px;
 }
 
-#login .input{
+
+.new_crop{
+    max-height: 100%;
+    width: 400px;
+    background-color: rgba(255,255,255,0.13);
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 70%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    padding: 50px 35px;
+}
+
+
+
+#login input:not([type = "checkbox"]){
     display: block;
     height: 50px;
     width: 380px;
@@ -59,6 +76,45 @@ body {
     font-size: 14px;
     font-weight: 300;
 }
+#haha input:not([type = "checkbox"]){
+    display: block;
+    height: 50px;
+    width: 380px;
+    background-color: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+#more input:not([type = "checkbox"]){
+    display: block;
+    height: 50px;
+    width: 380px;
+    background-color: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+#new_crop input:not([type = "checkbox"]){
+    display: block;
+    height: 50px;
+    width: 380px;
+    background-color: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
 
 ul
 {
@@ -91,7 +147,7 @@ h2 {
     color: #1b1b1b;
 }
 
-.button, .signup, .confirm, .refuse {
+ #login .get_in, .button, .signup, .confirm, .refuse {
   background-color: #79a641;
   padding: 15px 32px;
   text-align: center;
@@ -125,7 +181,7 @@ h2 {
     background-color: red;
 }
 
-.button:hover{
+#login .get_in:hover ,.button:hover{
    background: #bee883;
 }
 
@@ -133,7 +189,7 @@ h2 {
   width: 335px;
   height: 15px;
 }
-.signup:hover {
+#more .signup:hover, #login .signup:hover {
    background: #bee883;
 }
 

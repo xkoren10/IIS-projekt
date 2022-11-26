@@ -27,7 +27,7 @@ class Crop(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     amount = models.IntegerField()
     origin = models.CharField(max_length=80)
-    crop_year = models.IntegerField()
+    crop_year = models.IntegerField(null=True)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE)
     price_type = models.CharField(max_length=5,
                                   choices=[

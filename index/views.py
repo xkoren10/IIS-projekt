@@ -20,7 +20,7 @@ class ProfileForm(forms.Form):
     Profile form used in profile view
     """
     username = forms.CharField(label="Meno", max_length=80, initial='')
-    email = forms.CharField(label="Email", max_length=100, initial='')
+    email = forms.CharField(label="Email", max_length=100, initial='', required=False)
     password = forms.CharField(label="Password", max_length=100, initial='', widget=forms.PasswordInput)
 
 
@@ -29,11 +29,11 @@ class CropForm(forms.Form):
     Crop form used in new_crop view
     """
     crop_name = forms.CharField(label="Názov", max_length=80, initial='')
-    description = forms.CharField(label="Popis", max_length=100, initial='')
+    description = forms.CharField(label="Popis", max_length=100, initial='', required=False)
     price = forms.FloatField(label="Cena")
     amount = forms.IntegerField(label="Počet")
-    origin = forms.CharField(label="Pôvod", max_length=80, initial='')
-    crop_year = forms.IntegerField(label="Rok")
+    origin = forms.CharField(label="Pôvod", max_length=80, initial='', required=False)
+    crop_year = forms.IntegerField(label="Rok", required=False)
     price_type = forms.CharField(label="Typ predaju", max_length=80, initial='')
                                  # widget=forms.Select(choices=db.get_crop_price_types())) not bueno
     category_id = forms.IntegerField(label="Kategória", widget=forms.Select(choices=db.get_list_of_categories()))
@@ -45,9 +45,9 @@ class HarvestForm(forms.Form):
     """
     date = forms.DateField(label="Dátum", initial=datetime.date.today())
     place = forms.CharField(label="Miesto", max_length=80, initial='')
-    description = forms.CharField(label="Popis", max_length=80, initial='')
-    max_occupancy = forms.IntegerField(label="Kapacita")
-    current_occupation = forms.IntegerField(label="Obsadenosť")
+    description = forms.CharField(label="Popis", max_length=80, initial='', required=False)
+    max_occupancy = forms.IntegerField(label="Kapacita", initial=0)
+    current_occupation = forms.IntegerField(label="Obsadenosť", initial=0, required=False)
     crop_id = forms.IntegerField(label="Plodina", widget=forms.Select())    # db.get_list_of_farmer_crops(famer id)
 
 
@@ -57,8 +57,8 @@ class NewCategoryForm(forms.Form):
 
 
 class NewReview(forms.Form):
-    title = forms.CharField(label="Titulok", max_length=80)
-    description = forms.CharField(label="Popis", max_length=200)
+    title = forms.CharField(label="Titulok", max_length=80, initial='')
+    description = forms.CharField(label="Popis", max_length=200, initial='', required=False)
     stars = forms.IntegerField(label="Počet hviezdičiek (1-5)", max_value=5)
 
 
