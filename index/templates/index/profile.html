@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 100vh">
+<html lang="cs" >
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -110,6 +110,28 @@
             {% else %}
                 <div> Zatiaľ nemáte žiadne objednávky.</div>
             {% endif %}
+
+            <h2>Moje hodnotenia:</h2>
+                {% if reviews %}
+                    <div id="crop_reviews">
+                    {% for review in reviews %}
+                        <div class="review" id="review">
+                            <span>{{ review.crop }}: </span>
+                            <span class="title_stars" id="title_stars">{{ review.short_desc }}</span>
+                            <span>{{ review.long_desc }}</span>
+                            <span class="title_stars" id="title_stars">{{ review.stars }}/5</span>
+                                <form method="post" action="{% url 'index:profile' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="review_id" value="{{ review.id }}">
+                                    <button type="submit" value="true" class="button" name="del_review"
+                                            onclick="return confirm('Naozaj chcete odstrániť toto hodnotenie?');">
+                                            Zmazať hodnotenie
+                                    </button>
+                                </form>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
         </div>
     {% endif %}
     </main>

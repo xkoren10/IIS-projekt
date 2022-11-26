@@ -224,6 +224,9 @@ def profile(request, err=''):
     user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(request.session['user'])
     orders = db.get_order_by_person_id(request.session['user'])
+    reviews = db.get_user_reviews(request.session['user'])
+    for review in reviews:
+        review['crop'] = db.crop_get_by_id(review['crop'])['crop_name']
 
     # bruh, index out of range moment
     if len(orders) > 0:
@@ -245,7 +248,10 @@ def profile(request, err=''):
                 user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
                 if user:
                     error_msg = " Údaje úspešne zmenené"
-                    return render(request, "index/profile.html", {"user": user_profile, "form": form,  "error": error_msg, "crops": farmer_crops, "orders": orders, "farmer": farmer})
+                    return render(request, "index/profile.html", {"user": user_profile, "form": form,
+                                                                  "error": error_msg, "crops": farmer_crops,
+                                                                  "orders": orders, "farmer": farmer,
+                                                                  "reviews": reviews})
                 else:
                     return False
             else:
@@ -256,7 +262,8 @@ def profile(request, err=''):
                 request.session.clear()
                 form = LoginForm()
                 error_msg = "Váš účet bol úspešne odstránený."
-                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops, "orders":orders, "farmer": farmer})
+                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops,
+                                                              "orders": orders, "farmer": farmer, "reviews": reviews})
             else:
                 return False
 
@@ -269,13 +276,26 @@ def profile(request, err=''):
             db.change_order_state('rejected', request.POST["order_id"])
             orders = db.get_order_by_person_id(request.session['user'])
 
+        elif 'del_review' in operation:
+            deletion = db.review_delete(request.POST["review_id"])
+            if deletion:
+                err = "Hodnotenie bolo odstránené."
+                reviews.clear()
+                reviews = db.get_user_reviews(request.session['user'])
+                for review in reviews:
+                    review['crop'] = db.crop_get_by_id(review['crop'])['crop_name']
+            else:
+                err = "Hodnotenie nebolo odstránené."
+
+
     # prístup z indexu alebo cez redirect + zmena stavu
     form = ProfileForm()
     form.fields['email'].initial = user_profile['email']
     form.fields['username'].initial = user_profile['user_name']
     form.fields['password'].initial = user_profile['password']
 
-    return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops, "orders": orders, "error": err, "farmer": farmer})
+    return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops,
+                                                  "orders": orders, "error": err, "farmer": farmer, "reviews": reviews})
 
 
 def moderation(request):

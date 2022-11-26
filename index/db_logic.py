@@ -407,8 +407,12 @@ def review_create_new(user_id: int, crop_id: int, title: str, long_desc: str, st
 
 
 def review_delete(review_id: int):
+    try:
+        models.Review.objects.filter(id=review_id).delete()
+    except exceptions.ObjectDoesNotExist:
+        return False
 
-    pass
+    return True
 
 
 def get_reviews_for_crop(crop_id: int):
@@ -422,3 +426,17 @@ def get_reviews_for_crop(crop_id: int):
         reviews.append(to_dict(review))
 
     return reviews
+
+
+def get_user_reviews(user_id: int):
+    reviews = []
+    try:
+        db_reviews = models.Review.objects.filter(reviewed_by=user_id)
+    except exceptions.ObjectDoesNotExist:
+        return reviews
+
+    for review in db_reviews:
+        reviews.append(to_dict(review))
+
+    return reviews
+

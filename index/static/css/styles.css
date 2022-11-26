@@ -189,6 +189,7 @@ h2 {
     margin-bottom: 5px;
     text-wrap: none;
     padding: 0 40px;
+    white-space: nowrap;
 
 }
 
