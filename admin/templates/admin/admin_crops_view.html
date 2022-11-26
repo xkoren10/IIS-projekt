@@ -1,5 +1,8 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" style="height:100%">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
 <head>
     <meta charset="UTF-8">
     <title>IS Zelný trh - admin - crops</title>
@@ -9,10 +12,11 @@
     <header>
         <label>IS Zelný trh - administrácia - crops</label>
         <br>
-        <label><a href="{% url "admin:index" %}">IS Zelný trh - administrácia</a></label>
+        <div class="LOGO" id="LOGO"><a href="{% url 'admin:index' %}">IS Zelný trh - administrácia</a></div>
+        <br>
     </header>
     {% if crops %}
-        <div class="table_header">
+        <div class="table_header">    <!-- I had to do it to them-->
             <label>Crop ID</label>
             <label>Name</label>
             <label>Farmer ID</label>
@@ -21,9 +25,10 @@
             <label>Weight/Pieces</label>
             <label>Place of origin</label>
             <label>Crop year</label>
+            <label>Delete crop</label>
         </div>
         {% for crop in crops %}
-            <form method="post">
+            <form method="post" id="table_form" class="table_form">
                 {% csrf_token %}
                 <input type="hidden" name="crop_id" value="{{ crop.id }}">
                 <label>{{ crop.id }}</label>
@@ -38,7 +43,7 @@
                 {% endif %}
                 <label>{{ crop.origin }}</label>
                 <label>{{ crop.crop_year}}</label>
-                <input type="submit" name="delete" value="Delete">
+                <input type="submit" name="delete" value="Delete" class="toggle" id="toggle">
             </form>
         {% endfor %}
     {% else %}
