@@ -68,7 +68,7 @@
                 <a href="{% url 'index:new_crop' crop.id %}"><span class="button">Upraviť</span></a>
                 <form method="post" action="{% url 'index:product_detail' crop.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="button" name="form_type" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
+                    <button type="submit" class="button" name="delete" onclick="return confirm('Naozaj chcete zrušiť túto plodinu');">
                         Zmazať plodinu
                     </button>
                 </form>
