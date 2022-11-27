@@ -161,6 +161,7 @@ h2 {
 }
 
 
+
 #form .order{
     background-color: #79a641;
   padding: 15px 32px;
@@ -193,7 +194,10 @@ h2 {
    background: #bee883;
 }
 
-
+#new_crop .button{
+    margin-left: 120px;
+    margin-top: 20px;
+}
 
 .table_header{
     width: 200%;

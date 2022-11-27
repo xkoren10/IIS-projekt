@@ -6,6 +6,10 @@ from django.http import HttpResponse
 from . import db_logic as db
 from . import cookie_logic as cookie
 
+PRICE_TYPE_CHOICES = (("perpc", "Kus"),
+                      ("perkg", "Kilo"),
+                      ("zber", "Zber"))
+
 
 class LoginForm(forms.Form):
     """
@@ -34,8 +38,7 @@ class CropForm(forms.Form):
     amount = forms.IntegerField(label="Počet")
     origin = forms.CharField(label="Pôvod", max_length=80, initial='', required=False)
     crop_year = forms.IntegerField(label="Rok", required=False)
-    price_type = forms.CharField(label="Typ predaju", max_length=80, initial='')
-                                 # widget=forms.Select(choices=db.get_crop_price_types())) not bueno
+    price_type = forms.CharField(label="Typ predaju", widget=forms.Select(choices=PRICE_TYPE_CHOICES))
     category_id = forms.IntegerField(label="Kategória", widget=forms.Select(choices=db.get_list_of_categories()))
 
 
