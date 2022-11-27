@@ -197,15 +197,16 @@ def get_list_of_categories():
     return list_of_categories
 
 
-def get_list_of_farmers_crops(farmer_id: int):
+def get_list_of_farmers_crops(farmer_id: int):  # iba s typom ceny "zber"
     list_of_crops = []
     crops_dict = get_crops_from_farmer(farmer_id)
 
     if not crops_dict:
         return False
     for crop in crops_dict:
-        record = crop['id'], crop['crop_name']
-        list_of_crops.append(record)
+        if crop['price_type'] == 'zber':
+            record = crop['id'], crop['crop_name']
+            list_of_crops.append(record)
 
     return list_of_crops
 
@@ -324,10 +325,13 @@ def harvests_attended(attendee_id: int):
 def harvest_get_by_id(harvest_id: int):
     try:
         harvest = models.Harvest.objects.get(id=harvest_id)
+        harvest_dict = to_dict(harvest)
+        harvest_dict["crop"] = crop_get_by_id(harvest_dict["crop"])["crop_name"]
+        harvest_dict["farmer"] = user_get_by_id(harvest_dict["farmer"])["user_name"]
     except exceptions.ObjectDoesNotExist:
         return False
 
-    return to_dict(harvest)
+    return harvest_dict
 
 
 def harvest_get_all():
@@ -352,6 +356,25 @@ def harvest_delete(harvest_id):
         return False
 
     return True
+
+
+def harvest_create(date, place : str, desc: str, maximum: int, curr: int, crop: int, farmer: int):
+    harvest = models.Harvest.objects.create(date=date, description=desc, max_occupancy=maximum, place=place,
+                                            current_occupancy=curr, crop_id=crop, farmer_id=farmer)
+    if not harvest:
+        return False
+    else:
+        return harvest
+
+
+def harvest_update(harvest_id: int, date, place: str, desc: str, maximum: int, curr: int, crop: int, farmer: int):
+    crop = models.Harvest.objects.filter(id=harvest_id).update(date=date, description=desc, max_occupancy=maximum,
+                                                               place=place, current_occupancy=curr, crop_id=crop,
+                                                               farmer_id=farmer)
+    if not crop:
+        return False
+    else:
+        return crop
 
 
 def get_order_by_person_id(person_id: int):

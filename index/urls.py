@@ -17,6 +17,7 @@ urlpatterns = [
     path("cart/", views.cart_detail, name="cart"),
     path("product_detail/<int:product_id>/", views.product_detail, name="product_detail"),
     path("harvest_detail/<int:harvest_id>/", views.harvest_detail, name="harvest_detail"),
+    path("new_harvest/<int:harvest_id>/", views.new_harvest, name="new_harvest"),
     path("blue_lobster/", views.blue_lobster, name="lobster")
 ]
 # path(URL, VIEW, NAME)

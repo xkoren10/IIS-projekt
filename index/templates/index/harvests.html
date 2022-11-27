@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
+<html lang="cs" style="height: 120%">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -25,6 +25,9 @@
         </nav>
     </header>
     <main>
+            {% if error %}
+                <div class="message">{{ error }}</div>
+            {% endif %}
         <div class="showcase" id="all_harvests">
             <h1>Najbližšie zbery:</h1>
             {% if harvests %}
@@ -63,6 +66,10 @@
         </div>
         <div class="showcase" id="all_harvests">
             <h1>Moje zbery:</h1>
+                <a href="{% url 'index:new_harvest' 0 %}">
+                    <button class="button">Pridať zber</button>
+                </a>
+
             {% if my_harvests %}
                 <ul class="harvests">
                     {% for harvest in my_harvests %}
