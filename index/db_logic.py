@@ -367,8 +367,8 @@ def harvest_create(date, place : str, desc: str, maximum: int, curr: int, crop: 
         return harvest
 
 
-def harvest_update(harvest_id: int, date, place: str, desc: str, maximum: int, curr: int, crop: int, farmer: int):
-    crop = models.Harvest.objects.filter(id=harvest_id).update(date=date, description=desc, max_occupancy=maximum,
+def harvest_update(harvest_id: int, date, place: str, description: str, maximum: int, curr: int, crop: int, farmer: int):
+    crop = models.Harvest.objects.filter(id=harvest_id).update(date=date, description=description, max_occupancy=maximum,
                                                                place=place, current_occupancy=curr, crop_id=crop,
                                                                farmer_id=farmer)
     if not crop:

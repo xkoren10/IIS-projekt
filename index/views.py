@@ -46,8 +46,8 @@ class HarvestForm(forms.Form):
     """
     Harvest form used in new_harvest view
     """
-    def __init__(self, farmer_id):
-        super().__init__()
+    def __init__(self, farmer_id=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.fields['crop_id'] = forms.IntegerField(widget=forms.Select(choices=db.get_list_of_farmers_crops(farmer_id)))
     date = forms.DateField(label="Dátum", initial=datetime.date.today(), widget=forms.DateInput(attrs={'type': 'date'}))
     place = forms.CharField(label="Miesto", max_length=80, initial='')
@@ -493,7 +493,7 @@ def new_harvest(request, harvest_id: int):
         return render(request, "index/login.html", {"form": form})
 
     if request.method == "POST":
-        form = HarvestForm(farmer_id=request.session["user"])
+        form = HarvestForm(request.POST)
         if form.is_valid():
             if request.POST['form_type'] == 'save':
                 if harvest_id == 0:        # nový zber bude mať vždy id 0
@@ -533,8 +533,8 @@ def new_harvest(request, harvest_id: int):
         form.fields["place"].initial = harvest_to_update["place"]
         form.fields["description"].initial = harvest_to_update["description"]
         form.fields["max_occupancy"].initial = harvest_to_update["max_occupancy"]
-        form.fields["current_occupation"].initial = harvest_to_update["current_occupation"]
-        form.fields["crop_id"].initial = harvest_to_update["crop_id"]
+        form.fields["current_occupation"].initial = harvest_to_update["current_occupancy"]
+        form.fields["crop_id"].initial = harvest_to_update["crop"]
 
         return render(request, "index/new_harvest.html", {"form": form})
 

@@ -53,14 +53,26 @@
                 {% else %}
                     <div>Nothing to show for now</div>
                 {% endif %}
-    {% if user and farmer %}
-                <form method="post">
-                    {% csrf_token %}
-                    <div>
-                    <span class="button"><a href="{% url 'index:harvest_detail' harvest.id %}">Prihlasit na zber</a></span>
+                {% if user and not farmer %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div>
+                            <span class="button"><a href="{% url 'index:harvest_detail' harvest.id %}">Prihlásiť sa na zber</a></span>
                         </div>
-                </form>
-    {% endif %}
+                    </form>
+
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div>
+                            <span class="button"><a href="{% url 'index:new_harvest' harvest.id %}">Upraviť zber</a></span>
+                            <button type="submit" class="button" name="delete" onclick="return confirm('Naozaj chcete zrušiť tento zber?');">
+                                Zmazať zber
+                            </button>
+                        </div>
+                    </form>
+
+                {% endif %}
 
     </main>
     </body>
