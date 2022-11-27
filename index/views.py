@@ -141,6 +141,7 @@ def offers(request):
     all_crops = db.get_all_crops()
     user = user_logged_in(request)
     all_categories = db.category_get_all_approved()
+    all_categories = sorted(all_categories, key=lambda d: d['id'] , reverse=False)
 
     filters = dict(request.GET)
 
@@ -150,7 +151,9 @@ def offers(request):
 
             for category in filters['filter']:
                 filtered_crops = db.crop_get_by_category(int(category))
-                all_crops.extend(filtered_crops)
+                for crop in filtered_crops:
+                    if crop not in all_crops:
+                        all_crops.extend(filtered_crops)
 
     if 'sort' in filters:
         if filters['sort'] == 'descend':

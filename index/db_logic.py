@@ -307,7 +307,8 @@ def crop_get_by_category(crop_category: int):
 
         for crop in children.values():
             if crop is not []:
-                crops_list.append(crop)
+                if crop['id'] not in crops_list :
+                    crops_list.append(crop)
 
     return crops_list
 
