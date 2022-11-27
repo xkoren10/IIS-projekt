@@ -37,7 +37,7 @@ class CropForm(forms.Form):
     price = forms.FloatField(label="Cena", min_value=0.01, max_value=10000)
     amount = forms.IntegerField(label="Počet", min_value=1, max_value=10000)
     origin = forms.CharField(label="Pôvod", max_length=80, initial='', required=False)
-    crop_year = forms.DateField(label="Rok", required=False, input_formats=["%Y"])
+    crop_year = forms.DateField(label="Dátum", initial=datetime.date.today(), widget=forms.DateInput(attrs={'type': 'date'}))
     price_type = forms.CharField(label="Typ predaju", widget=forms.Select(choices=PRICE_TYPE_CHOICES))
     category_id = forms.IntegerField(label="Kategória", widget=forms.Select(choices=db.get_list_of_categories()))
 
@@ -178,15 +178,20 @@ def offers(request):
 def harvests(request,  err=''):
     harvests_models = db.harvest_get_all()
     user_id = user_logged_in(request)
+    farmer_crops = db.get_list_of_farmers_crops(user_id)
+    if not farmer_crops:
+        farmer = False
+    else:
+        farmer = True
 
     my_harvests = []
     if user_id:
         my_harvests = db.harvest_get_by_farmer_id(user_id)
         return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                        "logged_in": user_id, "error": err})
+                                                        "logged_in": user_id, "error": err, "farmer":farmer})
     # else
     return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                    "logged_in": False,  "error": err})
+                                                    "logged_in": False,  "error": err, "farmer":farmer})
 
 
 def new_crop(request, crop_id: int):
@@ -463,10 +468,10 @@ def cart_detail(request):
     return render(request, "index/login.html", {"form": form})
 
 
-def harvest_detail(request, harvest_id):
+def harvest_detail(request, harvest_id, err_msg=None):
     harvest_to_show = db.harvest_get_by_id(harvest_id)
     user = user_logged_in(request)
-
+    attending = db.is_attending(harvest_id,request.session['user'])
     if request.method == "POST":
         operation = request.POST.keys()
         if "delete" in operation:
@@ -475,18 +480,25 @@ def harvest_detail(request, harvest_id):
                 err_msg = "Zber bol odstránený."
                 request.method = "GET"
                 return harvests(request, err_msg)
+        if "attend" in operation:
+            err_msg = db.attend_harvest(harvest_id,request.session['user'])
+        if "leave" in operation:
+            err_msg = db.leave_harvest(harvest_id,request.session['user'])
+
+        request.method = "GET"
+        return harvest_detail(request, harvest_id, err_msg)
 
     if user:
         name = db.user_get_by_id(user)['user_name']
         if name == harvest_to_show["farmer"]:
             return render(request, "index/harvest_detail.html",
-                          {"harvest": harvest_to_show, "user": user, "farmer": True})
+                          {"harvest": harvest_to_show, "user": user, "farmer": True, "error" : err_msg, "attending":attending})
         else:
             return render(request, "index/harvest_detail.html",
                           {"harvest": harvest_to_show,
-                           "user": user, "farmer": False})
+                           "user": user, "farmer": False, "error": err_msg, "attending": attending})
 
-    return render(request, "index/harvest_detail.html", {"harvest": harvest_to_show, "user": False, "farmer": False})
+    return render(request, "index/harvest_detail.html", {"harvest": harvest_to_show, "user": False, "farmer": False, "error" : err_msg,"attending":attending})
 
 
 def new_harvest(request, harvest_id: int):
@@ -505,12 +517,14 @@ def new_harvest(request, harvest_id: int):
                                                 form.cleaned_data["description"], form.cleaned_data["max_occupancy"],
                                                 form.cleaned_data["current_occupation"], form.cleaned_data["crop_id"],
                                                 user)
+
                     if not harvest:
                         error_msg = "Zber nebol vytvorený"
                         return render(request, "index/new_harvest.html", {"form": form, "error": error_msg})
                     else:
                         error_msg = "Zber bol vytvorený"
-                        return render(request, "index/new_harvest.html", {"form": form, "error": error_msg})
+                        request.method = "GET"
+                        return harvests(request, error_msg)
 
                 else:
                     harvest = db.crop_update(harvest_id, form.cleaned_data["date"], form.cleaned_data["place"],

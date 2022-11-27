@@ -25,6 +25,9 @@
         {% endif %}
     </header>
     <main>
+            {% if error %}
+        <div class="message">{{ error }}</div>
+    {% endif %}
             <h1>Detaily zberu:</h1>
                 {% if harvest %}
                 <div class = "harvest">
@@ -53,11 +56,19 @@
                 {% else %}
                     <div>Nothing to show for now</div>
                 {% endif %}
-                {% if user and not farmer %}
+                {% if user and not farmer%}
                     <form method="post">
                         {% csrf_token %}
                         <div>
-                            <span class="button"><a href="{% url 'index:harvest_detail' harvest.id %}">Prihlásiť sa na zber</a></span>
+                            {% if not attending %}
+                         <button type="submit" value="attend" name="attend" class="button">
+                             Prihlásiť sa na zber
+                        </button>
+                            {% else %}
+                        <button type="submit" value="leave" name="leave" class="button">
+                             Odhlásiť sa zo zberu
+                        </button>
+                            {% endif %}
                         </div>
                     </form>
 

@@ -66,9 +66,11 @@
         </div>
         <div class="showcase" id="all_harvests">
             <h1>Moje zbery:</h1>
+                {% if farmer %}
                 <a href="{% url 'index:new_harvest' 0 %}">
                     <button class="button">Pridať zber</button>
                 </a>
+                {% endif %}
 
             {% if my_harvests %}
                 <ul class="harvests">

@@ -390,6 +390,57 @@ def harvest_update(harvest_id: int, date, place: str, description: str, maximum:
         return crop
 
 
+def attend_harvest(harvest_id: int, user_id : int):
+
+    attendee = models.User.objects.get(id=user_id)
+    harvest = models.Harvest.objects.get(id=harvest_id)
+    harvest_dict = to_dict(harvest)
+    hovno = harvest.attendees.all()
+    harvest_count = harvest_dict['current_occupancy']
+    harvest_max_occupancy = harvest_dict['max_occupancy']
+    harvest_count +=1
+    if harvest_count <= harvest_max_occupancy:
+        if attendee not in harvest.attendees.all() :
+            try:
+                models.Harvest.objects.filter(id=harvest_id).update(current_occupancy= harvest_count)
+                harvest.attendees.add(attendee)
+            except exceptions.ObjectDoesNotExist:
+                return "Zber neexistuje."
+
+            return "Boli ste prihlásneny na zber."
+        else:
+            return "Na zber ste už prihláseny."
+    else:
+        return "Kapacita zberu bola zaplnená."
+
+def leave_harvest(harvest_id: int, user_id : int):
+    attendee = models.User.objects.get(id=user_id)
+    harvest = models.Harvest.objects.get(id=harvest_id)
+    harvest_dict = to_dict(harvest)
+    harvest_count = harvest_dict['current_occupancy']
+    harvest_max_occupancy = harvest_dict['max_occupancy']
+    harvest_count -=1
+    if harvest_count >= 0:
+        if attendee in harvest.attendees.all() :
+            try:
+                models.Harvest.objects.filter(id=harvest_id).update(current_occupancy= harvest_count)
+                hahah=harvest.attendees.remove(attendee)
+            except exceptions.ObjectDoesNotExist:
+                return "Zber neexistuje."
+
+            return "Boli ste odhláseny zo zberu."
+        else:
+            return "Na zber ste neni prihláseny."
+    else:
+        return "Na zbere nikdo neni."
+
+def is_attending(harvest_id :int, user_id:int):
+    attendee = models.User.objects.get(id=user_id)
+    harvest = models.Harvest.objects.get(id=harvest_id)
+    if attendee in harvest.attendees.all():
+        return True
+    else:
+        return False
 def get_order_by_person_id(person_id: int):
     order_list = []
     try:
