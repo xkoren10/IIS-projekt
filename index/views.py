@@ -456,7 +456,23 @@ def cart_detail(request):
 
 
 def harvest_detail(request, harvest_id):
-    return render(request, "index/harvest_detail.html")
+    harvest_to_show = db.harvest_get_by_id(harvest_id)
+    user = user_logged_in(request)
+
+    if user:
+        if user == harvest_to_show["farmer"]:
+            return render(request, "index/harvest_detail.html",
+                          {"harvest": harvest_to_show, "user": user, "farmer": True})
+        else:
+            return render(request, "index/harvest_detail.html",
+                          {"harvest": harvest_to_show,
+                           "user": user, "farmer": False})
+
+
+
+    return render(request, "index/harvest_detail.html", {"harvest": harvest_to_show, "user": False, "farmer": False})
+
+
 
 
 def blue_lobster(request):

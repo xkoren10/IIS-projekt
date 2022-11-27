@@ -1,13 +1,68 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en"  style="height: 100vh">
+<html lang="cs" style="height: 110%">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
 <head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <title>Detail zberu - Zelný trh</title>
-</head>
-<body>
 
-</body>
+    <meta charset="UTF-8">
+    <title>Zelný trh - Detail zberu</title>
+    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
+    <br><br>
+
+
+
+</head>
+    <body>
+    <header>
+            <span class="button"><a href="{% url 'index:offers' %}">Ponuka</a></span>
+            <span class="button"><a href="{% url 'index:harvests' %}">Zbery</a></span>
+        {% if user %}
+            <span class="button"><a href="{% url 'index:profile' %}">Profil</a></span>
+            <span class="button"><a href="{% url 'index:login' %}">Odhlásenie</a></span>
+        {% else %}
+            <span class="button"><a href="{% url 'index:login' %}">Login</a></span>
+        {% endif %}
+    </header>
+    <main>
+            <h1>Detaily zberu:</h1>
+                {% if harvest %}
+                <div class = "harvest">
+                                    <label class="harvest_date">
+                                       Dátum: {{ harvest.date }}
+                                    </label>
+                                    <label  class="harvest_place">
+                                        Miesto: {{ harvest.place }}
+                                    </label>
+                                    <label  class="harvest_description">
+                                        Popis: {{ harvest.description }}
+                                    </label>
+                                    <label  class="harvest_max">
+                                        Maximum: {{ harvest.max_occupancy }} osôb
+                                    </label>
+                                    <label  class="harvest_current">
+                                        Zúčastnených: {{ harvest.current_occupancy }} osôb
+                                    </label>
+                                    <label  class="harvest_crop">
+                                        Plodina: {{ harvest.crop }}
+                                    </label>
+                                    <label  class="harvest_farmer">
+                                        Farmár: {{ harvest.farmer }}
+                                    </label>
+                                </div>
+                {% else %}
+                    <div>Nothing to show for now</div>
+                {% endif %}
+    {% if user and farmer %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div>
+                    <span class="button"><a href="{% url 'index:harvest_detail' harvest.id %}">Prihlasit na zber</a></span>
+                        </div>
+                </form>
+    {% endif %}
+
+    </main>
+    </body>
 </html>
+
