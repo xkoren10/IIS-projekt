@@ -16,7 +16,7 @@ class LoginForm(forms.Form):
     Login form used in login and sign_up views
     """
     username = forms.CharField(label="Prihlasovacie meno", max_length=80)
-    password = forms.CharField(label="Heslo", max_length=100, widget=forms.PasswordInput)
+    password = forms.CharField(label="Heslo", max_length=40, widget=forms.PasswordInput)
 
 
 class ProfileForm(forms.Form):
@@ -25,7 +25,7 @@ class ProfileForm(forms.Form):
     """
     username = forms.CharField(label="Meno", max_length=80, initial='')
     email = forms.CharField(label="Email", max_length=100, initial='', required=False)
-    password = forms.CharField(label="Heslo", max_length=100, initial='', widget=forms.PasswordInput)
+    password = forms.CharField(label="Heslo", max_length=40, initial='', widget=forms.PasswordInput)
 
 
 class CropForm(forms.Form):
@@ -34,10 +34,10 @@ class CropForm(forms.Form):
     """
     crop_name = forms.CharField(label="Názov", max_length=80, initial='')
     description = forms.CharField(label="Popis", max_length=100, initial='', required=False)
-    price = forms.FloatField(label="Cena")
-    amount = forms.IntegerField(label="Počet")
+    price = forms.FloatField(label="Cena", min_value=0.01, max_value=10000)
+    amount = forms.IntegerField(label="Počet", min_value=1, max_value=10000)
     origin = forms.CharField(label="Pôvod", max_length=80, initial='', required=False)
-    crop_year = forms.IntegerField(label="Rok", required=False)
+    crop_year = forms.DateField(label="Rok", required=False, input_formats=["%Y"])
     price_type = forms.CharField(label="Typ predaju", widget=forms.Select(choices=PRICE_TYPE_CHOICES))
     category_id = forms.IntegerField(label="Kategória", widget=forms.Select(choices=db.get_list_of_categories()))
 
@@ -46,26 +46,29 @@ class HarvestForm(forms.Form):
     """
     Harvest form used in new_harvest view
     """
-    def __init__(self, farmer_id=None, *args, **kwargs):
+    def __init__(self, farmer_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['crop_id'] = forms.IntegerField(widget=forms.Select(choices=db.get_list_of_farmers_crops(farmer_id)))
+        if farmer_id:
+            self.fields['crop_id'] = forms.IntegerField(widget=forms.Select(choices=db.get_list_of_farmers_crops(farmer_id)))
+        else:
+            self.fields['crop_id'] = forms.IntegerField(widget=forms.Select(choices=[]))
     date = forms.DateField(label="Dátum", initial=datetime.date.today(), widget=forms.DateInput(attrs={'type': 'date'}))
     place = forms.CharField(label="Miesto", max_length=80, initial='')
     description = forms.CharField(label="Popis", max_length=80, initial='', required=False)
-    max_occupancy = forms.IntegerField(label="Kapacita", initial=0)
-    current_occupation = forms.IntegerField(label="Obsadenosť", initial=0, required=False)
+    max_occupancy = forms.IntegerField(label="Kapacita", initial=0, min_value=1, max_value=1000)
+    current_occupation = forms.IntegerField(label="Obsadenosť", initial=0, min_value=0, max_value=999, required=False)
     crop_id = forms.IntegerField(label="Plodina")
 
 
 class NewCategoryForm(forms.Form):
     cat_name = forms.CharField(label="Názov kategórie")
-    cat_of = forms.IntegerField(label="Je podkategóriou", widget=forms.Select(choices=db.get_list_of_categories()))
+    cat_of = forms.IntegerField(label="Je podkategóriou", widget=forms.Select(choices=db.category_get_all_approved()))
 
 
 class NewReview(forms.Form):
     title = forms.CharField(label="Titulok", max_length=80, initial='')
     description = forms.CharField(label="Popis", max_length=200, initial='', required=False)
-    stars = forms.IntegerField(label="Počet hviezdičiek (1-5)", max_value=5)
+    stars = forms.IntegerField(label="Počet hviezdičiek (1-5)", min_value=1, max_value=5)
 
 
 def user_logged_in(request):
@@ -178,7 +181,7 @@ def harvests(request,  err=''):
 
     my_harvests = []
     if user_id:
-        my_harvests = db.harvests_attended(user_id)
+        my_harvests = db.harvest_get_by_farmer_id(user_id)
         return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
                                                         "logged_in": user_id, "error": err})
     # else
@@ -488,19 +491,20 @@ def harvest_detail(request, harvest_id):
 
 def new_harvest(request, harvest_id: int):
     # access restricted
-    if not user_logged_in(request):
+    user = user_logged_in(request)
+    if not user:
         form = LoginForm()
         return render(request, "index/login.html", {"form": form})
 
     if request.method == "POST":
-        form = HarvestForm(request.POST)
+        form = HarvestForm(user, request.POST)
         if form.is_valid():
             if request.POST['form_type'] == 'save':
-                if harvest_id == 0:        # nový zber bude mať vždy id 0
+                if harvest_id == 0:        # nový zber bude mať vždy id 0 # what is this magic thing?
                     harvest = db.harvest_create(form.cleaned_data["date"], form.cleaned_data["place"],
                                                 form.cleaned_data["description"], form.cleaned_data["max_occupancy"],
                                                 form.cleaned_data["current_occupation"], form.cleaned_data["crop_id"],
-                                                request.session["user"])
+                                                user)
                     if not harvest:
                         error_msg = "Zber nebol vytvorený"
                         return render(request, "index/new_harvest.html", {"form": form, "error": error_msg})
@@ -512,7 +516,7 @@ def new_harvest(request, harvest_id: int):
                     harvest = db.crop_update(harvest_id, form.cleaned_data["date"], form.cleaned_data["place"],
                                             form.cleaned_data["description"], form.cleaned_data["max_occupancy"],
                                             form.cleaned_data["current_occupation"], form.cleaned_data["crop_id"],
-                                            request.session["user"])
+                                            user)
 
                     if not harvest:
                         error_msg = "Zber nebol upravený"
@@ -522,7 +526,7 @@ def new_harvest(request, harvest_id: int):
                         return render(request, "index/new_harvest.html", {"form": form, "error": error_msg})
 
     elif request.method == "GET" and harvest_id == 0:
-        form = HarvestForm(farmer_id=request.session["user"])
+        form = HarvestForm(user)
         return render(request, "index/new_harvest.html", {"form": form})
 
     else:

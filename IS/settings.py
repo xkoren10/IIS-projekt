@@ -25,8 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2dt6tj(bw=lx5rz3fk6o4opqcos!ygsstg_1%yafg23m4zim)e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# TODO TODO
+DEBUG = False
 
 IS_HEROKU = "DYNO" in os.environ
 

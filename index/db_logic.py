@@ -334,6 +334,19 @@ def harvest_get_by_id(harvest_id: int):
     return harvest_dict
 
 
+def harvest_get_by_farmer_id(farmer_id):
+    harvests = []
+    try:
+        db_harvests = models.Harvest.objects.filter(farmer_id=farmer_id)
+    except exceptions.ObjectDoesNotExist:
+        return harvests
+
+    for harvest in db_harvests:
+        harvests.append(to_dict(harvest))
+
+    return harvests
+
+
 def harvest_get_all():
     db_harvests = models.Harvest.objects.all()
     if not db_harvests:
