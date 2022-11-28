@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 120%">
+<html lang="sk" style="height: 120%">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -45,7 +45,7 @@
                                         Popis: {{ harvest.description }}
                                     </label>
                                     <label  class="harvest_max">
-                                        Maximum: {{ harvest.max_occupancy }} osôb
+                                        Maximum: {{ harvest.max_occupancy }} osôb {% if attending %} <span style="color: blue">-Prihlaseny </span>{% endif %}
                                     </label>
                                     <label  class="harvest_current">
                                         Zúčastnených: {{ harvest.current_occupancy }} osôb
@@ -61,7 +61,7 @@
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <div>Nothing to show for now</div>
+                    <div>Neexistuju žiadne položky vyhovojúce danym kritériam.</div>
                 {% endif %}
         </div>
         <div class="showcase" id="all_harvests">
@@ -92,7 +92,32 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <div>Nothing to show for now</div>
+                <div>Neexistuju žiadne položky vyhovojúce danym kritériam.</div>
+            {% endif %}
+        </div>
+    <div class="showcase" id="all_harvests">
+            <h1>Prihlasene zbery:</h1>
+            {% if attending_harvest %}
+                <ul class="harvests">
+                    {% for harvest in attending_harvest %}
+                        <li class="harvests">
+                                    <a href="{% url 'index:harvest_detail' harvest.id %}">
+                             <div class = "harvest">
+                                    <label class="harvest_date">
+                                       Dátum: {{ harvest.date }}
+                                    </label>
+                                    <label  class="harvest_place">
+                                        Miesto: {{ harvest.place }}
+                                    </label>
+                                    <label  class="harvest_description">
+                                        Popis: {{ harvest.description }}
+                                    </label>
+                             </div>
+                        </a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div>Neexistuju žiadne položky vyhovojúce danym kritériam.</div>
             {% endif %}
         </div>
     </main>

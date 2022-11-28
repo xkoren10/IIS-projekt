@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
+<html lang="sk" style="height: 110%">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -42,7 +42,7 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                     <option value="descend"> Podľa ceny - Zostupne</option>
                 </select>
                 {% else %}
-                    <label>Nothing to show for now</label>
+                    <label>Neexistuju žiadne položky vyhovojúce danym kritériam.</label>
                 {% endif %}
             </form>
         </div>
@@ -50,6 +50,7 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
             {% if crops %}
                 <ul>
                 {% for crop in crops %}
+                    {% if crop.price_type != 'zber'  %}
                     <li><a href="{% url 'index:product_detail' crop.id %}">
                                 <div class="crop">
                                     {% load static %}
@@ -65,6 +66,7 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                                     </span>
                                 </div>
                             </a></li>
+                    {% endif %}
                 {% endfor %}
                 </ul>
             {% else %}

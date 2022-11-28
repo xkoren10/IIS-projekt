@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 100vh">
+<html lang="sk" style="height: 100vh">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -24,11 +24,11 @@
         {% if categories %}
         <div class="table_header" id="table_header">
         <br>
-            <label>Category ID</label>
-            <label>Category name</label>
-            <label>Category of</label>
-            <label>Is approved</label>
-            <label>Toggle approval</label>
+            <label>ID Kategorie</label>
+            <label>Názov Kategorie</label>
+            <label> Kategoria pre </label>
+            <label>Je schválena</label>
+            <label>Prepnuť</label>
         </div>
         <div>
             {% for cat in categories %}
@@ -47,7 +47,7 @@
             </form>
             {% endfor %}
         {% else %}
-            <label>Nothing to show for now</label>
+            <label>Neexistuju žiadne položky vyhovojúce danym kritériam.</label>
         {% endif %}
         </div>
     </main>

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
+<html lang="sk" style="height: 110%">
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
 <head>
@@ -44,7 +44,7 @@
                                         Maximum: {{ harvest.max_occupancy }} osôb
                                     </label>
                                     <label  class="harvest_current">
-                                        Zúčastnených: {{ harvest.current_occupancy }} osôb
+                                        Zúčastnených: {{ harvest.current_occupancy }} osôb {% if attending %} <span style="color: green">-Prihlaseny </span>{% endif %}
                                     </label>
                                     <label  class="harvest_crop">
                                         Plodina: {{ harvest.crop }}
@@ -54,7 +54,7 @@
                                     </label>
                                 </div>
                 {% else %}
-                    <div>Nothing to show for now</div>
+                    <div>Neexistuju žiadne položky vyhovojúce danym kritériam.</div>
                 {% endif %}
                 {% if user and not farmer%}
                     <form method="post">
