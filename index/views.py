@@ -114,6 +114,7 @@ def login(request):
     response = render(request, "index/login.html", {"form": form})
     response.delete_cookie("cart")
     response.delete_cookie("user")
+    response.delete_cookie("error")
     return response
 
 
@@ -169,11 +170,14 @@ def offers(request):
                                                  "logged_in": False})
 
 
-def harvests(request,  err=''):
+def harvests(request):
     harvests_models = db.harvest_get_all()
     user_id = user_logged_in(request)
     farmer_crops = db.get_list_of_farmers_crops(user_id)
     attended_harvests = []
+
+    err = cookie.try_cookie(request, 'error')
+
 
     if user_id:
         for h in harvests_models:
@@ -189,11 +193,15 @@ def harvests(request,  err=''):
     my_harvests = []
     if user_id:
         my_harvests = db.harvest_get_by_farmer_id(user_id)
-        return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
+        response = render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
                                                        "logged_in": user_id, "error": err, "farmer": farmer, "attending_harvest":attended_harvests})
+        response.set_cookie("error", "")
+        return response
     # else
-    return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
+    response = render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
                                                    "logged_in": False,  "error": err, "farmer": farmer,"attending_harvest":attended_harvests})
+    response.set_cookie("error", "")
+    return response
 
 
 def new_crop(request, crop_id: int):
@@ -217,7 +225,9 @@ def new_crop(request, crop_id: int):
                         return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
                     else:
                         error_msg = "Plodina bola vytvorená"
-                        return redirect("index:profile")
+                        response = redirect("index:profile")
+                        response.set_cookie("error", error_msg)
+                        return response
 
                 else:
                     crop = db.crop_update(crop_id, form.cleaned_data["crop_name"], form.cleaned_data["description"],
@@ -230,7 +240,9 @@ def new_crop(request, crop_id: int):
                         return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
                     else:
                         error_msg = "Plodina bola upravená"
-                        return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                        response = redirect("index:profile")
+                        response.set_cookie("error", error_msg)
+                        return response
 
     elif request.method == "GET" and crop_id == 0:
         form = CropForm()
@@ -252,11 +264,14 @@ def new_crop(request, crop_id: int):
         return render(request, "index/new_crop.html", {"form": form})
 
 
-def profile(request, err=''):
+def profile(request):
     # access restricted
     user = user_logged_in(request)
     if not user:
         return redirect("index:login")
+
+    err = cookie.try_cookie(request, 'error')
+
 
     user_profile = db.user_get_by_id(user)   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(user)
@@ -285,10 +300,12 @@ def profile(request, err=''):
                 user = db.user_update(user, form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
                 if user:
                     error_msg = " Údaje úspešne zmenené"
-                    return render(request, "index/profile.html", {"user": user_profile, "form": form,
+                    response = render(request, "index/profile.html", {"user": user_profile, "form": form,
                                                                   "error": error_msg, "crops": farmer_crops,
                                                                   "orders": orders, "farmer": farmer,
                                                                   "reviews": reviews})
+                    response.set_cookie("error", "")
+                    return response
                 else:
                     return False
             else:
@@ -297,10 +314,11 @@ def profile(request, err=''):
             delete = db.user_delete(user)
             if delete:
                 request.session.clear()
-                form = LoginForm()
                 error_msg = "Váš účet bol úspešne odstránený."
-                return render(request, "index/sign_up.html", {"form": form, "error": error_msg, "crops": farmer_crops,
-                                                              "orders": orders, "farmer": farmer, "reviews": reviews})
+                response = redirect("index:signup")
+                response.set_cookie("error", error_msg)
+                return response
+
             else:
                 return False
 
@@ -330,8 +348,10 @@ def profile(request, err=''):
     form.fields['username'].initial = user_profile['user_name']
     form.fields['password'].initial = user_profile['password']
 
-    return render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops,
+    response = render(request, "index/profile.html", {"user": user_profile, "form": form, "crops": farmer_crops,
                                                   "orders": orders, "error": err, "farmer": farmer, "reviews": reviews})
+    response.set_cookie("error", "")
+    return response
 
 
 def moderation(request):
@@ -358,7 +378,14 @@ def new_category(request):
             form = NewCategoryForm(request.POST)
             if form.is_valid():
                 db.category_create_new(form.cleaned_data["cat_name"], form.cleaned_data["cat_of"])
-                return redirect("index:profile")
+                error_msg = "Kategória vytvorená"
+            else:
+                error_msg = "Kategória nebola vytvorená"
+
+            response = redirect("index:profile")
+            response.set_cookie("error", error_msg)
+            return response
+
         form = NewCategoryForm()
         return render(request, "index/new_category.html", {"user": user, "form": form})
 
@@ -384,18 +411,20 @@ def product_detail(request, product_id):
         if "delete" in operation:
             delete = db.crop_delete(product_id)
             if delete:
-                err_msg = "Plodina zmazaná."
-                request.method = "GET"
-                return redirect("index:profile")
+                error_msg = "Plodina zmazaná."
+                response = redirect("index:profile")
+                response.set_cookie("error", error_msg)
+
+                return response
 
         # add crop to cart cookie
         elif "add_to_cart" in operation:
             cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
-            err_msg = "Plodina bola objednaná."
-            response = render(request, "index/product_detail.html",
-                              {"crop": crop_to_show, "reviews": reviews,
-                               "user": user, "farmer": False, "reviewable": reviewable,"error": err_msg})
+            response = redirect("index:profile")
+            error_msg = "Plodina bola objednaná."
             response.set_cookie("cart", cart)
+            response.set_cookie("error", error_msg)
+
             return response
 
     # else
@@ -424,7 +453,12 @@ def new_review(request, crop_id):
             form = NewReview(request.POST)
             if form.is_valid():
                 db.review_create_new(user, crop_id, form.cleaned_data["title"], form.cleaned_data["description"], form.cleaned_data["stars"])
-                return redirect("index:product_detail", product_id=crop_id)
+                response = redirect("index:profile")
+                error_msg = "Hodnotenie bolo vytvorené."
+                response.set_cookie("error", error_msg)
+
+                return response
+
         form = NewReview()
         return render(request, "index/new_review.html", {"user": user, "form": form})
     return redirect("index:login")
@@ -482,9 +516,12 @@ def harvest_detail(request, harvest_id, err_msg=None):
         if "delete" in operation:
             delete = db.harvest_delete(harvest_id)
             if delete:
-                err_msg = "Zber bol odstránený."
-                request.method = "GET"
-                return harvests(request, err_msg)
+                error_msg = "Zber bol odstránený."
+                response = redirect("index:harvests")
+                response.set_cookie("error", error_msg)
+
+                return response
+
         if "attend" in operation:
             err_msg = db.attend_harvest(harvest_id, user)
         if "leave" in operation:
@@ -527,8 +564,11 @@ def new_harvest(request, harvest_id: int):
                         return render(request, "index/new_harvest.html", {"form": form, "error": error_msg})
                     else:
                         error_msg = "Zber bol vytvorený"
-                        request.method = "GET"
-                        return redirect("index:harvests")
+                        response = redirect("index:harvests")
+                        response.set_cookie("error", error_msg)
+
+                        return response
+
 
                 else:
                     harvest = db.crop_update(harvest_id, form.cleaned_data["date"], form.cleaned_data["place"],
