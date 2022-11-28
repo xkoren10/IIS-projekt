@@ -177,6 +177,13 @@ def harvests(request,  err=''):
     harvests_models = db.harvest_get_all()
     user_id = user_logged_in(request)
     farmer_crops = db.get_list_of_farmers_crops(user_id)
+    attended_harvests = []
+
+    for h in harvests_models:
+        attending = db.is_attending(h['id'],user_id)
+        if attending:
+            attended_harvests.append(h)
+
     if not farmer_crops:
         farmer = False
     else:
@@ -186,10 +193,10 @@ def harvests(request,  err=''):
     if user_id:
         my_harvests = db.harvest_get_by_farmer_id(user_id)
         return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                       "logged_in": user_id, "error": err, "farmer": farmer})
+                                                       "logged_in": user_id, "error": err, "farmer": farmer, "attending_harvest":attended_harvests})
     # else
     return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                   "logged_in": False,  "error": err, "farmer": farmer})
+                                                   "logged_in": False,  "error": err, "farmer": farmer,"attending_harvest":attended_harvests})
 
 
 def new_crop(request, crop_id: int):
