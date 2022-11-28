@@ -9,11 +9,12 @@
 </head>
 <body>
     <header>
-        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+        <div  class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
         {% if user %}
-            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+            <div><a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a></div>
         {% else %}
-            <a href="{% url 'index:login' %}"><span class="button" >Login</span></a>
+            <div><a href="{% url 'index:login' %}"><span class="button" >Login</span></a></div>
         {% endif %}
         </div>
         <nav>
@@ -26,6 +27,9 @@
         </nav>
     </header>
     <main>
+            {% if error %}
+                <div class="message">{{ error }}</div>
+            {% endif %}
         {% if crop %}
             <div class="crop">
                 <img src="{% static 'index/images/crops.png' %}" alt="Crop" width="100" height="100">   <br>
@@ -53,10 +57,10 @@
             </div>
             {% if user and not farmer %}
                 {% if crop.price_type != "zber" %}
-                    <form method="post">
+                    <form method="post" >
                     {% csrf_token %}
                         <input type="number" name="amount" value="0" min="1" max="1000">
-                        <input class="button" type="submit" name="add_to_cart" value="Add to cart">
+                        <input class="button" type="submit" name="add_to_cart" value="Pridať do košíka">
                     </form>
                 {% endif %}
                     {%  if reviewable %}

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 125%">
+<html lang="sk" style="height: 125%">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -9,8 +9,9 @@
 </head>
 <body>
     <header>
-        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
-            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+        <div  class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
+            <div><a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a></div>
         </div>
         <nav>
             <a href="{% url 'index:offers' %}"><span class="button">Ponuka</span></a>

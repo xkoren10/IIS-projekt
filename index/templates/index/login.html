@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
+<html lang="sk" style="height: 110%">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -9,11 +9,13 @@
 </head>
 <body>
     <header>
-        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
+        <div class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
+        </div>
     </header>
     <main>
         {% if error %}
-            <div>{{ error }}</div>
+            <div class="message">{{ error }}</div>
         {% endif %}
         <div class="login" id="login" >
             <form method="post">
@@ -22,7 +24,7 @@
                 <br>
                 <input type="submit" value="Login" class="get_in" id="get_in">
                 <br>
-                <a class="signup" href="{% url 'index:sign_up' %}">Sign Up</a>
+                <a class="signup" href="{% url 'index:sign_up' %}">Registrácia</a>
             </form>
         </div>
     </main>

@@ -10,11 +10,12 @@
 <body style="background: rgb(4,36,0);
 background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgba(159,255,0,1) 100%);">
     <header>
-        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+        <div  class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
         {% if logged_in %}
-            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+            <div><a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a></div>
         {% else %}
-            <a href="{% url 'index:login' %}"><span class="button" >Login</span></a>
+            <div><a href="{% url 'index:login' %}"><span class="button" >Login</span></a></div>
         {% endif %}
         </div>
         <nav>
@@ -24,6 +25,7 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                 <a href="{% url 'index:profile' %}"><span class="button">Profil</span></a>
             {% endif %}
         </nav>
+    <br><br><br>
     </header>
     <main>
         <div id="filter" >
@@ -46,9 +48,9 @@ background: linear-gradient(176deg, rgba(4,36,0,1) 0%, rgba(45,121,9,1) 40%, rgb
                 {% endif %}
             </form>
         </div>
-        <div id="grid_show">
+        <div>
             {% if crops %}
-                <ul>
+                <ul id="grid_show">
                 {% for crop in crops %}
                     {% if crop.price_type != 'zber'  %}
                     <li><a href="{% url 'index:product_detail' crop.id %}">

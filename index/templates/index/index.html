@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="cs" style="height: 110%">
+<html lang="sk" style="height: 110%">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
@@ -9,11 +9,12 @@
 </head>
 <body>
     <header>
-        <div class="LOGO" id="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a>
+        <div class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
         {% if logged_in %}
-            <a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a>
+            <div></div><a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a></div>
         {% else %}
-            <a href="{% url 'index:login' %}"><span class="button" >Login</span></a>
+            <div><a href="{% url 'index:login' %}"><span class="button" >Login</span></a></div>
         {% endif %}
         </div>
         <nav>
@@ -28,9 +29,9 @@
     <main>
         <div>
             <div class="showcase">
-                {% if top_crops %}
                     <h2>Najlepšie hodnotené plodiny:</h2>
-                    <ul>
+                    {% if top_crops %}
+                    <ul id="grid_show">
                         {% for top_crop in top_crops %}
                             <li><a href="{% url 'index:product_detail' top_crop.id %}">
                                 <div class="crop">
@@ -50,13 +51,13 @@
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <div>Nothing to show for now</div>
+                    <div>Žiadne hodnotenia plodín na zobrazenie.</div>
                 {% endif %}
             </div>
             <div class="showcase">
+                <h2>Najnovšie plodiny:</h2>
                 {% if new_crops %}
-                    <h2>Najnovšie plodiny:</h2>
-                    <ul>
+                   <ul id="grid_show">
                         {% for new_crop in new_crops %}
                             <li><a href="{% url 'index:product_detail' new_crop.id %}">
                                 <div class="crop">
@@ -76,7 +77,7 @@
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <div>Nothing to show for now</div>
+                    <div>Žiadne nové plodiny na zobrazenie.</div>
                 {% endif %}
             </div>
         </div>

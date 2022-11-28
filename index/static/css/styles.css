@@ -10,12 +10,30 @@ body {
   border: 2px solid black;
 
 }
+
+#order{
+    border: 2px solid black;
+    margin-bottom: 3px;
+}
+
+.site_head{
+    display: flex;
+    justify-content: space-between;
+}
+
 .LOGO{
   font-size: xx-large;
   display: flex;
   justify-content: space-between;
   color: black;
+    background: #006b1b;
+    border: 3px solid black;
+    width: 181px;
+    text-align: center;
+}
 
+.LOGO:hover {
+    background: #79a641;
 }
 
 .crop, .harvest{
@@ -44,7 +62,7 @@ body {
     background-color: rgba(255,255,255,0.13);
     position: absolute;
     transform: translate(-50%,-50%);
-    top: 50%;
+    top: 55%;
     left: 50%;
     border-radius: 10px;
     backdrop-filter: blur(10px);
@@ -68,8 +86,6 @@ body {
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
     padding: 50px 35px;
 }
-
-
 
 #login input:not([type = "checkbox"]){
     display: block;
@@ -121,22 +137,36 @@ body {
     font-size: 14px;
     font-weight: 300;
 }
+.showcase{
+    margin-right: 10px;
+}
 
+#grid_show {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-row-gap: 10px;
+}
 
 ul
 {
-  display:flex;
+  display:table;
   list-style:none;
   width: auto;
   text-align: center;
+    border-collapse: separate;
 }
 
 ul li{
-  display: list-item;
+    max-width: 200px;
+    height: auto;
+    width: auto;
+  display: table-cell;
   padding: 5px;
   margin: 0 3px;
   background: #79a641;
   text-align: center;
+    min-height:200px;
+    min-width: 300px;
 }
 
 a:link,a:hover, a:visited,a:active{
@@ -264,4 +294,10 @@ h2 {
 #review .title_stars{
     font-weight: bold;
     font-size: large;
+}
+
+.order_list{
+    display: flex;
+    border: 3px solid black;
+    justify-content: space-between;
 }

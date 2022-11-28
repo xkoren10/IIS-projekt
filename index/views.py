@@ -138,9 +138,7 @@ def sign_up(request):
 
 def offers(request):
     # access restricted
-    if not user_logged_in(request):
-        form = LoginForm()
-        return render(request, "index/login.html", {"form": form})
+
 
     all_crops = db.get_all_crops()
     user = user_logged_in(request)
@@ -179,10 +177,11 @@ def harvests(request,  err=''):
     farmer_crops = db.get_list_of_farmers_crops(user_id)
     attended_harvests = []
 
-    for h in harvests_models:
-        attending = db.is_attending(h['id'],user_id)
-        if attending:
-            attended_harvests.append(h)
+    if user_id:
+        for h in harvests_models:
+            attending = db.is_attending(h['id'],user_id)
+            if attending:
+                attended_harvests.append(h)
 
     if not farmer_crops:
         farmer = False
@@ -203,8 +202,7 @@ def new_crop(request, crop_id: int):
     # access restricted
     user = user_logged_in(request)
     if not user:
-        form = LoginForm()
-        return render(request, "index/login.html", {"form": form})
+        return redirect("/login")
 
     if request.method == "POST":
         form = CropForm(request.POST)
@@ -260,8 +258,7 @@ def profile(request, err=''):
     # access restricted
     user = user_logged_in(request)
     if not user:
-        form = LoginForm()
-        return render(request, "index/login.html", {"form": form})
+        return redirect("/login")
 
     user_profile = db.user_get_by_id(user)   # ziskame usera so session
     farmer_crops = db.get_crops_from_farmer(user)
@@ -272,7 +269,7 @@ def profile(request, err=''):
 
     # bruh, index out of range moment
     if len(orders) > 0:
-        if user_profile['id'] == orders[0]['farmer']:   # ak sa zhoduje prvá, zhodujú sa všetky
+        if user_profile['user_name'] == orders[0]['farmer']:   # ak sa zhoduje prvá, zhodujú sa všetky
             farmer = True
         else:
             farmer = False
@@ -351,8 +348,8 @@ def moderation(request):
                 db.category_approve(request.POST["cat_id"], False)
         categories = db.get_all_categories()
         return render(request, "index/category_moderation.html", {"user": user, "categories": categories})
-    form = LoginForm()
-    return render(request, "index/login.html", {"form": form})
+
+    return redirect("/login")
 
 
 def new_category(request):
@@ -367,8 +364,8 @@ def new_category(request):
         form = NewCategoryForm()
         return render(request, "index/new_category.html", {"user": user, "form": form})
 
-    form = LoginForm()
-    return render(request, "index/login.html", {"form": form})
+
+    return redirect("/login")
 
 
 def product_detail(request, product_id):
@@ -397,9 +394,10 @@ def product_detail(request, product_id):
         # add crop to cart cookie
         elif "add_to_cart" in operation:
             cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
+            err_msg = "Plodina bola objednaná."
             response = render(request, "index/product_detail.html",
                               {"crop": crop_to_show, "reviews": reviews,
-                               "user": user, "farmer": False, "reviewable": reviewable})
+                               "user": user, "farmer": False, "reviewable": reviewable,"error": err_msg})
             response.set_cookie("cart", cart)
             return response
 
@@ -432,12 +430,12 @@ def new_review(request, crop_id):
                 return product_detail(request, product_id=crop_id)
         form = NewReview()
         return render(request, "index/new_review.html", {"user": user, "form": form})
-    form = LoginForm()
-    return render(request, "index/login.html", {"form": form})
+    return redirect("/login")
 
 
 def cart_detail(request):
     # access restricted
+    err_msg = ""
     total = 0
     user = user_logged_in(request)
     if user:
@@ -455,6 +453,7 @@ def cart_detail(request):
             elif "order" in operation:
                 db.create_new_orders(user, orders)
                 cart = ""
+                err_msg = "Objednávka odoslaná."
 
         orders = []
         if cart != "":
@@ -463,18 +462,21 @@ def cart_detail(request):
                 for order in orders:
                     total = total + order["price"]
 
-        response = render(request, "index/cart_detail.html", {"user": user, "orders": orders, "total": total})
+        response = render(request, "index/cart_detail.html", {"user": user, "orders": orders, "total": total, "error": err_msg})
         if cart != "":
             response.set_cookie("cart", cart)
         else:
             response.delete_cookie("cart")
         return response
 
-    form = LoginForm()
-    return render(request, "index/login.html", {"form": form})
+    return redirect("/login")
 
 
 def harvest_detail(request, harvest_id, err_msg=None):
+
+    if not user_logged_in(request):
+        return redirect("/login")
+
     harvest_to_show = db.harvest_get_by_id(harvest_id)
     user = user_logged_in(request)
     attending = db.is_attending(harvest_id, user)
@@ -511,8 +513,7 @@ def new_harvest(request, harvest_id: int):
     # access restricted
     user = user_logged_in(request)
     if not user:
-        form = LoginForm()
-        return render(request, "index/login.html", {"form": form})
+        return redirect("/login")
 
     if request.method == "POST":
         form = HarvestForm(user, request.POST)

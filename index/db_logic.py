@@ -120,7 +120,7 @@ def get_crops_from_farmer(farmer_id: int):
 
 def get_top_crops():
     top_crops = []
-    top_crops_models = models.Crop.objects.filter(review__stars__gte=4).order_by('-review__stars')[:2]
+    top_crops_models = models.Crop.objects.filter(review__stars__gte=4).order_by('-review__stars')[:4]
     # nech to neni crowded
     if not top_crops_models:
         return False
@@ -134,7 +134,7 @@ def get_top_crops():
 
 def get_new_crops():
     new_crops = []
-    new_crops_models = models.Crop.objects.order_by('-crop_year', '-id')[:2]
+    new_crops_models = models.Crop.objects.order_by('-crop_year', '-id')[:4]
     # nech to neni crowded
     if not new_crops_models:
         return False

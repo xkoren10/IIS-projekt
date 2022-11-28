@@ -7,14 +7,19 @@
 
     <meta charset="UTF-8">
     <title>Zelný trh - Detail zberu</title>
-    <span class="LOGO"><a href="{% url 'index:index' %}">ZELNÝ TRH</a></span>
-    <br><br>
-
-
 
 </head>
     <body>
     <header>
+        <div class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'index:index' %}">ZELNÝ TRH</a></div>
+        {% if user %}
+            <div><a href="{% url 'index:login' %}"><span class="button">Odhlásenie</span></a></div>
+        {% else %}
+            <div><a href="{% url 'index:login' %}"><span class="button" >Login</span></a></div>
+        {% endif %}
+        </div>
+
             <span class="button"><a href="{% url 'index:offers' %}">Ponuka</a></span>
             <span class="button"><a href="{% url 'index:harvests' %}">Zbery</a></span>
         {% if user %}
