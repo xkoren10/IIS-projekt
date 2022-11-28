@@ -110,8 +110,12 @@ def admin_categories_view(request):
 def admin_reviews_view(request):
     admin = admin_logged_in(request)
     if admin:
-        orders = admin_db.get_all_orders()
-        return render(request, "admin/admin_reviews_view.html", {"orders": orders})
+        if request.method == "POST":
+            operation = request.POST.keys()
+            if "delete" in operation:
+                db.review_delete(request.POST["review_id"])
+        reviews = admin_db.get_all_reviews()
+        return render(request, "admin/admin_reviews_view.html", {"reviews": reviews})
 
     return redirect("/admin/login")
 

@@ -77,3 +77,16 @@ def get_all_orders(filters=None):
         orders.append(to_dict(order))
 
     return orders
+
+
+def get_all_reviews(filters=None):
+    try:
+        db_reviews = models.Review.objects.all().order_by("id")
+    except exceptions.ObjectDoesNotExist:
+        return False
+
+    reviews = []
+    for review in db_reviews:
+        reviews.append(to_dict(review))
+
+    return reviews

@@ -5,44 +5,40 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}"/>
-    <title>IS Zelny trh - admin - orders</title>
+    <title>IS Zelny trh - admin - reviews</title>
 </head>
 </html>
 <body>
     {% load db_plug %}
     <header>
-        <label>IS Zelný trh - administrácia - užívatelia</label>
+        <label>IS Zelný trh - administrácia - hodnotenia</label>
         <br>
         <div class="LOGO" id="LOGO"><a href="{% url 'admin:index' %}">IS Zelný trh - administrácia</a></div>
         <br>
     </header>
     <main>
-        {% if orders %}
+        {% if reviews %}
             <div>
                 <div class="table_header">
-                    <label>Order ID</label>
-                    <label>Crop ID</label>
+                    <label>Review ID</label>
                     <label>Crop name</label>
-                    <label>Farmer</label>
-                    <label>Ordered by</label>
-                    <label>Amount</label>
-                    <label>Total price</label>
-                    <label>State</label>
+                    <label>User</label>
+                    <label>Title</label>
+                    <label>Stars</label>
+                    <label>Delete</label>
                 </div>
-                <div>
-                    {% for order in orders %}
-                        <div class="table_form">
-                            <label>{{ order.id }}</label>
-                            <label>{{ order.crop }}</label>
-                            <label>{% get_crop_name order.crop %}</label>
-                            <label>{% get_user_name order.farmer %}</label>
-                            <label>{% get_user_name order.ordered_by %}</label>
-                            <label>{{ order.amount }}</label>
-                            <label>{{ order.total_price }}</label>
-                            <label>{{ order.state }}</label>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% for review in reviews %}
+                    <form method="post" class="table_form">
+                        {% csrf_token %}
+                        <input type="hidden" name="review_id" value="{{ review.id }}">
+                        <label>{{ review.id }}</label>
+                        <label>{% get_crop_name review.crop %}</label>
+                        <label>{% get_user_name review.reviewed_by %}</label>
+                        <label>{{ review.short_desc }}</label>
+                        <label>{{ review.stars }}</label>
+                        <input type="submit" name="delete" value="delete" class="toggle">
+                    </form>
+                {% endfor %}
             </div>
         {% else %}
             <div>Nothing to show for now</div>
