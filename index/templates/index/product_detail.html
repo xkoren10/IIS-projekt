@@ -51,11 +51,11 @@
                     Zem pôvodu: {{ crop.origin }}<br>
                 </label>
             </div>
-            {% if user and not farmer%}
-                {% if crop.price_type != "zber"  %}
+            {% if user and not farmer %}
+                {% if crop.price_type != "zber" %}
                     <form method="post">
                     {% csrf_token %}
-                        <input type="number" name="amount" value="0">
+                        <input type="number" name="amount" value="0" min="1" max="1000">
                         <input class="button" type="submit" name="add_to_cart" value="Add to cart">
                     </form>
                 {% endif %}

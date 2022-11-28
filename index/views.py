@@ -62,7 +62,7 @@ class HarvestForm(forms.Form):
 
 class NewCategoryForm(forms.Form):
     cat_name = forms.CharField(label="Názov kategórie")
-    cat_of = forms.IntegerField(label="Je podkategóriou", widget=forms.Select(choices=db.category_get_all_approved()))
+    cat_of = forms.IntegerField(label="Je podkategóriou", widget=forms.Select(choices=db.get_list_of_categories()))
 
 
 class NewReview(forms.Form):
@@ -74,16 +74,9 @@ class NewReview(forms.Form):
 def user_logged_in(request):
     # first check if session_user was init
     try:
-        user = request.session["user"]
+        return request.COOKIES["user"]
     except KeyError:
-        # set
-        request.session["user"] = False
         return False
-
-    # then check if is set to logged
-    if user:
-        return user
-    return False
 
 
 def index(request):
@@ -92,7 +85,7 @@ def index(request):
 
     user = user_logged_in(request)
     if user:
-        return render(request, "index/index.html", {"logged_in": request.session["user"],
+        return render(request, "index/index.html", {"logged_in": user,
                                                     "top_crops": top_crops,
                                                     "new_crops": new_crops})
     # else
@@ -108,8 +101,10 @@ def login(request):
             user = db.password_check(form.cleaned_data["username"], form.cleaned_data["password"])
             if user:
                 # set session and go back to index page
-                request.session["user"] = user.id
-                return redirect("/")
+                response = redirect("/")
+                response.set_cookie("user", user.id)
+                response.set_cookie("cart", "")
+                return response
             else:
                 error_msg = "Nesprávna kombinácia uživateľského mena a hesla"
                 return render(request, "index/login.html", {"form": form, "error": error_msg})
@@ -118,6 +113,7 @@ def login(request):
     form = LoginForm()
     response = render(request, "index/login.html", {"form": form})
     response.delete_cookie("cart")
+    response.delete_cookie("user")
     return response
 
 
@@ -131,8 +127,10 @@ def sign_up(request):
                 error_msg = "Uživateľ už existuje."
                 return render(request, "index/sign_up.html", {"form": form, "error": error_msg})
 
-            request.session["user"] = user.id
-            return redirect("/")
+            response = redirect("/")
+            response.set_cookie("user", user.id)
+            response.set_cookie("cart", "")
+            return response
     else:
         form = LoginForm()
     return render(request, "index/sign_up.html", {"form": form})
@@ -147,7 +145,7 @@ def offers(request):
     all_crops = db.get_all_crops()
     user = user_logged_in(request)
     all_categories = db.category_get_all_approved()
-    all_categories = sorted(all_categories, key=lambda d: d['id'] , reverse=False)
+    all_categories = sorted(all_categories, key=lambda d: d['id'], reverse=False)
 
     filters = dict(request.GET)
 
@@ -188,15 +186,16 @@ def harvests(request,  err=''):
     if user_id:
         my_harvests = db.harvest_get_by_farmer_id(user_id)
         return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                        "logged_in": user_id, "error": err, "farmer":farmer})
+                                                       "logged_in": user_id, "error": err, "farmer": farmer})
     # else
     return render(request, "index/harvests.html", {"harvests": harvests_models, "my_harvests": my_harvests,
-                                                    "logged_in": False,  "error": err, "farmer":farmer})
+                                                   "logged_in": False,  "error": err, "farmer": farmer})
 
 
 def new_crop(request, crop_id: int):
     # access restricted
-    if not user_logged_in(request):
+    user = user_logged_in(request)
+    if not user:
         form = LoginForm()
         return render(request, "index/login.html", {"form": form})
 
@@ -206,23 +205,23 @@ def new_crop(request, crop_id: int):
             if request.POST['form_type'] == 'save':
                 if crop_id == 0:        # nová plodina bude mať vždy id 0
                     crop = db.crop_create(form.cleaned_data["crop_name"], form.cleaned_data["description"],
-                                  form.cleaned_data["price"], form.cleaned_data["amount"],
-                                  form.cleaned_data["origin"], form.cleaned_data["crop_year"],
-                                  form.cleaned_data["price_type"], form.cleaned_data["category_id"],
-                                  request.session["user"])
+                                          form.cleaned_data["price"], form.cleaned_data["amount"],
+                                          form.cleaned_data["origin"], form.cleaned_data["crop_year"],
+                                          form.cleaned_data["price_type"], form.cleaned_data["category_id"],
+                                          user)
                     if not crop:
                         error_msg = "Plodina nebola vytvorená"
                         return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
                     else:
                         error_msg = "Plodina bola vytvorená"
-                        return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
+                        return redirect("/profile", err=error_msg)
 
                 else:
                     crop = db.crop_update(crop_id, form.cleaned_data["crop_name"], form.cleaned_data["description"],
-                                      form.cleaned_data["price"], form.cleaned_data["amount"],
-                                      form.cleaned_data["origin"], form.cleaned_data["crop_year"],
-                                      form.cleaned_data["price_type"], form.cleaned_data["category_id"],
-                                      request.session["user"])
+                                          form.cleaned_data["price"], form.cleaned_data["amount"],
+                                          form.cleaned_data["origin"], form.cleaned_data["crop_year"],
+                                          form.cleaned_data["price_type"], form.cleaned_data["category_id"],
+                                          user)
                     if not crop:
                         error_msg = "Plodina nebola upravená"
                         return render(request, "index/new_crop.html", {"form": form, "error": error_msg})
@@ -252,14 +251,15 @@ def new_crop(request, crop_id: int):
 
 def profile(request, err=''):
     # access restricted
-    if not user_logged_in(request):
+    user = user_logged_in(request)
+    if not user:
         form = LoginForm()
         return render(request, "index/login.html", {"form": form})
 
-    user_profile = db.user_get_by_id(request.session['user'])   # ziskame usera so session
-    farmer_crops = db.get_crops_from_farmer(request.session['user'])
-    orders = db.get_order_by_person_id(request.session['user'])
-    reviews = db.get_user_reviews(request.session['user'])
+    user_profile = db.user_get_by_id(user)   # ziskame usera so session
+    farmer_crops = db.get_crops_from_farmer(user)
+    orders = db.get_order_by_person_id(user)
+    reviews = db.get_user_reviews(user)
     for review in reviews:
         review['crop'] = db.crop_get_by_id(review['crop'])['crop_name']
 
@@ -280,7 +280,7 @@ def profile(request, err=''):
         if 'save' in operation:         # zmena udajov
             form = ProfileForm(request.POST)
             if form.is_valid():
-                user = db.user_update(request.session['user'], form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
+                user = db.user_update(user, form.cleaned_data["username"], form.cleaned_data["email"], form.cleaned_data["password"], user_profile['mod'])
                 if user:
                     error_msg = " Údaje úspešne zmenené"
                     return render(request, "index/profile.html", {"user": user_profile, "form": form,
@@ -292,7 +292,7 @@ def profile(request, err=''):
             else:
                 return False
         elif 'delete' in operation:                                          # mazanie profilu
-            delete = db.user_delete(request.session['user'])
+            delete = db.user_delete(user)
             if delete:
                 request.session.clear()
                 form = LoginForm()
@@ -306,22 +306,21 @@ def profile(request, err=''):
             res = db.change_order_state('confirmed', int(request.POST["order_id"]))
             if res == "amount":
                 err = "Nemožno predať viac tejto plodiny než je zadaného množstva"
-            orders = db.get_order_by_person_id(request.session['user'])
+            orders = db.get_order_by_person_id(user)
         elif 'refuse' in operation:
             db.change_order_state('rejected', request.POST["order_id"])
-            orders = db.get_order_by_person_id(request.session['user'])
+            orders = db.get_order_by_person_id(user)
 
         elif 'del_review' in operation:
             deletion = db.review_delete(request.POST["review_id"])
             if deletion:
                 err = "Hodnotenie bolo odstránené."
                 reviews.clear()
-                reviews = db.get_user_reviews(request.session['user'])
+                reviews = db.get_user_reviews(user)
                 for review in reviews:
                     review['crop'] = db.crop_get_by_id(review['crop'])['crop_name']
             else:
                 err = "Hodnotenie nebolo odstránené."
-
 
     # prístup z indexu alebo cez redirect + zmena stavu
     form = ProfileForm()
@@ -357,7 +356,7 @@ def new_category(request):
             form = NewCategoryForm(request.POST)
             if form.is_valid():
                 db.category_create_new(form.cleaned_data["cat_name"], form.cleaned_data["cat_of"])
-                return profile(request, err="Kategória sa odoslala na schválenie")
+                return redirect("/profile", err="Kategória sa odoslala na schválenie")
         form = NewCategoryForm()
         return render(request, "index/new_category.html", {"user": user, "form": form})
 
@@ -386,14 +385,14 @@ def product_detail(request, product_id):
             if delete:
                 err_msg = "Plodina zmazaná."
                 request.method = "GET"
-                return profile(request, err_msg)
+                return redirect("/profile", err=err_msg)
 
         # add crop to cart cookie
         elif "add_to_cart" in operation:
             cart = cookie.add_to_cart(request, product_id, request.POST["amount"])
             response = render(request, "index/product_detail.html",
                               {"crop": crop_to_show, "reviews": reviews,
-                               "user": request.session['user'], "farmer": False, "reviewable": reviewable})
+                               "user": user, "farmer": False, "reviewable": reviewable})
             response.set_cookie("cart", cart)
             return response
 
@@ -471,7 +470,7 @@ def cart_detail(request):
 def harvest_detail(request, harvest_id, err_msg=None):
     harvest_to_show = db.harvest_get_by_id(harvest_id)
     user = user_logged_in(request)
-    attending = db.is_attending(harvest_id,request.session['user'])
+    attending = db.is_attending(harvest_id, user)
     if request.method == "POST":
         operation = request.POST.keys()
         if "delete" in operation:
@@ -481,9 +480,9 @@ def harvest_detail(request, harvest_id, err_msg=None):
                 request.method = "GET"
                 return harvests(request, err_msg)
         if "attend" in operation:
-            err_msg = db.attend_harvest(harvest_id,request.session['user'])
+            err_msg = db.attend_harvest(harvest_id, user)
         if "leave" in operation:
-            err_msg = db.leave_harvest(harvest_id,request.session['user'])
+            err_msg = db.leave_harvest(harvest_id, user)
 
         request.method = "GET"
         return harvest_detail(request, harvest_id, err_msg)
@@ -546,7 +545,7 @@ def new_harvest(request, harvest_id: int):
     else:
         harvest_to_update = db.harvest_get_by_id(harvest_id)
         # initial hodnoty z práve prehľadávanej plodiny
-        form = HarvestForm(farmer_id=request.session["user"])
+        form = HarvestForm(farmer_id=user)
         form.fields["date"].initial = harvest_to_update["date"]
         form.fields["place"].initial = harvest_to_update["place"]
         form.fields["description"].initial = harvest_to_update["description"]
