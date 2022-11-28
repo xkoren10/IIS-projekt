@@ -4,11 +4,18 @@ body {
   padding: 15px;
     background-size: contain;
 }
+.message{
+  font-size: xx-large;
+  text-align: center;
+  border: 2px solid black;
+
+}
 .LOGO{
   font-size: xx-large;
   display: flex;
   justify-content: space-between;
   color: black;
+
 }
 
 .crop, .harvest{
@@ -159,6 +166,7 @@ h2 {
   margin: 5px;
     cursor: pointer;
 }
+
 
 
 
