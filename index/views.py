@@ -158,9 +158,10 @@ def offers(request):
                         all_crops.extend(filtered_crops)
 
     if 'sort' in filters:
-        if filters['sort'] == 'descend':
+        kurva = filters['sort']
+        if filters['sort'][0] == 'descend':
             all_crops = sorted(all_crops, key=lambda d: d['price'], reverse=True)
-        elif filters['sort'] == 'ascend':
+        elif filters['sort'][0] == 'ascend':
             all_crops = sorted(all_crops, key=lambda d: d['price'])
 
     if user:
