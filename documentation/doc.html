@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="sk">
+<head>
+    <meta charset="utf-8"  content="text/html" />
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+
+
+<h1>Zelný Trh</h1>
+
+<dl>
+	<dt>Autori</dt>
+	<dd>Matej Koreň <!-- Nahra�te skute�n�m jm�nem a e-mailem autora a popisem �innosti -->
+	    <a href="mailto:xkoren10@stud.fit.vutbr.cz">xkoren10@stud.fit.vutbr.cz</a> -
+		činnosti: manažment projektu, databáza a  modely, views, štýlovanie, databázová logika
+	</dd>
+	<dd>Matej Hložek <!-- Nahra�te skute�n�m jm�nem a e-mailem autora a popisem �innosti -->
+	    <a href="mailto:xhloze02@stud.fit.vutbr.cz">xhloze02@stud.fit.vutbr.cz</a> -
+		Činnosti: administračná časť, databázová logika, cookies, views, deployment
+	</dd>
+  <dd>Lukasz Pycz <!-- Nahra�te skute�n�m jm�nem a e-mailem autora a popisem �innosti -->
+	    <a href="mailto:xpyczl00@stud.fit.vutbr.cz">xpyczl00@stud.fit.vutbr.cz</a> -
+		Činnosti: views, ladenie, databázová logika
+	</dd>
+	<dt>URL aplikácie</dt>
+	<dd><a href="https://zelny-trh.herokuapp.com/">https://zelny-trh.herokuapp.com/</a></dd>
+    <dd><a href="https://zelny-trh.herokuapp.com/admin">https://zelny-trh.herokuapp.com/admin</a></dd>
+</dl>
+
+<h2>Použivatelia systému pre testovanie</h2>
+<table>
+<tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>admin</td><td>admin</td><td>Administrátor (.../admin)</td></tr>
+<tr><td>farmar</td><td>farmar</td><td>Používateľ - Farmár</td></tr>
+<tr><td>kupec</td><td>kupec</td><td>Používateľ - Kupec</td></tr>
+<tr><td>moderator</td><td>moderator</td><td>Používateľ - Moderátor</td></tr>
+</table>
+
+<h3>Diagram prípadov použitia</h3>
+<img src="iis-uc.png" alt="Schéma prípadov použitia" width="764" height="794">
+
+<h3>Video</h3>
+
+<a href="https://youtu.be/rSfCYAoAGyw"> Inštruktážne video</a>
+
+<h2>Implementácia</h2>
+<p> Informačný systém je vytvorený podľa návrhového vzoru MVC, kde rolu <strong>model</strong> zastáva databáza, rolu <strong>view</strong> všetky html stránky (index/templates) a rolu <strong>controller</strong> views.py .
+    Controller pri jednotlivých požiadavkoch využíva operácie z funkcíi v db_logic.py, ktoré manipulujú dáta v databáze.
+    Komunikácia so serverom ja zabezpečovaná pomocou GET a POST dotazov, pričom dáta, ktoré majú byť spracované, sú zabalené vo formulároch.
+    Operácie s používanými cookies (nákupný košík, prihlasovanie uživateľa) spravuje <strong>cookie_logic.py</strong></p>
+<p> Administráciu systému má na starosti samostatná aplikácia <strong>admin</strong>, ktorá obsahuje vlastné <strong>view</strong> a <strong>controller</strong> ( admin/adnim_views.py a admin/admin_db_logic.py)</p>
+
+
+<h3>Databáza</h3>
+
+<img src="iis-database.png" alt="Schéma databáze" width="890" height="415">
+
+<h2>Inštalácia</h2>
+
+<ul>
+<li>Postup inštalácie na server: Forknutá verzia zdieľaného repozitáru je po každom deploynutá automaticky nahraná na server hosťovaný službou Heroku.</li>
+<li>Softwarové požiadavky: (requirements.txt) - Python (3.8+),
+    Django 4.1.2,
+    psycopg2-binary,
+    python-dotenv,
+    gunicorn,
+    whitenoise,
+    dj-database-url,
+    passlib,
+    SQLAlchemy,
+    Werkzeug,
+    gevent,
+    bcrypt
+</li>
+    <li>Databázu je možné vytvoriť spustením skriptu <strong>data.sql</strong>, ktorý vytvorý potrebné tabuľky a relácie</li>
+</ul>
+
+<h2>Známe problémy a nedostatky</h2>
+<p> Z časových dôvodov a taktiež kvôli náročnosti v systéme chýba dynamická špecifikácia atribútov kategórii. Kategórie sú využívané iba na rozdeľovanie plodín a každá plodina má vopred staticky určený počet možných atribútov.
+</p>
+
+</body>
+</html>
