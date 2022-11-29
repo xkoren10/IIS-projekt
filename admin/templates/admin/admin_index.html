@@ -19,43 +19,57 @@
         </div>
     </header>
     <main>
-        <ol>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:users' %}">Users</a>
-                </label>
-            </li>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:crops' %}">Crops</a>
-                </label>
-            </li>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:orders' %}">Orders</a>
-                </label>
-            </li>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:harvests' %}">Harvests</a>
-                </label>
-            </li>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:categories' %}">Categories</a>
-                </label>
-            </li>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:reviews' %}">Reviews</a>
-                </label>
-            </li>
-            <li class="toggle">
-                <label>
-                    <a href="{% url 'admin:admins' %}">Admins</a>
-                </label>
-            </li>
-        </ol>
+        <nav class="admin_menu">
+            <a href="{% url 'admin:users' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Users
+                    </label>
+                </span>
+            </a>
+            <a href="{% url 'admin:crops' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Crops
+                    </label>
+                </span>
+            </a>
+            <a href="{% url 'admin:orders' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Orders
+                    </label>
+                </span>
+            </a>
+            <a href="{% url 'admin:harvests' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Harvests
+                    </label>
+                </span>
+            </a>
+            <a href="{% url 'admin:categories' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Categories
+                    </label>
+                </span>
+            </a>
+            <a href="{% url 'admin:reviews' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Reviews
+                    </label>
+                </span>
+            </a>
+            <a href="{% url 'admin:admins' %}">
+                <span class="admin_menu_item">
+                    <label>
+                        Admins
+                    </label>
+                </span>
+            </a>
+        </nav>
     </main>
 </body>
 </html>

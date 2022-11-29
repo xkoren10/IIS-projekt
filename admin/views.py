@@ -50,7 +50,7 @@ def admin_users_view(request):
             elif "unmake_mod" in operation:
                 admin_db.toggle_mod(request.POST["user_id"], False)
         users = admin_db.get_all_users()
-        return render(request, "admin/admin_users_view.html", {"users": users})
+        return render(request, "admin/admin_users_view.html", {"users": users, "admin": admin})
 
     return redirect("/admin/login")
 
@@ -63,7 +63,7 @@ def admin_crops_view(request):
             if "delete" in operation:
                 db.crop_delete(request.POST["crop_id"])
         crops = admin_db.get_all_crops()
-        return render(request, "admin/admin_crops_view.html", {"crops": crops})
+        return render(request, "admin/admin_crops_view.html", {"crops": crops, "admin": admin})
 
     return redirect("/admin/login")
 
@@ -72,7 +72,7 @@ def admin_orders_view(request):
     admin = admin_logged_in(request)
     if admin:
         orders = admin_db.get_all_orders()
-        return render(request, "admin/admin_orders_view.html", {"orders": orders})
+        return render(request, "admin/admin_orders_view.html", {"orders": orders, "admin": admin})
 
     return redirect("/admin/login")
 
@@ -85,7 +85,7 @@ def admin_harvests_view(request):
             if "delete" in operation:
                 db.harvest_delete(request.POST["harvest_id"])
         harvests = db.harvest_get_all()
-        return render(request, "admin/admin_harvests_view.html", {"harvests": harvests})
+        return render(request, "admin/admin_harvests_view.html", {"harvests": harvests, "admin": admin})
 
     return redirect("/admin/login")
 
@@ -102,7 +102,7 @@ def admin_categories_view(request):
             elif "disallow" in operation:
                 db.category_approve(request.POST["cat_id"], False)
         categories = db.get_all_categories()
-        return render(request, "admin/admin_categories_view.html", {"categories": categories})
+        return render(request, "admin/admin_categories_view.html", {"categories": categories, "admin": admin})
 
     return redirect("/admin/login")
 
@@ -115,7 +115,7 @@ def admin_reviews_view(request):
             if "delete" in operation:
                 db.review_delete(request.POST["review_id"])
         reviews = admin_db.get_all_reviews()
-        return render(request, "admin/admin_reviews_view.html", {"reviews": reviews})
+        return render(request, "admin/admin_reviews_view.html", {"reviews": reviews, "admin": admin})
 
     return redirect("/admin/login")
 

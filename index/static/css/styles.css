@@ -305,6 +305,7 @@ h2 {
 
 .admin_menu{
     display: inline-flex;
+    flex-direction: column;
 }
 
 .admin_menu_item{
