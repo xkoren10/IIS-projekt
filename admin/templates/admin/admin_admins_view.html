@@ -19,11 +19,10 @@
         </div>
     </header>
         <div class="login" id="login" >
-        <label>Create a new admin:</label><br>
-        <form method="post" class="signup">
+        <form method="post" >
             {% csrf_token %}
             {{ form }}
-            <input type="submit" name="create_admin" value="Create admin">
+            <input type="submit" name="create_admin" value="Vytvoriť admina" class="get_in">
         </form>
     </div>
 </body>
