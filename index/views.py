@@ -23,16 +23,16 @@ class ProfileForm(forms.Form):
     """
     Profile form used in profile view
     """
-    username = forms.CharField(label="Meno", max_length=80, initial='')
+    username = forms.CharField(label="Meno", min_length=4, max_length=80, initial='')
     email = forms.CharField(label="Email", max_length=100, initial='', required=False)
-    password = forms.CharField(label="Heslo", max_length=40, initial='', widget=forms.PasswordInput)
+    password = forms.CharField(label="Heslo", min_length=4, max_length=40, initial='', widget=forms.PasswordInput)
 
 
 class CropForm(forms.Form):
     """
     Crop form used in new_crop view
     """
-    crop_name = forms.CharField(label="Názov", max_length=80, initial='')
+    crop_name = forms.CharField(label="Názov", min_length=1, max_length=80, initial='')
     description = forms.CharField(label="Popis", max_length=100, initial='', required=False)
     price = forms.FloatField(label="Cena", min_value=0.01, max_value=10000)
     amount = forms.IntegerField(label="Počet", min_value=1, max_value=10000)
@@ -571,7 +571,7 @@ def new_harvest(request, harvest_id: int):
 
 
                 else:
-                    harvest = db.crop_update(harvest_id, form.cleaned_data["date"], form.cleaned_data["place"],
+                    harvest = db.harvest_update(harvest_id, form.cleaned_data["date"], form.cleaned_data["place"],
                                             form.cleaned_data["description"], form.cleaned_data["max_occupancy"],
                                             form.cleaned_data["current_occupation"], form.cleaned_data["crop_id"],
                                             user)
