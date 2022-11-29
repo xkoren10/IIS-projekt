@@ -10,10 +10,14 @@
 <body>
     {% load db_plug %}
     <header>
-        <label>IS Zelný trh - administrácia - orders</label>
-        <br>
-        <div class="LOGO" id="LOGO"><a href="{% url 'admin:index' %}">IS Zelný trh - administrácia</a></div>
-        <br>
+        <div  class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'admin:index' %}">ZELNÝ TRH</a></div>
+        {% if admin %}
+            <div><a href="{% url 'admin:login' %}"><span class="button">Odhlásenie</span></a></div>
+        {% else %}
+            <div><a href="{% url 'admin:login' %}"><span class="button" >Login</span></a></div>
+        {% endif %}
+        </div>
     </header>
     {% if orders %}
         <div class="table_header">

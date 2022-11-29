@@ -9,49 +9,48 @@
 </head>
 <body>
     <header>
-        <div class="LOGO" id="LOGO">
-            <label>IS Zelný trh - administrácia</label>
-
+        <div  class="site_head" id="site_head">
+            <div><a class="LOGO" href="{% url 'admin:index' %}">ZELNÝ TRH</a></div>
         {% if admin %}
-                <label>
-                    <span class="button"><a href="{% url 'admin:login' %}">Odhlásenie</a></span>
-                </label>
-        </div>
+            <div><a href="{% url 'admin:login' %}"><span class="button">Odhlásenie</span></a></div>
+        {% else %}
+            <div><a href="{% url 'admin:login' %}"><span class="button" >Login</span></a></div>
         {% endif %}
+        </div>
     </header>
     <main>
-        <ul>
-            <li>
+        <ul id="grid_show" >
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:users' %}">Users</a>
                 </label>
             </li>
-            <li>
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:crops' %}">Crops</a>
                 </label>
             </li>
-            <li>
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:orders' %}">Orders</a>
                 </label>
             </li>
-            <li>
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:harvests' %}">Harvests</a>
                 </label>
             </li>
-            <li>
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:categories' %}">Categories</a>
                 </label>
             </li>
-            <li>
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:reviews' %}">Reviews</a>
                 </label>
             </li>
-            <li>
+            <li class="toggle">
                 <label>
                     <a href="{% url 'admin:admins' %}">Admins</a>
                 </label>
